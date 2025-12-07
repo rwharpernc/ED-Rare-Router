@@ -15,8 +15,6 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
 
-## [Unreleased]
-
 ## [unstable v1.0] - 2025-12-07
 
 ### Added
