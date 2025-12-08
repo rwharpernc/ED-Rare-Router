@@ -6,8 +6,7 @@ import type { RareGood } from '../types/rares';
  * Contains rare goods with their origin systems, stations, legality restrictions,
  * and PowerPlay eligibility information.
  * 
- * Entries prefixed with "PH" are placeholders that may need verification or
- * additional data (e.g., exact sellHintLy distances, legality flags).
+ * All entries use verified system names that exist in EDSM.
  */
 export const rares: RareGood[] = [
   // Well-known rare goods from the Lave cluster and beyond
@@ -301,8 +300,8 @@ export const rares: RareGood[] = [
   },
   {
     rare: 'Aepyornis Egg',
-    system: 'Aepyornis',
-    station: 'Fozard Ring',
+    system: '47 Ceti',
+    station: 'Glushko Station',
     pad: 'L',
     sellHintLy: 200,
     illegalInSuperpowers: [],
@@ -407,9 +406,32 @@ export const rares: RareGood[] = [
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
   },
-  // Placeholder entries - may need verification or additional data
   {
-    rare: 'PH Centauri Mega Gin',
+    rare: 'Pantaa Prayer Sticks',
+    system: 'George Pantazis',
+    station: 'Zamka Platform',
+    pad: 'M',
+    sellHintLy: 150,
+    illegalInSuperpowers: [],
+    illegalInGovs: [],
+    pp: {
+      eligibleSystemTypes: ['acquisition', 'exploit'],
+    },
+  },
+  {
+    rare: 'Gerasian Gueuze Beer',
+    system: 'Geras',
+    station: 'Yurchikhin Port',
+    pad: 'M',
+    sellHintLy: 200,
+    illegalInSuperpowers: [],
+    illegalInGovs: [],
+    pp: {
+      eligibleSystemTypes: ['acquisition', 'exploit'],
+    },
+  },
+  {
+    rare: 'Centauri Mega Gin',
     system: 'Alpha Centauri',
     station: 'Hutton Orbital',
     pad: 'M',
@@ -418,33 +440,6 @@ export const rares: RareGood[] = [
     illegalInGovs: [],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
-      notes: 'Placeholder - verify station and exact sellHintLy',
-    },
-  },
-  {
-    rare: 'PH Pantaa Prayer Sticks',
-    system: 'Pantaa',
-    station: 'Shajn Market',
-    pad: 'M',
-    sellHintLy: 200,
-    illegalInSuperpowers: [],
-    illegalInGovs: [],
-    pp: {
-      eligibleSystemTypes: ['acquisition', 'exploit'],
-      notes: 'Placeholder - verify system and station details',
-    },
-  },
-  {
-    rare: 'PH Gerasian Gueuze Beer',
-    system: 'Geras',
-    station: 'Yamazaki Orbital',
-    pad: 'L',
-    sellHintLy: 200,
-    illegalInSuperpowers: [],
-    illegalInGovs: [],
-    pp: {
-      eligibleSystemTypes: ['acquisition', 'exploit'],
-      notes: 'Placeholder - verify system and station details',
     },
   },
 ];

@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { rares } from "../../data/rares";
 import { getSystem } from "../../lib/edsm";
+import { getRareOriginSystem } from "../../lib/rareSystemsCache";
 import { lyDistance } from "../../lib/distances";
 import { evaluateLegality } from "../../lib/legality";
 import { ppEligibleForSystemType, cpDivisors } from "../../lib/powerplay";
@@ -81,8 +82,20 @@ export const POST: APIRoute = async ({ request }) => {
     // Process each rare good
     const results: ScanResult[] = await Promise.all(
       rares.map(async (rare) => {
-        // Resolve rare origin system
-        const originSystem = await getSystem(rare.system);
+        // Try to get rare origin system from cache first, fall back to API
+        let originSystem = await getRareOriginSystem(rare.system);
+        
+        // If not in cache, try API lookup (should be rare after initial cache is built)
+        if (!originSystem) {
+          originSystem = await getSystem(rare.system);
+        }
+        
+        if (!originSystem?.coords) {
+          // Log warning for systems that couldn't be found
+          console.warn(`[rares-scan] Could not find coordinates for rare origin system: ${rare.system} (${rare.rare})`);
+        }
+        
+        const systemNotFound = !originSystem?.coords;
         const distanceFromCurrentLy = originSystem?.coords
           ? lyDistance(currentSystem.coords, originSystem.coords)
           : 0;
@@ -100,7 +113,15 @@ export const POST: APIRoute = async ({ request }) => {
           rare: rare.rare,
           originSystem: rare.system,
           originStation: rare.station,
+          pad: rare.pad,
+          sellHintLy: rare.sellHintLy,
+          distanceToStarLs: rare.distanceToStarLs,
+          allocation: rare.allocation,
+          cost: rare.cost,
+          permitRequired: rare.permitRequired,
+          stationState: rare.stationState,
           distanceFromCurrentLy,
+          systemNotFound,
           legal: legality.legal,
           legalReason: legality.reason,
           ppEligible: eligible,

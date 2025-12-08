@@ -17,7 +17,7 @@ import type { ScanResult, AnalyzeResult, PpSystemType } from "../types/api";
  * - Two-column layout (form left, results right on desktop)
  */
 export default function RaresPlannerIsland() {
-  const [currentSystem, setCurrentSystem] = useState("");
+  const [currentSystem, setCurrentSystem] = useState("Sol");
   const [targetSystem, setTargetSystem] = useState("");
   const [currentPpType, setCurrentPpType] = useState<PpSystemType>("none");
   const [targetPpType, setTargetPpType] = useState<PpSystemType>("none");
@@ -99,6 +99,11 @@ export default function RaresPlannerIsland() {
       }
 
       const data: AnalyzeResult[] = await response.json();
+      console.log('[RaresPlannerIsland] Analyze results received:', {
+        count: data.length,
+        firstResult: data[0],
+        mode: 'analyze'
+      });
       setAnalyzeResults(data);
       setMode("analyze");
     } catch (err) {
@@ -177,7 +182,14 @@ export default function RaresPlannerIsland() {
                 ) : (
                   <>
                     <strong className="text-purple-400">Route Planning:</strong> Plans a route from your current system to a target system. 
-                    Shows which rares are profitable to pick up along the way and checks if they're legal at your destination.
+                    For each rare good, it shows:
+                    <ul className="list-disc list-inside mt-1 space-y-0.5 text-gray-300">
+                      <li>Distance from your current location to the rare's origin</li>
+                      <li>Distance from the rare's origin to your target</li>
+                      <li>Whether selling at the target is profitable (target distance ≥ optimal sell distance)</li>
+                      <li>Whether the rare is legal at your target system</li>
+                    </ul>
+                    Use this to find profitable rares to pick up along your route!
                   </>
                 )}
               </div>
@@ -289,8 +301,15 @@ export default function RaresPlannerIsland() {
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-gray-100 mb-4">
             Results ({currentResults.length} rare goods)
+            {isLoading && <span className="text-sm text-gray-400 ml-2">(Loading...)</span>}
           </h2>
-          <ResultsList results={currentResults} mode={mode} />
+          {isLoading ? (
+            <div className="text-center py-8 text-gray-400">
+              {mode === "scan" ? "Scanning nearby rares..." : "Analyzing route..."}
+            </div>
+          ) : (
+            <ResultsList results={currentResults} mode={mode} />
+          )}
         </div>
       </div>
     </div>

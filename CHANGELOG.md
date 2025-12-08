@@ -15,6 +15,56 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
 
+## [unstable v1.1] - 2025-12-08
+
+### Added
+- **Distance-based pagination** for results display
+  - Paginate results by light-year distance ranges (50, 100, 200 ly options)
+  - Shows distance range and page information
+  - Automatically includes distance-0 results (at origin) on page 1
+- **Enhanced result display** with additional fields
+  - Landing pad size (S/M/L)
+  - Optimal sell distance (sellHintLy)
+  - Distance to star in light seconds (Ls)
+  - Allocation cap
+  - Market cost in credits
+  - Permit requirement indicator
+  - Station/system state (Boom, Expansion, etc.)
+- **Rare origin systems cache** for improved performance
+  - Pre-fetched system data stored in `data/rareSystemsCache.json`
+  - Script to fetch all rare origin systems: `npm run fetch-rare-systems`
+  - Cache library (`src/lib/rareSystemsCache.ts`) for loading cached data
+  - Rare origin systems use cache, user-entered systems still use live API
+- **System not found detection** and display
+  - `systemNotFound` flag in API responses to distinguish between "at origin" (distance 0) vs "system not found"
+  - Visual indicators: "You are here" (green) for at origin, "Unknown (system not found)" (yellow) for missing systems
+- **Default search system** set to "Sol"
+- **Enhanced route planning explanation** with detailed bullet points
+- **Scripts directory** with fetch utility and documentation
+
+### Changed
+- **Results display** now shows comprehensive rare goods information matching edtools.cc format
+- **API responses** include additional optional fields (pad, sellHintLy, distanceToStarLs, allocation, cost, permitRequired, stationState)
+- **Rare goods dataset** updated with verified system names
+  - Fixed "Aepyornis Egg" system: `Aepyornis` → `47 Ceti` (station: `Glushko Station`)
+  - Fixed "Pantaa Prayer Sticks" system: `Pantaa` → `George Pantazis` (station: `Zamka Platform`)
+  - Added "Gerasian Gueuze Beer" with correct station: `Yurchikhin Port`
+  - Added "Centauri Mega Gin" as verified entry
+- **API endpoints** now use cached data for rare origin systems, falling back to API if cache miss
+- **ResultsList component** filters out invalid results and shows helpful warnings
+- **Pagination logic** improved to handle edge cases (all zero distances, empty pages)
+
+### Fixed
+- Fixed blank page issue in route planning mode
+- Fixed distance display showing 0.00 ly for systems that don't exist
+- Fixed pagination filtering out all results when distances are valid
+- Removed placeholder entries with invalid system names
+- Improved error handling for missing system coordinates
+
+### Removed
+- Removed placeholder entries (PH prefix) from rare goods dataset
+- Removed invalid system names that don't exist in EDSM
+
 ## [unstable v1.0] - 2025-12-07
 
 ### Added

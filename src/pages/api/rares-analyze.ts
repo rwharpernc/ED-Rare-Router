@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { rares } from "../../data/rares";
 import { getSystem } from "../../lib/edsm";
+import { getRareOriginSystem } from "../../lib/rareSystemsCache";
 import { lyDistance } from "../../lib/distances";
 import { evaluateLegality } from "../../lib/legality";
 import { ppEligibleForSystemType, cpDivisors } from "../../lib/powerplay";
@@ -107,20 +108,35 @@ export const POST: APIRoute = async ({ request }) => {
     // Process each rare good
     const results: AnalyzeResult[] = await Promise.all(
       rares.map(async (rare) => {
-        // Resolve rare origin system
-        const originSystem = await getSystem(rare.system);
+        // Try to get rare origin system from cache first, fall back to API
+        let originSystem = await getRareOriginSystem(rare.system);
+        
+        // If not in cache, try API lookup (should be rare after initial cache is built)
+        if (!originSystem) {
+          originSystem = await getSystem(rare.system);
+        }
 
-        if (!originSystem?.coords) {
-          // Skip rares where we can't find origin coordinates
+        const systemNotFound = !originSystem?.coords;
+        
+        if (systemNotFound) {
+          // Return result with system not found flag
           return {
             rare: rare.rare,
             originSystem: rare.system,
             originStation: rare.station,
+            pad: rare.pad,
+            sellHintLy: rare.sellHintLy,
+            distanceToStarLs: rare.distanceToStarLs,
+            allocation: rare.allocation,
+            cost: rare.cost,
+            permitRequired: rare.permitRequired,
+            stationState: rare.stationState,
             distanceCurrentToOriginLy: 0,
             distanceOriginToTargetLy: 0,
+            systemNotFound: true,
             inProfitRange: false,
             legal: true,
-            legalReason: "Origin system not found",
+            legalReason: "Origin system not found in EDSM",
             ppEligible: false,
             cpDivisors: null,
           };
@@ -152,8 +168,16 @@ export const POST: APIRoute = async ({ request }) => {
           rare: rare.rare,
           originSystem: rare.system,
           originStation: rare.station,
+          pad: rare.pad,
+          sellHintLy: rare.sellHintLy,
+          distanceToStarLs: rare.distanceToStarLs,
+          allocation: rare.allocation,
+          cost: rare.cost,
+          permitRequired: rare.permitRequired,
+          stationState: rare.stationState,
           distanceCurrentToOriginLy,
           distanceOriginToTargetLy,
+          systemNotFound: false,
           inProfitRange,
           legal: legality.legal,
           legalReason: legality.reason,

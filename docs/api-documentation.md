@@ -1,8 +1,8 @@
 # API Documentation
 
 **ED Rare Router API**  
-Version: unstable v1.0  
-Last Updated: December 7, 2025
+Version: unstable v1.1  
+Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -202,7 +202,15 @@ Content-Type: application/json
     "rare": "Lavian Brandy",
     "originSystem": "Lave",
     "originStation": "Lave Station",
+    "pad": "L",
+    "sellHintLy": 160,
+    "distanceToStarLs": 288,
+    "allocation": 24,
+    "cost": 3500,
+    "permitRequired": false,
+    "stationState": null,
     "distanceFromCurrentLy": 0.0,
+    "systemNotFound": false,
     "legal": true,
     "legalReason": "Legal",
     "ppEligible": true,
@@ -216,7 +224,15 @@ Content-Type: application/json
     "rare": "Altairian Skin",
     "originSystem": "Altair",
     "originStation": "Solo Orbiter",
+    "pad": "M",
+    "sellHintLy": 160,
+    "distanceToStarLs": 667,
+    "allocation": 63,
+    "cost": 1325,
+    "permitRequired": false,
+    "stationState": "Boom",
     "distanceFromCurrentLy": 16.7,
+    "systemNotFound": false,
     "legal": true,
     "legalReason": "Legal",
     "ppEligible": true,
@@ -236,7 +252,15 @@ Content-Type: application/json
 | `rare` | string | Name of the rare good |
 | `originSystem` | string | System where rare originates |
 | `originStation` | string | Station where rare can be purchased |
+| `pad` | string \| undefined | Landing pad size required: "S", "M", or "L" |
+| `sellHintLy` | number \| undefined | Optimal selling distance in lightyears |
+| `distanceToStarLs` | number \| undefined | Distance from arrival star to station in light seconds |
+| `allocation` | number \| undefined | Typical allocation cap for the commodity |
+| `cost` | number \| undefined | Typical market cost in credits |
+| `permitRequired` | boolean \| undefined | Whether the system requires a permit |
+| `stationState` | string \| undefined | Recent system/station state (e.g., "Boom", "Expansion") |
 | `distanceFromCurrentLy` | number | Distance from current system to origin (lightyears) |
+| `systemNotFound` | boolean \| undefined | True if origin system coordinates couldn't be found in EDSM |
 | `legal` | boolean | Whether rare is legal at current system |
 | `legalReason` | string | Human-readable legality explanation |
 | `ppEligible` | boolean | Whether rare is eligible for PP CP generation |
@@ -275,8 +299,11 @@ Content-Type: application/json
 
 **Notes**:
 - Processes all rare goods in the dataset
-- System coordinates are cached to reduce EDSM API calls
+- Rare origin systems use cached data (from `data/rareSystemsCache.json`) for faster responses
+- User-entered current system uses live EDSM API lookup
 - Results are returned in the order they appear in the dataset
+- Optional fields (pad, allocation, cost, etc.) may be `undefined` if not available in dataset
+- `systemNotFound` flag helps distinguish between "at origin" (distance 0) vs "system not found" (also distance 0)
 
 ---
 
@@ -319,8 +346,16 @@ Content-Type: application/json
     "rare": "Lavian Brandy",
     "originSystem": "Lave",
     "originStation": "Lave Station",
+    "pad": "L",
+    "sellHintLy": 160,
+    "distanceToStarLs": 288,
+    "allocation": 24,
+    "cost": 3500,
+    "permitRequired": false,
+    "stationState": null,
     "distanceCurrentToOriginLy": 0.0,
     "distanceOriginToTargetLy": 179.5,
+    "systemNotFound": false,
     "inProfitRange": true,
     "legal": true,
     "legalReason": "Legal",
@@ -341,8 +376,16 @@ Content-Type: application/json
 | `rare` | string | Name of the rare good |
 | `originSystem` | string | System where rare originates |
 | `originStation` | string | Station where rare can be purchased |
+| `pad` | string \| undefined | Landing pad size required: "S", "M", or "L" |
+| `sellHintLy` | number \| undefined | Optimal selling distance in lightyears |
+| `distanceToStarLs` | number \| undefined | Distance from arrival star to station in light seconds |
+| `allocation` | number \| undefined | Typical allocation cap for the commodity |
+| `cost` | number \| undefined | Typical market cost in credits |
+| `permitRequired` | boolean \| undefined | Whether the system requires a permit |
+| `stationState` | string \| undefined | Recent system/station state (e.g., "Boom", "Expansion") |
 | `distanceCurrentToOriginLy` | number | Distance from current to origin (lightyears) |
 | `distanceOriginToTargetLy` | number | Distance from origin to target (lightyears) |
+| `systemNotFound` | boolean \| undefined | True if origin system coordinates couldn't be found in EDSM |
 | `inProfitRange` | boolean | Whether target distance >= `sellHintLy` |
 | `legal` | boolean | Whether rare is legal at target system |
 | `legalReason` | string | Human-readable legality explanation |
@@ -383,6 +426,9 @@ Content-Type: application/json
 - `inProfitRange` is `true` when `distanceOriginToTargetLy >= rare.sellHintLy`
 - Legality is evaluated at the target system (not current)
 - PP eligibility is based on target system type
+- Rare origin systems use cached data (from `data/rareSystemsCache.json`) for faster responses
+- User-entered systems (current/target) use live EDSM API lookups
+- Optional fields (pad, allocation, cost, etc.) may be `undefined` if not available in dataset
 
 ---
 
@@ -401,7 +447,15 @@ interface ScanResult {
   rare: string;
   originSystem: string;
   originStation: string;
-  distanceFromCurrentLy: number;
+  pad?: string;                          // Landing pad size: "S", "M", or "L"
+  sellHintLy?: number;                   // Optimal selling distance (lightyears)
+  distanceToStarLs?: number;             // Distance from star to station (light seconds)
+  allocation?: number;                    // Typical allocation cap
+  cost?: number;                          // Typical market cost (credits)
+  permitRequired?: boolean;               // Whether system requires permit
+  stationState?: string;                  // System/station state (e.g., "Boom", "Expansion")
+  distanceFromCurrentLy: number;          // Distance from current to origin (lightyears)
+  systemNotFound?: boolean;              // True if origin system not found in EDSM
   legal: boolean;
   legalReason: string;
   ppEligible: boolean;
@@ -416,9 +470,17 @@ interface AnalyzeResult {
   rare: string;
   originSystem: string;
   originStation: string;
-  distanceCurrentToOriginLy: number;
-  distanceOriginToTargetLy: number;
-  inProfitRange: boolean;
+  pad?: string;                          // Landing pad size: "S", "M", or "L"
+  sellHintLy?: number;                   // Optimal selling distance (lightyears)
+  distanceToStarLs?: number;             // Distance from star to station (light seconds)
+  allocation?: number;                    // Typical allocation cap
+  cost?: number;                          // Typical market cost (credits)
+  permitRequired?: boolean;               // Whether system requires permit
+  stationState?: string;                  // System/station state (e.g., "Boom", "Expansion")
+  distanceCurrentToOriginLy: number;      // Distance from current to origin (lightyears)
+  distanceOriginToTargetLy: number;       // Distance from origin to target (lightyears)
+  systemNotFound?: boolean;              // True if origin system not found in EDSM
+  inProfitRange: boolean;                 // Whether target distance >= sellHintLy
   legal: boolean;
   legalReason: string;
   ppEligible: boolean;
@@ -452,8 +514,14 @@ All endpoints follow these error handling principles:
 
 ## Caching
 
+- **Rare Origin Systems**: Pre-generated cache file (`data/rareSystemsCache.json`)
+  - Loaded on application startup
+  - Used for all rare origin system lookups
+  - Generated via `npm run fetch-rare-systems` script
+- **User-Entered Systems**: In-memory cache (permanent) + disk cache (persistent)
+  - Current and target systems use live EDSM API lookups
+  - Cached after first lookup for performance
 - **System Autocomplete**: HTTP cache (5 minutes) + in-memory cache (15 minutes)
-- **System Lookups**: In-memory cache (permanent) + disk cache (persistent)
 - Cache-Control headers are set on the autocomplete endpoint
 
 ## External Dependencies

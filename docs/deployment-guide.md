@@ -1,7 +1,7 @@
 # Deployment Guide
 
 **ED Rare Router**  
-Last Updated: December 7, 2025
+Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -31,7 +31,13 @@ Netlify provides excellent support for Astro serverless functions and is the rec
    npm install
    ```
 
-2. **Configure for Netlify**:
+2. **Pre-fetch rare systems data** (recommended for faster performance):
+   ```bash
+   npm run fetch-rare-systems
+   ```
+   This creates `data/rareSystemsCache.json` with all rare origin system coordinates. The cache file should be committed to your repository.
+
+3. **Configure for Netlify**:
    - The `netlify.toml` file is already configured
    - For deployment, use `astro.config.netlify.mjs` as your config:
      ```bash

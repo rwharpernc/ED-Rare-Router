@@ -32,6 +32,7 @@ Welcome to the ED Rare Router documentation. This directory contains comprehensi
    - Data structures and schemas
    - Rare goods dataset documentation
    - PowerPlay powers dataset
+   - Rare systems cache (pre-fetched)
    - Runtime data (cache files)
    - Data sources and maintenance
 
@@ -39,7 +40,7 @@ Welcome to the ED Rare Router documentation. This directory contains comprehensi
    - System architecture diagrams
    - Component architecture
    - Data flow diagrams
-   - Caching architecture
+   - Multi-layer caching architecture (rare systems + user systems)
    - State management
    - Performance optimizations
 

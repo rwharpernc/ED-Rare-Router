@@ -1,7 +1,7 @@
 {
   "name": "ed-rare-router",
   "type": "module",
-  "version": "1.0.0-unstable",
+  "version": "1.1.0-unstable",
   "author": {
     "name": "R.W. Harper - Easy Day Gamer",
     "url": "https://linkedin.com/in/rwhwrites"
@@ -11,7 +11,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "fetch-rare-systems": "tsx scripts/fetch-rare-systems.ts"
   },
   "dependencies": {
     "@astrojs/netlify": "^6.6.3",
@@ -24,5 +25,8 @@
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
   }
 }

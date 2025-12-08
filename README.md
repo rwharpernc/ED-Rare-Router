@@ -2,9 +2,11 @@
 
 A standalone web application for Elite Dangerous players to plan rare goods trading routes with PowerPlay integration.
 
-## ⚠️ Developer Notes
+## Version
 
-**This is early development work.** The application is not fully functional and is **not ready for open testing**. Features may be incomplete, unstable, or subject to significant changes. Use at your own risk.
+**Current Version**: unstable v1.1 (December 8, 2025)
+
+This version includes distance-based pagination, enhanced result display, rare systems caching, and verified rare goods data.
 
 ## Overview
 
@@ -32,6 +34,14 @@ See the [Technical Design Document](./docs/technical-design.md) for detailed arc
 ```bash
 npm install
 ```
+
+3. (Optional) Pre-fetch rare origin system data for faster performance:
+
+```bash
+npm run fetch-rare-systems
+```
+
+This creates `data/rareSystemsCache.json` with all rare origin system coordinates, reducing API calls during runtime.
 
 ## Development
 
@@ -101,22 +111,33 @@ Complete project documentation is available in the following locations:
         systems.ts
         rares-scan.ts
         rares-analyze.ts
+        system-lookup.ts
     components/
       Layout.astro
       RaresPlannerIsland.tsx
       SystemInput.tsx
+      PowerInput.tsx
       ResultsList.tsx
     data/
       rares.ts
+      powers.ts
     lib/
       edsm.ts
+      rareSystemsCache.ts
       distances.ts
       legality.ts
       powerplay.ts
+      fuzzySearch.ts
     types/
       rares.ts
       edsm.ts
       api.ts
+  scripts/
+    fetch-rare-systems.ts
+    README.md
+  data/
+    rareSystemsCache.json (generated)
+    systemCache.json (generated)
   styles/
     global.css
 ```
@@ -131,6 +152,10 @@ Complete project documentation is available in the following locations:
 - **Two Analysis Modes**:
   - **Scan** - Quick analysis from current system
   - **Analyze** - Full route planning between current and target systems
+- **Distance-Based Pagination** - Browse results by light-year distance ranges
+- **Comprehensive Rare Goods Display** - Shows pad size, allocation, cost, permit requirements, and more
+- **Rare Systems Cache** - Pre-fetched system data for faster responses
+- **Smart System Detection** - Distinguishes between "at origin" vs "system not found"
 
 For detailed feature documentation, see the [API Documentation](./docs/api-documentation.md) and [Technical Design Document](./docs/technical-design.md).
 

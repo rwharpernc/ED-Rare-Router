@@ -1,8 +1,8 @@
 # Data Appendix
 
 **ED Rare Router**  
-Version: unstable v1.0  
-Last Updated: December 7, 2025
+Version: unstable v1.1  
+Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -23,12 +23,17 @@ Contains static data for Elite Dangerous rare goods.
 ```typescript
 interface RareGood {
   rare: string;                          // Name of the rare good
-  system: string;                        // Origin system name
+  system: string;                        // Origin system name (verified in EDSM)
   station: string;                       // Origin station name
   pad: "S" | "M" | "L";                 // Landing pad size required
   sellHintLy: number;                    // Optimal selling distance (lightyears)
   illegalInSuperpowers: string[];        // Superpowers where illegal
   illegalInGovs: string[];                // Government types where illegal
+  distanceToStarLs?: number;            // Distance from arrival star to station (light seconds)
+  allocation?: number;                   // Typical allocation cap
+  cost?: number;                         // Typical market cost in credits
+  permitRequired?: boolean;              // Whether system requires a permit
+  stationState?: string;                 // Recent system/station state (e.g., "Boom", "Expansion")
   pp: {
     eligibleSystemTypes: Array<"acquisition" | "exploit">;
     notes?: string;                      // Optional notes
@@ -73,18 +78,17 @@ interface RareGood {
 
 #### Dataset Statistics
 
-- **Total Rare Goods**: 33 (as of unstable v1.0)
-  - 30 confirmed rare goods
-  - 3 placeholder entries (prefixed with "PH")
+- **Total Rare Goods**: 35 (as of unstable v1.1)
+  - All entries use verified system names that exist in EDSM
+  - No placeholder entries
 
-#### Placeholder Entries
+#### System Name Corrections (v1.1)
 
-Entries prefixed with "PH" are placeholders that may need verification:
-- `PH Centauri Mega Gin`
-- `PH Pantaa Prayer Sticks`
-- `PH Gerasian Gueuze Beer`
-
-These entries include a `notes` field indicating what needs verification.
+The following systems were corrected to match EDSM database:
+- `Aepyornis Egg`: System changed from `Aepyornis` → `47 Ceti` (station: `Glushko Station`)
+- `Pantaa Prayer Sticks`: System changed from `Pantaa` → `George Pantazis` (station: `Zamka Platform`)
+- `Gerasian Gueuze Beer`: Station corrected to `Yurchikhin Port` (system: `Geras`)
+- `Centauri Mega Gin`: Added as verified entry (system: `Alpha Centauri`, station: `Hutton Orbital`)
 
 ---
 
@@ -185,9 +189,58 @@ interface CpDivisors {
 
 ## Runtime Data
 
+### Rare Systems Cache (`data/rareSystemsCache.json`)
+
+Pre-generated cache file containing all rare origin system coordinates. Created by running `npm run fetch-rare-systems`.
+
+#### Structure
+
+```json
+{
+  "lave": {
+    "name": "Lave",
+    "coords": { "x": 0, "y": 0, "z": 0 },
+    "allegiance": "Alliance",
+    "government": "Democracy"
+  },
+  "47 ceti": {
+    "name": "47 Ceti",
+    "coords": { "x": 1.2, "y": -3.4, "z": 5.6 },
+    "allegiance": "Federation",
+    "government": "Democracy"
+  },
+  "_metadata": {
+    "lastUpdated": "2025-12-08T12:00:00.000Z",
+    "totalSystems": 35
+  }
+}
+```
+
+#### Cache Keys
+
+- Keys are normalized system names (lowercase, trimmed)
+- Example: `"47 Ceti"` → key: `"47 ceti"`
+- Metadata stored under `_metadata` key
+
+#### Cache Behavior
+
+- **Loading**: Cache is loaded on application startup by `src/lib/rareSystemsCache.ts`
+- **Usage**: Rare origin systems use cache, user-entered systems use live API
+- **Generation**: Run `npm run fetch-rare-systems` to create/update cache
+- **Persistence**: Committed to repository for faster deployments
+
+#### Benefits
+
+- Faster API responses (no EDSM lookups for rare origins)
+- Reduced API calls (only user systems hit EDSM)
+- Works even if EDSM is temporarily unavailable for rare origins
+- Rate limit friendly (pre-fetched once)
+
+---
+
 ### System Cache (`data/systemCache.json`)
 
-Generated at runtime, contains cached EDSM system data.
+Generated at runtime, contains cached EDSM system data for user-entered systems.
 
 #### Structure
 
@@ -247,7 +300,8 @@ Generated at runtime, contains cached EDSM system data.
 1. Edit `src/data/rares.ts`
 2. Add new entries following the `RareGood` interface
 3. Verify system/station names match EDSM data
-4. Update placeholder entries as data is verified
+4. Run `npm run fetch-rare-systems` to update the cache with new systems
+5. All system names must exist in EDSM database (no placeholders)
 
 ### Updating PowerPlay Powers
 
@@ -257,6 +311,17 @@ Generated at runtime, contains cached EDSM system data.
 4. Test fuzzy search functionality
 
 ### Cache Management
+
+#### Rare Systems Cache
+
+- Pre-generated cache for rare origin systems
+- To regenerate: Run `npm run fetch-rare-systems`
+- Should be updated when:
+  - New rare goods are added to dataset
+  - System names are corrected
+  - Periodically to refresh system data
+
+#### System Cache (User Systems)
 
 - System cache is automatically managed
 - To clear cache: Delete `data/systemCache.json`

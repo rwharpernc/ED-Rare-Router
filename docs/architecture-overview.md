@@ -1,8 +1,8 @@
 # Architecture Overview
 
 **ED Rare Router**  
-Version: unstable v1.0  
-Last Updated: December 7, 2025
+Version: unstable v1.1  
+Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -36,16 +36,24 @@ Last Updated: December 7, 2025
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
 │  │  Business Logic (src/lib/)                            │  │
-│  │  - edsm.ts      (EDSM client + caching)              │  │
-│  │  - distances.ts (3D distance calculations)          │  │
-│  │  - legality.ts  (Legality evaluation)                │  │
-│  │  - powerplay.ts (PP CP calculations)                 │  │
+│  │  - edsm.ts            (EDSM client + caching)         │  │
+│  │  - rareSystemsCache.ts (Rare origin systems cache)    │  │
+│  │  - distances.ts       (3D distance calculations)      │  │
+│  │  - legality.ts       (Legality evaluation)            │  │
+│  │  - powerplay.ts      (PP CP calculations)            │  │
+│  │  - fuzzySearch.ts    (Fuzzy search utilities)         │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
 │  │  Static Data (src/data/)                              │  │
 │  │  - rares.ts    (Rare goods dataset)                  │  │
 │  │  - powers.ts   (PowerPlay powers list)               │  │
+│  └───────────────────────┬──────────────────────────────┘  │
+│                          │                                  │
+│  ┌───────────────────────▼──────────────────────────────┐  │
+│  │  Cached Data (data/)                                  │  │
+│  │  - rareSystemsCache.json (Pre-fetched rare origins)   │  │
+│  │  - systemCache.json      (Runtime user system cache)  │  │
 │  └──────────────────────────────────────────────────────┘  │
 └───────────────────────┬─────────────────────────────────────┘
                         │
@@ -197,23 +205,34 @@ RaresPlannerIsland
 
 ### Cache Layers
 
-1. **In-Memory Cache** (System Lookups)
+1. **Rare Systems Cache** (Pre-generated)
+   - File: `data/rareSystemsCache.json`
+   - Format: JSON object keyed by normalized system name
+   - TTL: None (manually updated via script)
+   - Scope: All rare origin systems
+   - Usage: Loaded on startup, used for all rare origin lookups
+   - Generation: `npm run fetch-rare-systems`
+
+2. **In-Memory Cache** (System Lookups - User Systems)
    - Type: `Map<string, EDSMSystem>`
    - TTL: None (persists for process lifetime)
    - Scope: Current process only
+   - Usage: User-entered systems (current/target)
 
-2. **In-Memory Cache** (System Searches)
+3. **In-Memory Cache** (System Searches)
    - Type: `Map<string, SearchCacheEntry>`
    - TTL: 15 minutes
    - Scope: Current process only
+   - Usage: Autocomplete suggestions
 
-3. **Disk Cache** (System Lookups)
+4. **Disk Cache** (System Lookups - User Systems)
    - File: `data/systemCache.json`
    - Format: JSON object keyed by normalized system name
    - TTL: None (persists across restarts)
    - Write Strategy: Debounced (5-second delay)
+   - Usage: User-entered systems only
 
-4. **HTTP Cache** (API Responses)
+5. **HTTP Cache** (API Responses)
    - Header: `Cache-Control: public, max-age=300`
    - TTL: 5 minutes
    - Scope: Browser/CDN
@@ -237,13 +256,16 @@ RaresPlannerIsland
 └─ error: string | null
 ```
 
-### Server State (EDSM Cache)
+### Server State (Caching)
 
 ```
+rareSystemsCache.ts Module
+└─ cache: RareSystemCache                    (loaded from JSON file)
+
 edsm.ts Module
-├─ systemCache: Map<string, EDSMSystem>      (in-memory)
+├─ systemCache: Map<string, EDSMSystem>      (in-memory, user systems)
 ├─ searchCache: Map<string, SearchCacheEntry> (in-memory, TTL)
-└─ diskCache: Record<string, EDSMSystem>      (JSON file)
+└─ diskCache: Record<string, EDSMSystem>      (JSON file, user systems)
 ```
 
 ## Error Handling Strategy

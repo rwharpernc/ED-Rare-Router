@@ -1,8 +1,8 @@
 # Technical Design Document
 
 **ED Rare Router**  
-Version: unstable v1.0  
-Last Updated: December 7, 2025
+Version: unstable v1.1  
+Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -49,23 +49,29 @@ The application provides:
 │   │   ├── RaresPlannerIsland.tsx  # Main interactive component
 │   │   ├── SystemInput.tsx      # System autocomplete input
 │   │   ├── PowerInput.tsx       # Power autocomplete input
-│   │   └── ResultsList.tsx     # Results display
+│   │   └── ResultsList.tsx     # Results display with pagination
 │   ├── lib/                     # Business logic
-│   │   ├── edsm.ts              # EDSM API client with caching
+│   │   ├── edsm.ts              # EDSM API client (user systems)
+│   │   ├── rareSystemsCache.ts  # Rare origin systems cache loader
 │   │   ├── distances.ts         # Distance calculations
 │   │   ├── legality.ts          # Legality evaluation
-│   │   └── powerplay.ts         # PowerPlay CP calculations
+│   │   ├── powerplay.ts         # PowerPlay CP calculations
+│   │   └── fuzzySearch.ts      # Fuzzy search utilities
 │   ├── data/                    # Static data
 │   │   ├── rares.ts             # Rare goods dataset
 │   │   └── powers.ts             # PowerPlay powers list
+│   ├── scripts/                 # Utility scripts
+│   │   ├── fetch-rare-systems.ts # Pre-fetch rare systems script
+│   │   └── README.md            # Script documentation
 │   ├── types/                   # TypeScript definitions
 │   │   ├── rares.ts
 │   │   ├── edsm.ts
 │   │   └── api.ts
 │   └── styles/
 │       └── global.css            # TailwindCSS imports
-├── data/                         # Runtime data
-│   └── systemCache.json         # EDSM system cache (generated)
+├── data/                         # Runtime/cached data
+│   ├── rareSystemsCache.json    # Pre-fetched rare origin systems (generated)
+│   └── systemCache.json         # EDSM system cache for user systems (generated)
 ├── docs/                         # Project documentation
 └── public/                       # Static assets
 ```
@@ -96,8 +102,10 @@ The application provides:
   - No API calls (client-side only)
 
 - **`ResultsList`**: Displays analysis results
-  - Card-based layout
-  - Shows distances, legality, PP eligibility, CP divisors
+  - Card-based layout with distance-based pagination
+  - Shows comprehensive rare goods information (pad, allocation, cost, permit, state, etc.)
+  - Distance-based pagination (50, 100, 200 ly ranges)
+  - Visual indicators for "at origin" vs "system not found"
   - Supports both Scan and Analyze modes
 
 ### 2.3 API Architecture
@@ -113,18 +121,39 @@ See [API Documentation](./api-documentation.md) for detailed specifications.
 ### 2.4 Data Flow
 
 ```
-User Input → React Component → API Endpoint → Business Logic → EDSM API
-                                                      ↓
-                                              Static Data (rares.ts)
-                                                      ↓
-                                              Results → UI Display
+User Input → React Component → API Endpoint → Business Logic
+                                                      ├─→ Rare Systems Cache (rareSystemsCache.json)
+                                                      ├─→ EDSM API (user systems only)
+                                                      └─→ Static Data (rares.ts)
+                                                              ↓
+                                                      Results → UI Display
 ```
 
 ## 3. Core Modules
 
-### 3.1 EDSM Client (`src/lib/edsm.ts`)
+### 3.1 Rare Systems Cache (`src/lib/rareSystemsCache.ts`)
 
-**Purpose**: Centralized EDSM API integration with multi-layer caching.
+**Purpose**: Load and provide cached rare origin system data.
+
+**Features**:
+- Pre-generated cache file (`data/rareSystemsCache.json`)
+- Loaded on application startup
+- Used for all rare origin system lookups
+- Falls back to API if cache miss (should be rare)
+
+**Functions**:
+- `getRareOriginSystem(name: string)`: Get rare origin system from cache
+- `getCacheMetadata()`: Get cache metadata (last updated, total systems)
+
+**Cache Generation**:
+- Run `npm run fetch-rare-systems` to generate/update cache
+- Fetches all unique systems from `rares.ts`
+- Includes rate limiting (200ms between requests)
+- Stores coordinates, allegiance, and government data
+
+### 3.2 EDSM Client (`src/lib/edsm.ts`)
+
+**Purpose**: Centralized EDSM API integration with multi-layer caching for user-entered systems.
 
 **Features**:
 - In-memory cache with TTL for searches (15 minutes)
@@ -135,7 +164,7 @@ User Input → React Component → API Endpoint → Business Logic → EDSM API
 
 **Functions**:
 - `searchSystems(query: string)`: Search for systems (autocomplete)
-- `getSystem(name: string)`: Get exact system by name
+- `getSystem(name: string)`: Get exact system by name (user systems only)
 
 **Caching Strategy**:
 1. Check in-memory cache first
@@ -143,7 +172,9 @@ User Input → React Component → API Endpoint → Business Logic → EDSM API
 3. If not cached, fetch from EDSM API
 4. Store in memory and schedule disk write
 
-### 3.2 Distance Calculations (`src/lib/distances.ts`)
+**Note**: Rare origin systems use `rareSystemsCache.ts` instead of this module.
+
+### 3.3 Distance Calculations (`src/lib/distances.ts`)
 
 **Purpose**: Calculate 3D Euclidean distances between systems.
 
@@ -152,7 +183,7 @@ User Input → React Component → API Endpoint → Business Logic → EDSM API
 
 **Formula**: `√((x₂-x₁)² + (y₂-y₁)² + (z₂-z₁)²)`
 
-### 3.3 Legality Evaluation (`src/lib/legality.ts`)
+### 3.4 Legality Evaluation (`src/lib/legality.ts`)
 
 **Purpose**: Determine if a rare good is legal in a system.
 
@@ -164,7 +195,7 @@ User Input → React Component → API Endpoint → Business Logic → EDSM API
 2. Check if rare is illegal in system's government type
 3. Return legal status with human-readable reason
 
-### 3.4 PowerPlay Calculations (`src/lib/powerplay.ts`)
+### 3.5 PowerPlay Calculations (`src/lib/powerplay.ts`)
 
 **Purpose**: PowerPlay 2.0 CP calculations.
 
@@ -213,17 +244,25 @@ interface PowerPlayPower {
 
 ### 5.1 Caching Strategy
 
+- **Rare Origin Systems**: Pre-generated cache file loaded on startup
+  - Eliminates EDSM API calls for rare origins (35+ systems)
+  - Faster response times for scan/analyze endpoints
+  - Generated via `npm run fetch-rare-systems` script
+- **User-Entered Systems**: Permanent in-memory + disk cache
+  - Current and target systems cached after first lookup
+  - Debounced disk writes (5 seconds) to reduce I/O
 - **System Searches**: 15-minute TTL in memory
-- **System Lookups**: Permanent in-memory + disk cache
 - **Disk Cache**: Debounced writes (5 seconds) to reduce I/O
 - **API Responses**: Cache-Control headers on autocomplete endpoint
 
 ### 5.2 API Rate Limiting
 
-- EDSM API calls are minimized through aggressive caching
+- **Rare origin systems**: No API calls (use pre-generated cache)
+- **User-entered systems**: Minimized through aggressive caching
 - User-Agent header identifies the application
-- Timeout handling prevents hanging requests
+- Timeout handling prevents hanging requests (10 seconds)
 - Graceful degradation on API errors
+- Rate limiting in fetch script (200ms between requests)
 
 ### 5.3 Client-Side Optimizations
 
