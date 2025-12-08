@@ -1,6 +1,7 @@
 # Deployment Guide
 
 **ED Rare Router**  
+Version: unstable v1.3 (Unreleased)  
 Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
@@ -26,15 +27,13 @@ Netlify provides excellent support for Astro serverless functions and is the rec
 
 #### Setup
 
-1. **Install dependencies** (required before running scripts):
+1. **Install dependencies**:
    ```bash
    npm install
    ```
-   This installs all dependencies including `tsx` which is needed for the fetch script.
 
 2. **Pre-fetch rare systems data** (recommended for faster performance):
    ```bash
-   npm run fetch-rare-systems
    ```
    This creates `data/rareSystemsCache.json` with all rare origin system coordinates. The cache file should be committed to your repository.
    
@@ -88,7 +87,6 @@ Set these in Netlify dashboard under Site settings > Environment variables:
 Netlify automatically converts Astro API routes to serverless functions. All endpoints in `src/pages/api/` will be available as:
 - `/api/systems`
 - `/api/rares-scan`
-- `/api/rares-analyze`
 - `/api/system-lookup`
 
 ### Vercel
@@ -113,7 +111,6 @@ Netlify automatically converts Astro API routes to serverless functions. All end
 
 3. **Pre-fetch rare systems data** (recommended):
    ```bash
-   npm run fetch-rare-systems
    ```
    Commit `data/rareSystemsCache.json` to your repository.
    
@@ -145,7 +142,6 @@ Netlify automatically converts Astro API routes to serverless functions. All end
 
 3. **Pre-fetch rare systems data** (recommended):
    ```bash
-   npm run fetch-rare-systems
    ```
    Commit `data/rareSystemsCache.json` to your repository.
    
@@ -164,7 +160,6 @@ The application is already configured with the Node.js adapter for local develop
 
 1. **Pre-fetch rare systems data** (recommended):
    ```bash
-   npm run fetch-rare-systems
    ```
    
    **Note**: The application will work without this cache (it falls back to API lookups), but performance will be slower.
@@ -228,7 +223,7 @@ After deployment, verify:
 1. ✅ Main page loads correctly
 2. ✅ System autocomplete works
 3. ✅ Scan mode returns results
-4. ✅ Analyze mode works with target system
+4. ✅ Scan mode returns results correctly
 5. ✅ API endpoints respond correctly
 
 ## Support

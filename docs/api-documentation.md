@@ -1,7 +1,7 @@
 # API Documentation
 
 **ED Rare Router API**  
-Version: unstable v1.1  
+Version: unstable v1.3 (Unreleased)  
 Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
@@ -10,7 +10,19 @@ Last Updated: December 8, 2025
 
 ## Overview
 
-The ED Rare Router API provides three endpoints for system autocomplete and rare goods analysis. All endpoints return JSON and use standard HTTP status codes.
+The ED Rare Router API provides endpoints for system autocomplete and rare goods scanning. All endpoints return JSON and use standard HTTP status codes.
+
+**Note**: This is a quick scan tool for finding rare goods near your current location. Route planning is done manually by the user based on scan results.
+
+### Finance Ethos
+
+Finance Ethos is automatically determined from the `power` parameter. Powers with Finance Ethos:
+- Denton Patreus (Empire)
+- Jerome Archer (Federation)
+- Li Yong-Rui (Independent)
+- Zemina Torval (Empire)
+
+When a power with Finance Ethos is selected, the `hasFinanceEthos` flag is automatically set to `true`. Note: PowerPlay calculations are currently disabled (system type is always "none").
 
 ## Base URL
 
@@ -169,16 +181,16 @@ GET /api/system-lookup?name=Sol
 
 **Endpoint**: `POST /api/rares-scan`
 
-**Description**: Analyzes all rare goods from the current system perspective. Computes distances, evaluates legality, and determines PowerPlay eligibility.
+**Description**: Analyzes all rare goods from the current system perspective. Computes distances and evaluates legality.
 
 **Request Body**:
 
 ```typescript
 interface ScanRequest {
   current: string;              // Current system name (required)
-  currentPpType: PpSystemType; // "acquisition" | "exploit" | "reinforcement" | "none"
-  power: string;                // Pledged power name (optional, for reference)
-  hasFinanceEthos: boolean;     // Finance ethos bonus flag
+  currentPpType: PpSystemType; // Always "none" (PowerPlay calculations disabled)
+  power: string;                // Pledged power name (optional, for Finance Ethos detection)
+  hasFinanceEthos: boolean;     // Automatically determined from power selection
 }
 ```
 
@@ -189,7 +201,7 @@ Content-Type: application/json
 
 {
   "current": "Lave",
-  "currentPpType": "acquisition",
+  "currentPpType": "none",
   "power": "Jerome Archer",
   "hasFinanceEthos": true
 }
@@ -205,20 +217,14 @@ Content-Type: application/json
     "pad": "L",
     "sellHintLy": 160,
     "distanceToStarLs": 288,
-    "allocation": 24,
     "cost": 3500,
     "permitRequired": false,
-    "stationState": null,
     "distanceFromCurrentLy": 0.0,
     "systemNotFound": false,
     "legal": true,
     "legalReason": "Legal",
-    "ppEligible": true,
-    "cpDivisors": {
-      "divisor": 5333,
-      "divisorWithFinanceEthos": 3555,
-      "effective": 3555
-    }
+    "ppEligible": false,
+    "cpDivisors": null
   },
   {
     "rare": "Altairian Skin",
@@ -227,20 +233,14 @@ Content-Type: application/json
     "pad": "M",
     "sellHintLy": 160,
     "distanceToStarLs": 667,
-    "allocation": 63,
     "cost": 1325,
     "permitRequired": false,
-    "stationState": "Boom",
     "distanceFromCurrentLy": 16.7,
     "systemNotFound": false,
     "legal": true,
     "legalReason": "Legal",
-    "ppEligible": true,
-    "cpDivisors": {
-      "divisor": 5333,
-      "divisorWithFinanceEthos": 3555,
-      "effective": 3555
-    }
+    "ppEligible": false,
+    "cpDivisors": null
   }
 ]
 ```
@@ -255,16 +255,14 @@ Content-Type: application/json
 | `pad` | string \| undefined | Landing pad size required: "S", "M", or "L" |
 | `sellHintLy` | number \| undefined | Optimal selling distance in lightyears |
 | `distanceToStarLs` | number \| undefined | Distance from arrival star to station in light seconds |
-| `allocation` | number \| undefined | Typical allocation cap for the commodity |
 | `cost` | number \| undefined | Typical market cost in credits |
 | `permitRequired` | boolean \| undefined | Whether the system requires a permit |
-| `stationState` | string \| undefined | Recent system/station state (e.g., "Boom", "Expansion") |
 | `distanceFromCurrentLy` | number | Distance from current system to origin (lightyears) |
 | `systemNotFound` | boolean \| undefined | True if origin system coordinates couldn't be found in EDSM |
 | `legal` | boolean | Whether rare is legal at current system |
 | `legalReason` | string | Human-readable legality explanation |
-| `ppEligible` | boolean | Whether rare is eligible for PP CP generation |
-| `cpDivisors` | object \| null | CP divisor information (null if not eligible) |
+| `ppEligible` | boolean | Always false (PowerPlay calculations disabled) |
+| `cpDivisors` | object \| null | Always null (PowerPlay calculations disabled) |
 
 **CpDivisors Object**:
 
@@ -301,134 +299,11 @@ Content-Type: application/json
 - Processes all rare goods in the dataset
 - Rare origin systems use cached data (from `data/rareSystemsCache.json`) for faster responses
 - User-entered current system uses live EDSM API lookup
-- Results are returned in the order they appear in the dataset
-- Optional fields (pad, allocation, cost, etc.) may be `undefined` if not available in dataset
+- Results are sorted by distance (closest first)
+- PowerPlay calculations are disabled (`currentPpType` is always "none")
+- Finance Ethos is automatically determined from the `power` parameter
+- Optional fields (pad, cost, etc.) may be `undefined` if not available in dataset
 - `systemNotFound` flag helps distinguish between "at origin" (distance 0) vs "system not found" (also distance 0)
-
----
-
-### 4. Rare Goods Analyze
-
-**Endpoint**: `POST /api/rares-analyze`
-
-**Description**: Analyzes rare goods for route planning between current and target systems. Includes profit range calculations and target system legality evaluation.
-
-**Request Body**:
-
-```typescript
-interface AnalyzeRequest {
-  current: string;              // Current system name (required)
-  target: string;               // Target system name (required)
-  targetPpType: PpSystemType;  // "acquisition" | "exploit" | "reinforcement" | "none"
-  power: string;                // Pledged power name (optional, for reference)
-  hasFinanceEthos: boolean;     // Finance ethos bonus flag
-}
-```
-
-**Example Request**:
-```http
-POST /api/rares-analyze
-Content-Type: application/json
-
-{
-  "current": "Lave",
-  "target": "Achenar",
-  "targetPpType": "exploit",
-  "power": "Jerome Archer",
-  "hasFinanceEthos": false
-}
-```
-
-**Response** (200 OK):
-```json
-[
-  {
-    "rare": "Lavian Brandy",
-    "originSystem": "Lave",
-    "originStation": "Lave Station",
-    "pad": "L",
-    "sellHintLy": 160,
-    "distanceToStarLs": 288,
-    "allocation": 24,
-    "cost": 3500,
-    "permitRequired": false,
-    "stationState": null,
-    "distanceCurrentToOriginLy": 0.0,
-    "distanceOriginToTargetLy": 179.5,
-    "systemNotFound": false,
-    "inProfitRange": true,
-    "legal": true,
-    "legalReason": "Legal",
-    "ppEligible": true,
-    "cpDivisors": {
-      "divisor": 5333,
-      "divisorWithFinanceEthos": 3555,
-      "effective": 5333
-    }
-  }
-]
-```
-
-**Response Fields**:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `rare` | string | Name of the rare good |
-| `originSystem` | string | System where rare originates |
-| `originStation` | string | Station where rare can be purchased |
-| `pad` | string \| undefined | Landing pad size required: "S", "M", or "L" |
-| `sellHintLy` | number \| undefined | Optimal selling distance in lightyears |
-| `distanceToStarLs` | number \| undefined | Distance from arrival star to station in light seconds |
-| `allocation` | number \| undefined | Typical allocation cap for the commodity |
-| `cost` | number \| undefined | Typical market cost in credits |
-| `permitRequired` | boolean \| undefined | Whether the system requires a permit |
-| `stationState` | string \| undefined | Recent system/station state (e.g., "Boom", "Expansion") |
-| `distanceCurrentToOriginLy` | number | Distance from current to origin (lightyears) |
-| `distanceOriginToTargetLy` | number | Distance from origin to target (lightyears) |
-| `systemNotFound` | boolean \| undefined | True if origin system coordinates couldn't be found in EDSM |
-| `inProfitRange` | boolean | Whether target distance >= `sellHintLy` |
-| `legal` | boolean | Whether rare is legal at target system |
-| `legalReason` | string | Human-readable legality explanation |
-| `ppEligible` | boolean | Whether rare is eligible for PP CP at target |
-| `cpDivisors` | object \| null | CP divisor information (null if not eligible) |
-
-**Error Responses**:
-
-- **400 Bad Request**: Missing current system
-  ```json
-  {
-    "error": "Current system is required"
-  }
-  ```
-
-- **400 Bad Request**: Missing target system
-  ```json
-  {
-    "error": "Target system is required for analyze mode"
-  }
-  ```
-
-- **400 Bad Request**: System not found
-  ```json
-  {
-    "error": "Could not find coordinates for current system"
-  }
-  ```
-
-- **500 Internal Server Error**: Processing error
-  ```json
-  {
-    "error": "Failed to analyze rares"
-  }
-  ```
-
-**Notes**:
-- `inProfitRange` is `true` when `distanceOriginToTargetLy >= rare.sellHintLy`
-- Legality is evaluated at the target system (not current)
-- PP eligibility is based on target system type
-- Rare origin systems use cached data (from `data/rareSystemsCache.json`) for faster responses
-- User-entered systems (current/target) use live EDSM API lookups
-- Optional fields (pad, allocation, cost, etc.) may be `undefined` if not available in dataset
 
 ---
 
@@ -450,43 +325,17 @@ interface ScanResult {
   pad?: string;                          // Landing pad size: "S", "M", or "L"
   sellHintLy?: number;                   // Optimal selling distance (lightyears)
   distanceToStarLs?: number;             // Distance from star to station (light seconds)
-  allocation?: number;                    // Typical allocation cap
   cost?: number;                          // Typical market cost (credits)
   permitRequired?: boolean;               // Whether system requires permit
-  stationState?: string;                  // System/station state (e.g., "Boom", "Expansion")
   distanceFromCurrentLy: number;          // Distance from current to origin (lightyears)
   systemNotFound?: boolean;              // True if origin system not found in EDSM
   legal: boolean;
   legalReason: string;
-  ppEligible: boolean;
-  cpDivisors: CpDivisors | null;
+  ppEligible: boolean;                   // Always false (PowerPlay disabled)
+  cpDivisors: CpDivisors | null;         // Always null (PowerPlay disabled)
 }
 ```
 
-### AnalyzeResult
-
-```typescript
-interface AnalyzeResult {
-  rare: string;
-  originSystem: string;
-  originStation: string;
-  pad?: string;                          // Landing pad size: "S", "M", or "L"
-  sellHintLy?: number;                   // Optimal selling distance (lightyears)
-  distanceToStarLs?: number;             // Distance from star to station (light seconds)
-  allocation?: number;                    // Typical allocation cap
-  cost?: number;                          // Typical market cost (credits)
-  permitRequired?: boolean;               // Whether system requires permit
-  stationState?: string;                  // System/station state (e.g., "Boom", "Expansion")
-  distanceCurrentToOriginLy: number;      // Distance from current to origin (lightyears)
-  distanceOriginToTargetLy: number;       // Distance from origin to target (lightyears)
-  systemNotFound?: boolean;              // True if origin system not found in EDSM
-  inProfitRange: boolean;                 // Whether target distance >= sellHintLy
-  legal: boolean;
-  legalReason: string;
-  ppEligible: boolean;
-  cpDivisors: CpDivisors | null;
-}
-```
 
 ### CpDivisors
 
@@ -517,9 +366,9 @@ All endpoints follow these error handling principles:
 - **Rare Origin Systems**: Pre-generated cache file (`data/rareSystemsCache.json`)
   - Loaded on application startup
   - Used for all rare origin system lookups
-  - Generated via `npm run fetch-rare-systems` script
+  - Provided as pre-built cache file (`data/rareSystemsCache.json`)
 - **User-Entered Systems**: In-memory cache (permanent) + disk cache (persistent)
-  - Current and target systems use live EDSM API lookups
+  - Current system uses live EDSM API lookups
   - Cached after first lookup for performance
 - **System Autocomplete**: HTTP cache (5 minutes) + in-memory cache (15 minutes)
 - Cache-Control headers are set on the autocomplete endpoint

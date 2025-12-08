@@ -4,9 +4,9 @@ A standalone web application for Elite Dangerous players to plan rare goods trad
 
 ## Version
 
-**Current Version**: unstable v1.1 (December 8, 2025)
+**Current Version**: unstable v1.3 (December 8, 2025) - **Unreleased**
 
-This version includes distance-based pagination, enhanced result display, rare systems caching, and verified rare goods data.
+This version includes a comprehensive dataset of 142 rare commodities, enhanced pagination options, improved sorting, and better Finance Ethos visibility. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
 
 ## ⚠️ Developer Notes
 
@@ -24,10 +24,10 @@ Features may be incomplete, unstable, or subject to significant changes. Use at 
 ## Overview
 
 ED Rare Router helps commanders:
-- Find rare goods origins and calculate distances from their current location
-- Plan routes between systems for optimal rare goods trading
+- Quickly scan for rare goods near their current location
+- Find rare goods origins and calculate distances from current system
 - Evaluate legality of rare goods in different systems
-- Calculate PowerPlay control points (CP) for profit-based trading in acquisition and exploit systems
+- Build routes manually from scan results (all data is static - no updates needed)
 
 ## Tech Stack
 
@@ -50,24 +50,14 @@ npm install
 
    This installs all required packages including `tsx` (needed for utility scripts).
 
-3. (Recommended) Pre-fetch rare origin system data for faster performance:
+3. (Optional) Provide `data/rareSystemsCache.json` for faster performance:
 
-```bash
-npm run fetch-rare-systems
-```
-
-   This creates `data/rareSystemsCache.json` with all rare origin system coordinates, reducing API calls during runtime.
+   The application uses a pre-built cache file (`data/rareSystemsCache.json`) containing system coordinates for all rare origin systems. This reduces API calls during runtime.
    
    **Note**: 
-   - If you see an error about `tsx` not being found, ensure you've run `npm install` first
    - The application will work without this cache (it falls back to API lookups), but performance will be slower
    - The cache file should be committed to your repository for deployments
-   
-   **When to run this script**:
-   - Before first deployment (recommended)
-   - After adding new rare goods to the dataset
-   - After correcting system names in the rare goods data
-   - Periodically to refresh system data (optional)
+   - This is a one-time setup - the cache is static and doesn't need updates
 
 ## Development
 
@@ -100,7 +90,7 @@ This application uses Astro's server mode and requires a server adapter for depl
 For detailed deployment instructions, see the [Deployment Guide](./docs/deployment-guide.md).
 
 **Quick Start (Netlify - Recommended):**
-1. Run `npm run fetch-rare-systems` to pre-fetch rare system data (recommended)
+1. Ensure `data/rareSystemsCache.json` is included in your repository (optional but recommended)
 2. Connect your repository to Netlify
 3. Netlify will auto-detect settings from `netlify.toml`
 4. The build command in `netlify.toml` automatically handles adapter configuration
@@ -139,7 +129,6 @@ Complete project documentation is available in the following locations:
       api/
         systems.ts
         rares-scan.ts
-        rares-analyze.ts
         system-lookup.ts
     components/
       Layout.astro
@@ -162,8 +151,6 @@ Complete project documentation is available in the following locations:
       edsm.ts
       api.ts
   scripts/
-    fetch-rare-systems.ts
-    README.md
   data/
     rareSystemsCache.json (generated)
     systemCache.json (generated)
@@ -171,20 +158,62 @@ Complete project documentation is available in the following locations:
     global.css
 ```
 
+## How to Use
+
+### Basic Usage
+
+1. **Enter Your Current System**: Type the name of the system you're currently in. The system autocomplete will help you find the correct name.
+
+2. **Select Your Pledged Power (Optional)**:
+   - Enter the name of the PowerPlay power you're pledged to
+   - Finance Ethos is automatically detected from your power selection
+   - If your power has Finance Ethos, a green message will appear showing the CP divisor reduction
+   - Powers with Finance Ethos: Denton Patreus, Jerome Archer, Li Yong-Rui, Zemina Torval
+
+3. **Click "Scan Nearby Rares"**: The app will calculate distances and legality for all 142 rare commodities.
+
+### Understanding Results
+
+- **Results are sorted by distance** (closest first)
+- Each rare shows:
+  - **Distance** from your current system to the rare's origin
+  - **Legality** at your current system (green = legal, red = illegal)
+  - **Pad size**, **cost**, **permit requirements**, and other details
+- **Back to Top button** appears at the end of results for easy navigation
+
+### Pagination
+
+- By default, all results are shown
+- Enable "Paginate by Distance" to view results in distance ranges
+- Choose from 9 page size options: 25, 50, 75, 100, 150, 200, 250, 500, or 1000 light years
+- Useful for large result sets or focusing on specific distance ranges
+
+### Finance Ethos
+
+Finance Ethos is automatically determined from your selected power - no checkbox needed! When you select a power with Finance Ethos, a green message appears confirming it's active. Powers with Finance Ethos:
+- **Denton Patreus** (Empire)
+- **Jerome Archer** (Federation)
+- **Li Yong-Rui** (Independent)
+- **Zemina Torval** (Empire)
+
 ## Features
 
+- **Quick Scan** - Single button to scan for all rare goods near your current system
 - **System Autocomplete** - Search for systems using EDSM API with intelligent caching
 - **Distance Calculations** - Compute lightyear distances between systems
 - **Legality Evaluation** - Check if rare goods are legal in specific systems
-- **PowerPlay 2.0 Integration** - Calculate CP divisors for profit-based trading
 - **Power Autocomplete** - Fuzzy search for PowerPlay powers with faction badges
-- **Two Analysis Modes**:
-  - **Scan** - Quick analysis from current system
-  - **Analyze** - Full route planning between current and target systems
-- **Distance-Based Pagination** - Browse results by light-year distance ranges
-- **Comprehensive Rare Goods Display** - Shows pad size, allocation, cost, permit requirements, and more
-- **Rare Systems Cache** - Pre-fetched system data for faster responses
-- **Smart System Detection** - Distinguishes between "at origin" vs "system not found"
+- **Distance-Based Pagination** - Optional pagination with 9 page size options (25-1000 ly)
+- **Comprehensive Rare Goods Display** - Shows pad size, cost, permit requirements, and legality
+- **142 Rare Commodities** - Complete dataset including all major rare goods from Elite Dangerous
+- **Static Data** - All rare commodity data is static (locations never change - no updates needed)
+- **Manual Route Planning** - Users build routes manually from scan results
+- **Smart Sorting** - Results sorted closest first, with unknown systems at the end
+- **Finance Ethos Auto-Detection** - Automatically determines Finance Ethos from selected power
+- **Back to Top Navigation** - Button at end of results for easy navigation
+- **Footer with Copyright** - Dynamic copyright year in page footer
+- **Back to Top Navigation** - Button at end of results for easy navigation
+- **Footer with Copyright** - Dynamic copyright year in page footer
 
 For detailed feature documentation, see the [API Documentation](./docs/api-documentation.md) and [Technical Design Document](./docs/technical-design.md).
 

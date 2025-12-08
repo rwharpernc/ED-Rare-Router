@@ -1,7 +1,7 @@
 # Architecture Overview
 
 **ED Rare Router**  
-Version: unstable v1.1  
+Version: unstable v1.3 (Unreleased)  
 Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
@@ -31,7 +31,6 @@ Last Updated: December 8, 2025
 │  │  API Routes (src/pages/api/)                         │  │
 │  │  - GET  /api/systems                                 │  │
 │  │  - POST /api/rares-scan                              │  │
-│  │  - POST /api/rares-analyze                           │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
@@ -138,7 +137,7 @@ RaresPlannerIsland
                     ResultsList Component
 ```
 
-### Analyze Mode Flow
+### Scan Mode Flow
 
 ```
 User Input
@@ -147,26 +146,25 @@ User Input
 RaresPlannerIsland
     │
     ├─► SystemInput (current) → GET /api/systems
-    ├─► SystemInput (target) → GET /api/systems
     │
-    └─► Form Submit → POST /api/rares-analyze
+    └─► Form Submit → POST /api/rares-scan
                         │
                         ├─► getSystem(current) → EDSM API
-                        ├─► getSystem(target) → EDSM API
                         │
                         ├─► For each rare:
-                        │     ├─► getSystem(rare.system) → EDSM API
+                        │     ├─► getRareOriginSystem(rare.system) → Cache/EDSM
                         │     ├─► lyDistance(current → origin)
-                        │     ├─► lyDistance(origin → target)
-                        │     ├─► Check profit range (distance >= sellHintLy)
-                        │     ├─► evaluateLegality(target) → Check legality
-                        │     └─► ppEligibleForSystemType(target) → Check PP
+                        │     ├─► evaluateLegality(current) → Check legality
+                        │     └─► ppEligibleForSystemType(current) → Check PP
                         │
                         ▼
-                    AnalyzeResult[]
+                    ScanResult[]
                         │
                         ▼
                     ResultsList Component
+                        │
+                        ▼
+                    User manually plans route based on results
 ```
 
 ## Caching Architecture
@@ -211,13 +209,13 @@ RaresPlannerIsland
    - TTL: None (manually updated via script)
    - Scope: All rare origin systems
    - Usage: Loaded on startup, used for all rare origin lookups
-   - Generation: `npm run fetch-rare-systems`
+   - Provided as pre-built cache file
 
 2. **In-Memory Cache** (System Lookups - User Systems)
    - Type: `Map<string, EDSMSystem>`
    - TTL: None (persists for process lifetime)
    - Scope: Current process only
-   - Usage: User-entered systems (current/target)
+   - Usage: User-entered current system
 
 3. **In-Memory Cache** (System Searches)
    - Type: `Map<string, SearchCacheEntry>`
@@ -244,14 +242,9 @@ RaresPlannerIsland
 ```
 RaresPlannerIsland
 ├─ currentSystem: string
-├─ targetSystem: string
-├─ currentPpType: PpSystemType
-├─ targetPpType: PpSystemType
 ├─ power: string
-├─ hasFinanceEthos: boolean
-├─ mode: "scan" | "analyze"
+├─ hasFinanceEthos: boolean (auto-calculated from power)
 ├─ scanResults: ScanResult[]
-├─ analyzeResults: AnalyzeResult[]
 ├─ isLoading: boolean
 └─ error: string | null
 ```

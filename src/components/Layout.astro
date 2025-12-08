@@ -18,7 +18,15 @@ const { title = 'ED Rare Router' } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="bg-gray-900 text-gray-100 min-h-screen">
-    <slot />
+  <body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+    <div class="flex-grow">
+      <slot />
+    </div>
+    <footer class="bg-gray-800 border-t border-gray-700 py-4 mt-8">
+      <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400">
+        <p>© {new Date().getFullYear()} R.W. Harper - Easy Day Gamer. All rights reserved.</p>
+        <p class="mt-1 text-xs text-gray-500">Elite Dangerous is a trademark of Frontier Developments plc.</p>
+      </div>
+    </footer>
   </body>
 </html>

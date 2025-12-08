@@ -10,6 +10,8 @@ Welcome to the ED Rare Router documentation. This directory contains comprehensi
 - **[Architecture Overview](./architecture-overview.md)** - System architecture and data flow
 - **[Deployment Guide](./deployment-guide.md)** - Step-by-step deployment instructions for various platforms
 
+**User Guide**: See the [How to Use](../README.md#how-to-use) section in the main README for usage instructions.
+
 ## Documentation Index
 
 ### Core Documentation

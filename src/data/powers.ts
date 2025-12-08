@@ -4,6 +4,8 @@
 export interface PowerPlayPower {
   name: string;
   faction: "Federation" | "Alliance" | "Empire" | "Independent";
+  /** Whether this power has Finance Ethos (reduces CP divisor from 5333 to 3555) */
+  hasFinanceEthos: boolean;
 }
 
 /**
@@ -15,18 +17,18 @@ export interface PowerPlayPower {
  * Powers are listed in alphabetical order for easy reference.
  */
 export const powerplayPowers: PowerPlayPower[] = [
-  { name: "Aisling Duval", faction: "Empire" },
-  { name: "Archon Delaine", faction: "Independent" },
-  { name: "Arissa Lavigny-Duval", faction: "Empire" },
-  { name: "Denton Patreus", faction: "Empire" },
-  { name: "Edmund Mahon", faction: "Alliance" },
-  { name: "Felicia Winters", faction: "Federation" },
-  { name: "Jerome Archer", faction: "Federation" },
-  { name: "Li Yong-Rui", faction: "Independent" },
-  { name: "Nakato Kaine", faction: "Alliance" },
-  { name: "Pranav Antal", faction: "Independent" },
-  { name: "Yuri Grom", faction: "Independent" },
-  { name: "Zemina Torval", faction: "Empire" },
+  { name: "Aisling Duval", faction: "Empire", hasFinanceEthos: false },
+  { name: "Archon Delaine", faction: "Independent", hasFinanceEthos: false },
+  { name: "Arissa Lavigny-Duval", faction: "Empire", hasFinanceEthos: false },
+  { name: "Denton Patreus", faction: "Empire", hasFinanceEthos: true },
+  { name: "Edmund Mahon", faction: "Alliance", hasFinanceEthos: false },
+  { name: "Felicia Winters", faction: "Federation", hasFinanceEthos: false },
+  { name: "Jerome Archer", faction: "Federation", hasFinanceEthos: true },
+  { name: "Li Yong-Rui", faction: "Independent", hasFinanceEthos: true },
+  { name: "Nakato Kaine", faction: "Alliance", hasFinanceEthos: false },
+  { name: "Pranav Antal", faction: "Independent", hasFinanceEthos: false },
+  { name: "Yuri Grom", faction: "Independent", hasFinanceEthos: false },
+  { name: "Zemina Torval", faction: "Empire", hasFinanceEthos: true },
 ];
 
 /**
