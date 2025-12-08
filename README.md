@@ -8,6 +8,19 @@ A standalone web application for Elite Dangerous players to plan rare goods trad
 
 This version includes distance-based pagination, enhanced result display, rare systems caching, and verified rare goods data.
 
+## ⚠️ Developer Notes
+
+**This project is still very much in design and prototyping** as we examine ideas and try new things.
+
+**This is not ready for release to Alpha or Beta testing.**
+
+**Important Notes:**
+- Refactors are going to happen frequently
+- Documentation will be kept updated
+- Code is commented
+
+Features may be incomplete, unstable, or subject to significant changes. Use at your own risk.
+
 ## Overview
 
 ED Rare Router helps commanders:
