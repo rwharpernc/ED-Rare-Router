@@ -18,6 +18,10 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 ## [unstable v1.3] - 2025-12-08
 
 ### Added
+- **Live deployment link** - Added Netlify deployment URL to README
+  - Live demo link prominently displayed at top of README
+  - Deployment section includes live site link
+  - Site available at: https://edrr.netlify.app/
 - **Comprehensive rare goods dataset** - Expanded from 36 to 142 rare commodities
   - Added 106 new rare goods from Inara data
   - Includes all major rare commodities from Elite Dangerous
