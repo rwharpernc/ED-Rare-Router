@@ -45,6 +45,10 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 ### Changed
 - **Results display** now shows comprehensive rare goods information matching edtools.cc format
 - **Results grid layout** changed from 3 columns to 2 columns on medium+ screens (1 column on mobile)
+- **Pagination behavior** changed to optional - all results shown by default
+  - Distance-based pagination is now opt-in via "Paginate by Distance" checkbox
+  - All rares are always included in results; pagination only filters the view
+  - Page size selector and navigation controls only appear when pagination is enabled
 - **API responses** include additional optional fields (pad, sellHintLy, distanceToStarLs, allocation, cost, permitRequired, stationState)
 - **Rare goods dataset** updated with verified system names
   - Fixed "Aepyornis Egg" system: `Aepyornis` → `47 Ceti` (station: `Glushko Station`)

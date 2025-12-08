@@ -15,6 +15,7 @@ interface ResultsListProps {
  * Shows legality, distances, PP eligibility, and CP divisor information.
  */
 export default function ResultsList({ results, mode }: ResultsListProps) {
+  const [enablePagination, setEnablePagination] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(100);
   const [page, setPage] = useState<number>(0);
 
@@ -83,7 +84,7 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
     );
   }
   
-  // If all distances are 0, show all results on page 1 (no pagination)
+  // If pagination is disabled, show all results
   const allZeroDistance = maxDistance === 0;
   const totalPages = allZeroDistance 
     ? 1 
@@ -93,9 +94,12 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
 
   useEffect(() => {
     setPage(0);
-  }, [results, mode, pageSize]);
+  }, [results, mode, pageSize, enablePagination]);
 
-  const pagedResults = allZeroDistance
+  // If pagination is disabled, show all results. Otherwise, apply distance-based pagination
+  const pagedResults = !enablePagination
+    ? sortedResults // Show all results when pagination is disabled
+    : allZeroDistance
     ? sortedResults // Show all results if all distances are 0
     : sortedResults.filter((result) => {
         const distance = distanceFromCurrent(result);
@@ -106,8 +110,8 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
         return distance >= startLy && distance < endLy;
       });
 
-  // If pagination filtered out all results, show a message
-  if (pagedResults.length === 0 && sortedResults.length > 0) {
+  // If pagination filtered out all results, show a message (only when pagination is enabled)
+  if (enablePagination && pagedResults.length === 0 && sortedResults.length > 0) {
     return (
       <div className="space-y-4">
         {invalidResults > 0 && (
@@ -135,49 +139,68 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
       )}
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between text-sm">
         <div className="text-gray-300">
-          Showing {pagedResults.length} of {sortedResults.length} rares • Distance
-          range {startLy.toFixed(0)}-{Math.min(endLy, maxDistance).toFixed(0)}{" "}
-          ly (from current to origin)
+          Showing {pagedResults.length} of {sortedResults.length} rares
+          {enablePagination && (
+            <>
+              {" "}• Distance range {startLy.toFixed(0)}-{Math.min(endLy, maxDistance).toFixed(0)}{" "}
+              ly (from current to origin)
+            </>
+          )}
           {invalidResults > 0 && (
             <span className="text-yellow-300 ml-2">
               ({invalidResults} origin{invalidResults !== 1 ? "s" : ""} missing coordinates)
             </span>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="text-gray-400 text-xs uppercase tracking-wide">
-            Page Size (ly)
-          </label>
-          <select
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
-            className="px-3 py-2 bg-gray-800 border border-gray-700 rounded text-gray-100"
-          >
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-            <option value={200}>200</option>
-          </select>
-          <div className="flex items-center gap-2">
-            <button
-              className="px-3 py-1 rounded bg-gray-700 text-gray-200 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
-              onClick={() => setPage((p) => Math.max(p - 1, 0))}
-              disabled={page === 0}
-              aria-label="Previous distance page"
-            >
-              Prev
-            </button>
-            <span className="text-gray-300">
-              Page {page + 1} / {totalPages}
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={enablePagination}
+              onChange={(e) => setEnablePagination(e.target.checked)}
+              className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-gray-400 text-xs uppercase tracking-wide">
+              Paginate by Distance
             </span>
-            <button
-              className="px-3 py-1 rounded bg-gray-700 text-gray-200 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
-              onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
-              disabled={page >= totalPages - 1}
-              aria-label="Next distance page"
-            >
-              Next
-            </button>
-          </div>
+          </label>
+          {enablePagination && (
+            <>
+              <label className="text-gray-400 text-xs uppercase tracking-wide">
+                Page Size (ly)
+              </label>
+              <select
+                value={pageSize}
+                onChange={(e) => setPageSize(Number(e.target.value))}
+                className="px-3 py-2 bg-gray-800 border border-gray-700 rounded text-gray-100"
+              >
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+                <option value={200}>200</option>
+              </select>
+              <div className="flex items-center gap-2">
+                <button
+                  className="px-3 py-1 rounded bg-gray-700 text-gray-200 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
+                  onClick={() => setPage((p) => Math.max(p - 1, 0))}
+                  disabled={page === 0}
+                  aria-label="Previous distance page"
+                >
+                  Prev
+                </button>
+                <span className="text-gray-300">
+                  Page {page + 1} / {totalPages}
+                </span>
+                <button
+                  className="px-3 py-1 rounded bg-gray-700 text-gray-200 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
+                  onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
+                  disabled={page >= totalPages - 1}
+                  aria-label="Next distance page"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
