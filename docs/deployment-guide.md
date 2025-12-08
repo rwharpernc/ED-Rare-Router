@@ -22,42 +22,61 @@ ED Rare Router uses Astro's server mode to enable API endpoints. This requires a
 
 ### Netlify (Recommended)
 
-Netlify provides excellent support for Astro serverless functions and is the recommended deployment platform.
+Netlify provides excellent support for Astro serverless functions and is the recommended deployment platform. This is the primary deployment target and is regularly tested.
 
 #### Setup
 
-1. **Install dependencies** (if not already done):
+1. **Install dependencies** (required before running scripts):
    ```bash
    npm install
    ```
+   This installs all dependencies including `tsx` which is needed for the fetch script.
 
 2. **Pre-fetch rare systems data** (recommended for faster performance):
    ```bash
    npm run fetch-rare-systems
    ```
    This creates `data/rareSystemsCache.json` with all rare origin system coordinates. The cache file should be committed to your repository.
+   
+   **Important Notes**:
+   - The application will work without this cache (it falls back to API lookups), but performance will be slower
+   - If you see an error about `tsx` not being found, ensure you've run `npm install` first
+   - Commit the generated `data/rareSystemsCache.json` file to your repository
+   
+   **When to run this script**:
+   - **Before first deployment** (recommended for production)
+   - After adding new rare goods to the dataset
+   - After correcting system names in the rare goods data
+   - Periodically to refresh system data (optional)
 
 3. **Configure for Netlify**:
-   - The `netlify.toml` file is already configured
-   - For deployment, use `astro.config.netlify.mjs` as your config:
-     ```bash
-     cp astro.config.netlify.mjs astro.config.mjs
-     ```
-   - Or manually update `astro.config.mjs` to use the Netlify adapter
+   - The `netlify.toml` file is already configured with the correct build command
+   - The build command automatically copies `astro.config.netlify.mjs` to `astro.config.mjs` before building
+   - **Important**: Do NOT add `@astrojs/netlify` as a plugin in `netlify.toml` - it is an Astro adapter, not a Netlify build plugin
+   - The `netlify.toml` build command handles the adapter configuration automatically
 
-3. **Deploy via Netlify Dashboard**:
+4. **Deploy via Netlify Dashboard**:
    - Connect your Git repository to Netlify
    - Netlify will auto-detect the build settings from `netlify.toml`
-   - Build command: `npm run build`
+   - The build command in `netlify.toml` will:
+     1. Copy `astro.config.netlify.mjs` to `astro.config.mjs`
+     2. Run `npm run build`
    - Publish directory: `dist`
    - Deploy!
 
-4. **Deploy via Netlify CLI**:
+5. **Deploy via Netlify CLI**:
    ```bash
    npm install -g netlify-cli
    netlify login
    netlify deploy --prod
    ```
+
+#### Troubleshooting Netlify Builds
+
+If you encounter the error: `"The plugin '@astrojs/netlify' is missing a manifest.yml"`:
+- **Cause**: `@astrojs/netlify` was incorrectly added as a Netlify build plugin in `netlify.toml`
+- **Solution**: Remove any `[[plugins]]` section from `netlify.toml` that references `@astrojs/netlify`
+- The adapter is configured in `astro.config.netlify.mjs`, not as a Netlify plugin
 
 #### Environment Variables
 
@@ -73,6 +92,8 @@ Netlify automatically converts Astro API routes to serverless functions. All end
 - `/api/system-lookup`
 
 ### Vercel
+
+> **Note**: Vercel deployment is not regularly tested or verified. If you encounter issues or need updates to these instructions, please report them.
 
 1. **Install Vercel adapter**:
    ```bash
@@ -90,11 +111,21 @@ Netlify automatically converts Astro API routes to serverless functions. All end
    });
    ```
 
-3. **Deploy**:
+3. **Pre-fetch rare systems data** (recommended):
+   ```bash
+   npm run fetch-rare-systems
+   ```
+   Commit `data/rareSystemsCache.json` to your repository.
+   
+   **Note**: The application will work without this cache (it falls back to API lookups), but performance will be slower.
+
+4. **Deploy**:
    - Connect repository to Vercel
    - Vercel will auto-detect Astro and configure appropriately
 
 ### Cloudflare Pages
+
+> **Note**: Cloudflare Pages deployment is not regularly tested or verified. If you encounter issues or need updates to these instructions, please report them.
 
 1. **Install Cloudflare adapter**:
    ```bash
@@ -112,26 +143,43 @@ Netlify automatically converts Astro API routes to serverless functions. All end
    });
    ```
 
-3. **Deploy**:
+3. **Pre-fetch rare systems data** (recommended):
+   ```bash
+   npm run fetch-rare-systems
+   ```
+   Commit `data/rareSystemsCache.json` to your repository.
+   
+   **Note**: The application will work without this cache (it falls back to API lookups), but performance will be slower.
+
+4. **Deploy**:
    - Connect repository to Cloudflare Pages
    - Set build command: `npm run build`
    - Set output directory: `dist`
 
 ### Node.js (Self-hosted)
 
+> **Note**: Self-hosted Node.js deployment is primarily used for local development. Production self-hosting is not regularly tested or verified. If you encounter issues or need updates to these instructions, please report them.
+
 The application is already configured with the Node.js adapter for local development.
 
-1. **Build the application**:
+1. **Pre-fetch rare systems data** (recommended):
+   ```bash
+   npm run fetch-rare-systems
+   ```
+   
+   **Note**: The application will work without this cache (it falls back to API lookups), but performance will be slower.
+
+2. **Build the application**:
    ```bash
    npm run build
    ```
 
-2. **Start the server**:
+3. **Start the server**:
    ```bash
    node dist/server/entry.mjs
    ```
 
-3. **Configure your web server** (nginx, Apache, etc.) to proxy to the Node.js server.
+4. **Configure your web server** (nginx, Apache, etc.) to proxy to the Node.js server.
 
 ## Build Configuration
 

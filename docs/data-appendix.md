@@ -300,8 +300,10 @@ Generated at runtime, contains cached EDSM system data for user-entered systems.
 1. Edit `src/data/rares.ts`
 2. Add new entries following the `RareGood` interface
 3. Verify system/station names match EDSM data
-4. Run `npm run fetch-rare-systems` to update the cache with new systems
-5. All system names must exist in EDSM database (no placeholders)
+4. All system names must exist in EDSM database (no placeholders)
+5. **Run `npm run fetch-rare-systems`** to update the cache with new systems
+   - This is required after adding new rares or correcting system names
+   - The application will work without updating the cache, but new systems will use slower API lookups
 
 ### Updating PowerPlay Powers
 
@@ -315,11 +317,14 @@ Generated at runtime, contains cached EDSM system data for user-entered systems.
 #### Rare Systems Cache
 
 - Pre-generated cache for rare origin systems
-- To regenerate: Run `npm run fetch-rare-systems`
-- Should be updated when:
-  - New rare goods are added to dataset
-  - System names are corrected
-  - Periodically to refresh system data
+- To generate/regenerate: Run `npm run fetch-rare-systems`
+- **When to run**:
+  - **Before first deployment** (recommended for production)
+  - After adding new rare goods to the dataset
+  - After correcting system names in the rare goods data
+  - Periodically to refresh system data (optional)
+- **Important**: The application works without this cache (falls back to API), but performance will be slower
+- The cache file should be committed to the repository for deployments
 
 #### System Cache (User Systems)
 

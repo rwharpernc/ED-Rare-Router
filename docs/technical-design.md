@@ -104,7 +104,9 @@ The application provides:
 - **`ResultsList`**: Displays analysis results
   - Card-based layout with 2-column grid (1 column on mobile, 2 columns on medium+ screens)
   - Shows comprehensive rare goods information (pad, allocation, cost, permit, state, etc.)
-  - Distance-based pagination (50, 100, 200 ly ranges)
+  - Optional distance-based pagination (opt-in via checkbox, disabled by default)
+    - When enabled: Paginate by distance ranges (50, 100, 200 ly options)
+    - When disabled: Shows all results sorted by distance
   - Visual indicators for "at origin" vs "system not found"
   - Supports both Scan and Analyze modes
 
@@ -150,6 +152,14 @@ User Input → React Component → API Endpoint → Business Logic
 - Fetches all unique systems from `rares.ts`
 - Includes rate limiting (200ms between requests)
 - Stores coordinates, allegiance, and government data
+
+**When to run**:
+- Before first deployment (recommended for production)
+- After adding new rare goods to the dataset
+- After correcting system names in the rare goods data
+- Periodically to refresh system data (optional)
+
+**Important**: The application works without this cache (falls back to API), but performance will be slower. The cache file should be committed to the repository for deployments.
 
 ### 3.2 EDSM Client (`src/lib/edsm.ts`)
 

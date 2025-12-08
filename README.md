@@ -48,13 +48,26 @@ See the [Technical Design Document](./docs/technical-design.md) for detailed arc
 npm install
 ```
 
-3. (Optional) Pre-fetch rare origin system data for faster performance:
+   This installs all required packages including `tsx` (needed for utility scripts).
+
+3. (Recommended) Pre-fetch rare origin system data for faster performance:
 
 ```bash
 npm run fetch-rare-systems
 ```
 
-This creates `data/rareSystemsCache.json` with all rare origin system coordinates, reducing API calls during runtime.
+   This creates `data/rareSystemsCache.json` with all rare origin system coordinates, reducing API calls during runtime.
+   
+   **Note**: 
+   - If you see an error about `tsx` not being found, ensure you've run `npm install` first
+   - The application will work without this cache (it falls back to API lookups), but performance will be slower
+   - The cache file should be committed to your repository for deployments
+   
+   **When to run this script**:
+   - Before first deployment (recommended)
+   - After adding new rare goods to the dataset
+   - After correcting system names in the rare goods data
+   - Periodically to refresh system data (optional)
 
 ## Development
 
@@ -86,12 +99,15 @@ This application uses Astro's server mode and requires a server adapter for depl
 
 For detailed deployment instructions, see the [Deployment Guide](./docs/deployment-guide.md).
 
-**Quick Start (Netlify):**
-1. Copy `astro.config.netlify.mjs` to `astro.config.mjs` before building
+**Quick Start (Netlify - Recommended):**
+1. Run `npm run fetch-rare-systems` to pre-fetch rare system data (recommended)
 2. Connect your repository to Netlify
 3. Netlify will auto-detect settings from `netlify.toml`
+4. The build command in `netlify.toml` automatically handles adapter configuration
 
-**Note:** For local development, keep using `@astrojs/node` adapter. Switch to Netlify adapter only for deployment.
+**Important:** The `netlify.toml` file is already configured correctly. Do not add `@astrojs/netlify` as a plugin - it's an Astro adapter configured in `astro.config.netlify.mjs`, not a Netlify build plugin.
+
+**Note:** For local development, keep using `@astrojs/node` adapter. The Netlify adapter is only used during deployment builds.
 
 ## Documentation
 

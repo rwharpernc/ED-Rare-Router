@@ -58,6 +58,10 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **API endpoints** now use cached data for rare origin systems, falling back to API if cache miss
 - **ResultsList component** filters out invalid results and shows helpful warnings
 - **Pagination logic** improved to handle edge cases (all zero distances, empty pages)
+- **Deployment documentation** updated with troubleshooting and platform notes
+  - Added Netlify build troubleshooting section
+  - Added notes for non-Netlify platforms indicating they're not regularly tested
+  - Clarified installation prerequisites and script execution requirements
 
 ### Fixed
 - Fixed blank page issue in route planning mode
@@ -65,6 +69,11 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - Fixed pagination filtering out all results when distances are valid
 - Removed placeholder entries with invalid system names
 - Improved error handling for missing system coordinates
+- Fixed Netlify deployment build error (`@astrojs/netlify` plugin manifest issue)
+  - Removed incorrect plugin configuration from `netlify.toml`
+  - Updated build command to properly handle adapter configuration
+- Fixed `fetch-rare-systems` script execution on Windows
+  - Updated script to use `npx tsx` for cross-platform compatibility
 
 ### Removed
 - Removed placeholder entries (PH prefix) from rare goods dataset

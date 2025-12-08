@@ -4,6 +4,8 @@
 
 Fetches system coordinate data from EDSM for all rare origin systems and caches it locally.
 
+> **Summary**: This script is **optional but highly recommended** for production deployments. The application will work without the cache (it falls back to live API lookups), but performance will be slower and you'll make more API calls.
+
 ### Usage
 
 ```bash
@@ -33,9 +35,15 @@ Creates/updates `data/rareSystemsCache.json` with:
 
 ### When to run
 
+**Required scenarios:**
+- Before first deployment (recommended for production)
 - After adding new rare goods to the dataset
-- Periodically to refresh system data (systems can change)
-- After system names are corrected in the rare goods data
+- After correcting system names in the rare goods data
+
+**Optional scenarios:**
+- Periodically to refresh system data (systems can change over time)
+
+**Note**: The application will work without this cache - it will fall back to live EDSM API lookups for rare origin systems. However, performance will be slower and you'll make more API calls.
 
 ### Notes
 
