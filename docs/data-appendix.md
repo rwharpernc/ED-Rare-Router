@@ -1,7 +1,7 @@
 # Data Appendix
 
 **ED Rare Router**  
-Version: unstable v1.1  
+Version: unstable v1.3 (Unreleased)  
 Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
@@ -30,10 +30,8 @@ interface RareGood {
   illegalInSuperpowers: string[];        // Superpowers where illegal
   illegalInGovs: string[];                // Government types where illegal
   distanceToStarLs?: number;            // Distance from arrival star to station (light seconds)
-  allocation?: number;                   // Typical allocation cap
-  cost?: number;                         // Typical market cost in credits
+  cost?: number;                         // Typical market cost in credits (static baseline)
   permitRequired?: boolean;              // Whether system requires a permit
-  stationState?: string;                 // Recent system/station state (e.g., "Boom", "Expansion")
   pp: {
     eligibleSystemTypes: Array<"acquisition" | "exploit">;
     notes?: string;                      // Optional notes
@@ -78,11 +76,11 @@ interface RareGood {
 
 #### Dataset Statistics
 
-- **Total Rare Goods**: 35 (as of unstable v1.1)
+- **Total Rare Goods**: 142 (as of unstable v1.3)
   - All entries use verified system names that exist in EDSM
   - No placeholder entries
-
-#### System Name Corrections (v1.1)
+  - All data is static - locations never change
+  - Comprehensive dataset includes all major rare commodities from Elite Dangerous
 
 The following systems were corrected to match EDSM database:
 - `Aepyornis Egg`: System changed from `Aepyornis` → `47 Ceti` (station: `Glushko Station`)
@@ -170,14 +168,6 @@ interface ScanRequest {
   hasFinanceEthos: boolean;
 }
 
-interface AnalyzeRequest {
-  current: string;
-  target: string;
-  targetPpType: PpSystemType;
-  power: string;
-  hasFinanceEthos: boolean;
-}
-
 interface CpDivisors {
   divisor: number;                    // Base: 5333
   divisorWithFinanceEthos: number;    // With finance: 3555
@@ -191,7 +181,7 @@ interface CpDivisors {
 
 ### Rare Systems Cache (`data/rareSystemsCache.json`)
 
-Pre-generated cache file containing all rare origin system coordinates. Created by running `npm run fetch-rare-systems`.
+Pre-generated cache file containing all rare origin system coordinates. Should be provided as a static file in the repository.
 
 #### Structure
 
@@ -226,7 +216,7 @@ Pre-generated cache file containing all rare origin system coordinates. Created 
 
 - **Loading**: Cache is loaded on application startup by `src/lib/rareSystemsCache.ts`
 - **Usage**: Rare origin systems use cache, user-entered systems use live API
-- **Generation**: Run `npm run fetch-rare-systems` to create/update cache
+- **Generation**: Cache file should be provided pre-built (or can be generated manually using EDSM API)
 - **Persistence**: Committed to repository for faster deployments
 
 #### Benefits
@@ -301,7 +291,7 @@ Generated at runtime, contains cached EDSM system data for user-entered systems.
 2. Add new entries following the `RareGood` interface
 3. Verify system/station names match EDSM data
 4. All system names must exist in EDSM database (no placeholders)
-5. **Run `npm run fetch-rare-systems`** to update the cache with new systems
+5. **Update `data/rareSystemsCache.json`** with new system coordinates if needed
    - This is required after adding new rares or correcting system names
    - The application will work without updating the cache, but new systems will use slower API lookups
 
@@ -317,7 +307,7 @@ Generated at runtime, contains cached EDSM system data for user-entered systems.
 #### Rare Systems Cache
 
 - Pre-generated cache for rare origin systems
-- To generate/regenerate: Run `npm run fetch-rare-systems`
+- Cache file should be provided pre-built in the repository
 - **When to run**:
   - **Before first deployment** (recommended for production)
   - After adding new rare goods to the dataset

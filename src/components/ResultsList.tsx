@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import type { ScanResult, AnalyzeResult } from "../types/api";
-
-type Result = ScanResult | AnalyzeResult;
+import type { ScanResult } from "../types/api";
 
 interface ResultsListProps {
-  results: Result[];
-  mode: "scan" | "analyze";
+  results: ScanResult[];
+  mode: "scan";
 }
 
 /**
@@ -46,26 +44,28 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
   const formatNumber = (value?: number) =>
     value != null ? value.toLocaleString() : "N/A";
 
-  const isAnalyzeResult = (result: Result): result is AnalyzeResult => {
-    return "distanceOriginToTargetLy" in result;
-  };
-
-  // Sort results by distance; keep entries even if distance is 0 so the user can see which systems failed lookup
+  // Sort results by distance (closest first)
+  // Put systems with distance 0 (not found) at the end
   const sortedResults = useMemo(() => {
-    const getDistance = (result: Result) => {
-      const analyzeResult = isAnalyzeResult(result) ? result : null;
-      return mode === "scan"
-        ? result.distanceFromCurrentLy
-        : analyzeResult?.distanceCurrentToOriginLy ?? 0;
-    };
-    return [...results].sort((a, b) => getDistance(a) - getDistance(b));
-  }, [results, mode]);
+    return [...results].sort((a, b) => {
+      const aDist = a.distanceFromCurrentLy;
+      const bDist = b.distanceFromCurrentLy;
+      
+      // If both are 0 or both are > 0, sort normally (closest first)
+      if ((aDist === 0 && bDist === 0) || (aDist > 0 && bDist > 0)) {
+        return aDist - bDist;
+      }
+      
+      // Put distance 0 (system not found) at the end
+      if (aDist === 0) return 1;
+      if (bDist === 0) return -1;
+      
+      return aDist - bDist;
+    });
+  }, [results]);
   
-  const distanceFromCurrent = (result: Result) => {
-    const analyzeResult = isAnalyzeResult(result) ? result : null;
-    return mode === "scan"
-      ? result.distanceFromCurrentLy
-      : analyzeResult?.distanceCurrentToOriginLy ?? 0;
+  const distanceFromCurrent = (result: ScanResult) => {
+    return result.distanceFromCurrentLy;
   };
   
   // Count how many results have zero/unknown distance (likely missing coords)
@@ -174,9 +174,15 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
                 onChange={(e) => setPageSize(Number(e.target.value))}
                 className="px-3 py-2 bg-gray-800 border border-gray-700 rounded text-gray-100"
               >
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                <option value={200}>200</option>
+                <option value={25}>25 ly</option>
+                <option value={50}>50 ly</option>
+                <option value={75}>75 ly</option>
+                <option value={100}>100 ly</option>
+                <option value={150}>150 ly</option>
+                <option value={200}>200 ly</option>
+                <option value={250}>250 ly</option>
+                <option value={500}>500 ly</option>
+                <option value={1000}>1000 ly</option>
               </select>
               <div className="flex items-center gap-2">
                 <button
@@ -206,7 +212,6 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {pagedResults.map((result, index) => {
-          const analyzeResult = isAnalyzeResult(result) ? result : null;
           const distanceToOrigin = distanceFromCurrent(result);
 
           return (
@@ -284,12 +289,6 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Allocation:</span>{" "}
-                    <span className="text-gray-200">
-                      {formatNumber(result.allocation)}
-                    </span>
-                  </div>
-                  <div>
                     <span className="text-gray-500">Cost:</span>{" "}
                     <span className="text-gray-200">
                       {formatCredits(result.cost)}
@@ -302,52 +301,30 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
                     </span>
                   </div>
                 </div>
-                {result.stationState && (
-                  <div>
-                    <span className="text-gray-500">State:</span>{" "}
-                    <span className="text-gray-200">{result.stationState}</span>
-                  </div>
-                )}
-                {analyzeResult && (
-                  <>
-                    <div>
-                      <span className="text-gray-500">To Target:</span>{" "}
-                      <span className="text-purple-400 font-medium">
-                        {formatDistanceLy(analyzeResult.distanceOriginToTargetLy)}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Profit Range:</span>{" "}
-                      <span
-                        className={`font-medium ${
-                          analyzeResult.inProfitRange
-                            ? "text-green-400"
-                            : "text-red-400"
-                        }`}
-                      >
-                        {analyzeResult.inProfitRange ? "Yes" : "No"}
-                      </span>
-                    </div>
-                  </>
-                )}
                 <div className="text-xs text-gray-500 italic">
                   {result.legalReason}
                 </div>
                 {result.ppEligible && result.cpDivisors && (
                   <div className="mt-2 pt-2 border-t border-gray-700">
-                    <div className="text-yellow-400 font-medium text-xs">
-                      CP Divisors
+                    <div className="text-yellow-400 font-medium text-xs mb-1">
+                      CP Divisor
                     </div>
-                    <div className="text-yellow-300 text-xs">
-                      Base: {result.cpDivisors.divisor.toLocaleString()}
+                    <div className={`text-lg font-bold ${
+                      result.cpDivisors.effective === result.cpDivisors.divisorWithFinanceEthos
+                        ? 'text-green-300'
+                        : 'text-yellow-200'
+                    }`}>
+                      {result.cpDivisors.effective.toLocaleString()}
                     </div>
-                    <div className="text-yellow-300 text-xs">
-                      With Finance:{" "}
-                      {result.cpDivisors.divisorWithFinanceEthos.toLocaleString()}
-                    </div>
-                    <div className="text-yellow-200 font-semibold text-xs">
-                      Effective: {result.cpDivisors.effective.toLocaleString()}
-                    </div>
+                    {result.cpDivisors.effective === result.cpDivisors.divisorWithFinanceEthos ? (
+                      <div className="text-green-400 text-xs mt-1">
+                        ✓ Finance Ethos Active (reduced from {result.cpDivisors.divisor.toLocaleString()})
+                      </div>
+                    ) : (
+                      <div className="text-gray-400 text-xs mt-1">
+                        Without Finance Ethos (with Finance Ethos: {result.cpDivisors.divisorWithFinanceEthos.toLocaleString()})
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -355,6 +332,20 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
           );
         })}
       </div>
+
+      {/* Back to Top button at end of results */}
+      {pagedResults.length > 0 && (
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+          >
+            ↑ Back to Top
+          </button>
+        </div>
+      )}
     </div>
   );
 }

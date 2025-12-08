@@ -1,6 +1,7 @@
 # TODO
 
 **ED Rare Router**  
+Version: unstable v1.3 (Unreleased)  
 Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
@@ -11,18 +12,25 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
 
 ## High Priority
 
-- [ ] **Enable API to handle more frequent refresh of data and eliminate the need for manual prefetching**
-  - Automate rare systems cache updates
-  - Consider background jobs or scheduled tasks
-  - Reduce dependency on manual `npm run fetch-rare-systems` execution
-  - May require build-time or runtime cache generation
+- [ ] **Better API integration with Frontier Developments**
+  - Explore Frontier Developments API for official game data
+  - Integrate real-time market data if available
+  - Get official system/station information
+  - Access current BGS states and market conditions
+
+- [ ] **Enhanced routing system using Spansh or EDSM**
+  - Integrate with Spansh API for route planning
+  - Use EDSM routing data for multi-hop routes
+  - Calculate optimal routes between multiple rare origins
+  - Support route optimization algorithms (nearest neighbor, etc.)
+  - Display route visualization with waypoints
 
 ## Features
 
 - [ ] Add filtering/sorting options to results display
   - Filter by legality status
   - Filter by PowerPlay eligibility
-  - Sort by distance, allocation, cost, etc.
+  - Sort by distance, cost, etc.
   - Filter by pad size requirements
 
 - [ ] Add export functionality for results
@@ -30,10 +38,11 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
   - Copy results to clipboard
   - Share route plans
 
-- [ ] Add route optimization
-  - Multi-stop route planning
+- [ ] Enhanced route planning features
+  - Multi-stop route planning with Spansh/EDSM integration
   - Calculate optimal order for visiting multiple rare origins
   - Estimate total travel time/distance
+  - Route visualization and export
 
 - [ ] Add profit calculations
   - Calculate expected profit per rare
@@ -73,10 +82,17 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
 
 ## Data & Content
 
+- [ ] **Improve legal interpretation logic**
+  - Current logic only checks superpower and government restrictions
+  - Some goods are legal in some systems but not others based on more complex rules
+  - Need to research and implement more accurate legality evaluation
+  - May require per-system or per-station legality data
+  - Consider edge cases and exceptions to general rules
+
 - [ ] Expand rare goods dataset
   - Verify and add any missing rare goods
-  - Add more detailed metadata (prices, availability, etc.)
-  - Add historical price data if available
+  - Add more detailed metadata (prices, etc.)
+  - All data is static - locations never change
 
 - [ ] Add more data sources
   - Integrate with Inara API for additional data
