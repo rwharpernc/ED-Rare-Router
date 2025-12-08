@@ -102,7 +102,7 @@ The application provides:
   - No API calls (client-side only)
 
 - **`ResultsList`**: Displays analysis results
-  - Card-based layout with distance-based pagination
+  - Card-based layout with 2-column grid (1 column on mobile, 2 columns on medium+ screens)
   - Shows comprehensive rare goods information (pad, allocation, cost, permit, state, etc.)
   - Distance-based pagination (50, 100, 200 ly ranges)
   - Visual indicators for "at origin" vs "system not found"

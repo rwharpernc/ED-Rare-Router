@@ -44,6 +44,7 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 
 ### Changed
 - **Results display** now shows comprehensive rare goods information matching edtools.cc format
+- **Results grid layout** changed from 3 columns to 2 columns on medium+ screens (1 column on mobile)
 - **API responses** include additional optional fields (pad, sellHintLy, distanceToStarLs, allocation, cost, permitRequired, stationState)
 - **Rare goods dataset** updated with verified system names
   - Fixed "Aepyornis Egg" system: `Aepyornis` → `47 Ceti` (station: `Glushko Station`)
