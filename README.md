@@ -2,6 +2,8 @@
 
 A standalone web application for Elite Dangerous players to plan rare goods trading routes with PowerPlay integration.
 
+🌐 **Live Demo**: [https://edrr.netlify.app/](https://edrr.netlify.app/)
+
 ## Version
 
 **Current Version**: unstable v1.3 (December 8, 2025) - **Unreleased**
@@ -86,6 +88,8 @@ npm run preview
 ## Deployment
 
 This application uses Astro's server mode and requires a server adapter for deployment. The Netlify adapter is already installed and configured.
+
+🌐 **Live Site**: [https://edrr.netlify.app/](https://edrr.netlify.app/)
 
 For detailed deployment instructions, see the [Deployment Guide](./docs/deployment-guide.md).
 
