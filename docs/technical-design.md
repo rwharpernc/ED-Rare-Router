@@ -1,7 +1,7 @@
 # Technical Design Document
 
 **ED Rare Router**  
-Version: unstable v1.1  
+Version: unstable v1.3 (Unreleased)  
 Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
@@ -15,10 +15,11 @@ ED Rare Router is a standalone web application built with Astro, TypeScript, Rea
 ### 1.1 Purpose
 
 The application provides:
-- Distance calculations from current/target systems to rare goods origins
+- Quick scan to find rare goods near your current system
+- Distance calculations from current system to rare goods origins
 - Legality evaluation for rare goods in different systems
 - PowerPlay 2.0 control point (CP) calculations for profit-based trading
-- Route planning between systems for optimal rare goods trading
+- Route planning is done manually by the user based on scan results
 
 ### 1.2 Technology Stack
 
@@ -42,8 +43,7 @@ The application provides:
 │   │   ├── index.astro          # Main page
 │   │   └── api/                 # API endpoints
 │   │       ├── systems.ts       # System autocomplete
-│   │       ├── rares-scan.ts    # Scan mode
-│   │       └── rares-analyze.ts # Analyze mode
+│   │       └── rares-scan.ts    # Scan mode
 │   ├── components/
 │   │   ├── Layout.astro         # Page layout
 │   │   ├── RaresPlannerIsland.tsx  # Main interactive component
@@ -60,9 +60,7 @@ The application provides:
 │   ├── data/                    # Static data
 │   │   ├── rares.ts             # Rare goods dataset
 │   │   └── powers.ts             # PowerPlay powers list
-│   ├── scripts/                 # Utility scripts
-│   │   ├── fetch-rare-systems.ts # Pre-fetch rare systems script
-│   │   └── README.md            # Script documentation
+│   ├── scripts/                 # Utility scripts (currently empty)
 │   ├── types/                   # TypeScript definitions
 │   │   ├── rares.ts
 │   │   ├── edsm.ts
@@ -86,8 +84,9 @@ The application provides:
 #### 2.2.2 React Islands
 
 - **`RaresPlannerIsland`**: Main interactive component managing:
-  - Form state (systems, PP type, power, finance ethos)
-  - Mode selection (Scan vs Analyze)
+  - Form state (current system, power)
+  - Finance Ethos auto-detection from power selection
+  - Quick scan functionality
   - API calls and result management
   - Two-column responsive layout
 
@@ -103,12 +102,12 @@ The application provides:
 
 - **`ResultsList`**: Displays analysis results
   - Card-based layout with 2-column grid (1 column on mobile, 2 columns on medium+ screens)
-  - Shows comprehensive rare goods information (pad, allocation, cost, permit, state, etc.)
+  - Shows comprehensive rare goods information (pad, cost, permit, distance, etc.)
   - Optional distance-based pagination (opt-in via checkbox, disabled by default)
     - When enabled: Paginate by distance ranges (50, 100, 200 ly options)
     - When disabled: Shows all results sorted by distance
   - Visual indicators for "at origin" vs "system not found"
-  - Supports both Scan and Analyze modes
+  - Displays scan results with distance, legality, and PowerPlay information
 
 ### 2.3 API Architecture
 
@@ -116,7 +115,6 @@ All API endpoints are Astro API routes (`src/pages/api/*.ts`):
 
 1. **`GET /api/systems?q=<query>`**: System autocomplete
 2. **`POST /api/rares-scan`**: Scan mode analysis
-3. **`POST /api/rares-analyze`**: Analyze mode analysis
 
 See [API Documentation](./api-documentation.md) for detailed specifications.
 
@@ -148,7 +146,7 @@ User Input → React Component → API Endpoint → Business Logic
 - `getCacheMetadata()`: Get cache metadata (last updated, total systems)
 
 **Cache Generation**:
-- Run `npm run fetch-rare-systems` to generate/update cache
+- Cache file (`data/rareSystemsCache.json`) should be provided pre-built
 - Fetches all unique systems from `rares.ts`
 - Includes rate limiting (200ms between requests)
 - Stores coordinates, allegiance, and government data
@@ -256,10 +254,10 @@ interface PowerPlayPower {
 
 - **Rare Origin Systems**: Pre-generated cache file loaded on startup
   - Eliminates EDSM API calls for rare origins (35+ systems)
-  - Faster response times for scan/analyze endpoints
-  - Generated via `npm run fetch-rare-systems` script
+  - Faster response times for scan endpoint
+  - Provided as pre-built cache file (`data/rareSystemsCache.json`)
 - **User-Entered Systems**: Permanent in-memory + disk cache
-  - Current and target systems cached after first lookup
+  - Current system cached after first lookup
   - Debounced disk writes (5 seconds) to reduce I/O
 - **System Searches**: 15-minute TTL in memory
 - **Disk Cache**: Debounced writes (5 seconds) to reduce I/O
@@ -370,7 +368,6 @@ See [Deployment Guide](./deployment-guide.md) for detailed instructions.
 All API endpoints are server-rendered and available as:
 - `/api/systems` - System autocomplete
 - `/api/rares-scan` - Scan mode analysis
-- `/api/rares-analyze` - Analyze mode route planning
 - `/api/system-lookup` - System verification
 
 ## 9. Future Enhancements

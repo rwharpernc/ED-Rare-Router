@@ -1,25 +1,37 @@
 export type PadSize = "S" | "M" | "L";
 
+/**
+ * Rare Good data structure for route planning.
+ * 
+ * All data is static - rare commodities are always found in the same places.
+ * Focus is on: location, price, legality, and distance for route building.
+ */
 export interface RareGood {
+  /** Name of the rare commodity */
   rare: string;
+  /** Origin system name (verified in EDSM) */
   system: string;
+  /** Origin station name */
   station: string;
+  /** Landing pad size required */
   pad: PadSize;
+  /** Optimal selling distance in lightyears for maximum profit */
   sellHintLy: number;
+  /** Superpowers where this rare is illegal */
   illegalInSuperpowers: string[];
+  /** Government types where this rare is illegal */
   illegalInGovs: string[];
-  /** Distance from arrival star to station in light seconds, if known */
+  /** Distance from arrival star to station in light seconds */
   distanceToStarLs?: number;
-  /** Typical allocation cap for the commodity, if known */
-  allocation?: number;
-  /** Typical market cost in credits, if known */
+  /** Typical market cost in credits (static baseline price) */
   cost?: number;
   /** Whether the system requires a permit */
   permitRequired?: boolean;
-  /** Recent reported system or station state (e.g., Boom, Expansion) */
-  stationState?: string;
+  /** PowerPlay eligibility and notes */
   pp: {
+    /** System types where this rare can generate CP */
     eligibleSystemTypes: Array<"acquisition" | "exploit">;
+    /** Optional notes (e.g., engineer requirements) */
     notes?: string;
   };
 }

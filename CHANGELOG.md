@@ -15,125 +15,108 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
 
-## [unstable v1.1] - 2025-12-08
+## [unstable v1.3] - 2025-12-08
 
 ### Added
-- **Distance-based pagination** for results display
-  - Paginate results by light-year distance ranges (50, 100, 200 ly options)
-  - Shows distance range and page information
-  - Automatically includes distance-0 results (at origin) on page 1
-- **Enhanced result display** with additional fields
-  - Landing pad size (S/M/L)
-  - Optimal sell distance (sellHintLy)
-  - Distance to star in light seconds (Ls)
-  - Allocation cap
-  - Market cost in credits
-  - Permit requirement indicator
-  - Station/system state (Boom, Expansion, etc.)
-- **Rare origin systems cache** for improved performance
-  - Pre-fetched system data stored in `data/rareSystemsCache.json`
-  - Script to fetch all rare origin systems: `npm run fetch-rare-systems`
-  - Cache library (`src/lib/rareSystemsCache.ts`) for loading cached data
-  - Rare origin systems use cache, user-entered systems still use live API
-- **System not found detection** and display
-  - `systemNotFound` flag in API responses to distinguish between "at origin" (distance 0) vs "system not found"
-  - Visual indicators: "You are here" (green) for at origin, "Unknown (system not found)" (yellow) for missing systems
-- **Default search system** set to "Sol"
-- **Enhanced route planning explanation** with detailed bullet points
-- **Scripts directory** with fetch utility and documentation
+- **Comprehensive rare goods dataset** - Expanded from 36 to 142 rare commodities
+  - Added 106 new rare goods from Inara data
+  - Includes all major rare commodities from Elite Dangerous
+  - Complete system and station information with distance to star data
+- **Enhanced pagination options** - More granular distance-based pagination
+  - Added page size options: 25, 50, 75, 100, 150, 200, 250, 500, 1000 light years
+  - Better control over result viewing for large datasets
+- **Improved result sorting** - Closest rares shown first
+  - Results sorted by distance (closest to furthest)
+  - Systems with unknown coordinates placed at end
+- **Finance Ethos auto-detection** - Automatically determined from selected power
+  - Finance Ethos checkbox removed - now auto-detected from power selection
+  - Green info box appears when Finance Ethos is active
+  - Powers with Finance Ethos: Denton Patreus, Jerome Archer, Li Yong-Rui, Zemina Torval
+- **Back to Top button** - Navigation button at end of results list
+  - Smooth scroll to top of page
+  - Appears after all results are displayed
+- **Footer with dynamic copyright** - Footer added to all pages
+  - Dynamic year updates automatically
+  - Includes Elite Dangerous trademark notice
 
 ### Changed
-- **Results display** now shows comprehensive rare goods information matching edtools.cc format
-- **Results grid layout** changed from 3 columns to 2 columns on medium+ screens (1 column on mobile)
-- **Pagination behavior** changed to optional - all results shown by default
-  - Distance-based pagination is now opt-in via "Paginate by Distance" checkbox
-  - All rares are always included in results; pagination only filters the view
-  - Page size selector and navigation controls only appear when pagination is enabled
-- **API responses** include additional optional fields (pad, sellHintLy, distanceToStarLs, allocation, cost, permitRequired, stationState)
-- **Rare goods dataset** updated with verified system names
-  - Fixed "Aepyornis Egg" system: `Aepyornis` → `47 Ceti` (station: `Glushko Station`)
-  - Fixed "Pantaa Prayer Sticks" system: `Pantaa` → `George Pantazis` (station: `Zamka Platform`)
-  - Added "Gerasian Gueuze Beer" with correct station: `Yurchikhin Port`
-  - Added "Centauri Mega Gin" as verified entry
-- **API endpoints** now use cached data for rare origin systems, falling back to API if cache miss
-- **ResultsList component** filters out invalid results and shows helpful warnings
-- **Pagination logic** improved to handle edge cases (all zero distances, empty pages)
-- **Deployment documentation** updated with troubleshooting and platform notes
-  - Added Netlify build troubleshooting section
-  - Added notes for non-Netlify platforms indicating they're not regularly tested
-  - Clarified installation prerequisites and script execution requirements
+- **Simplified UI** - Removed PowerPlay System Type dropdown
+  - PowerPlay calculations disabled (always set to "none")
+  - Cleaner, simpler configuration form
+  - Only Current System and Pledged Power inputs remain
+- **Simplified CP Divisor display** - Clearer, less confusing presentation
+  - Shows effective divisor prominently (large, bold)
+  - Color-coded: green when Finance Ethos active, yellow otherwise
+  - Contextual information about Finance Ethos status
+- **Updated station names** - Corrected station names from Inara data
+  - Fixed "Alya Body Soap" (was "Alya Body Soup")
+  - Updated "Chateau De Aegaeon" station to "Schweickart Station"
+  - Updated "HIP 118311 Swarm" station to "Lubbock Market"
+  - Updated "HIP Proto-Squid" (was "HIP 41181 Ale") with correct station
+  - Updated "Aganippe Rush" station to "Julian Market"
+  - Updated "Kachirigin Filter Leeches" station to "Nowak Orbital"
+  - Updated "Eshu Umbrellas" station to "Shajn Terminal"
+  - Updated "Rapa Bao Snake Skins" station to "Flagg Gateway"
+  - Updated "Terra Mater Blood Bores" station to "GR8Minds"
+  - Updated "Vanayequi Ceratomorpha Fur" station to "Clauss Hub"
+  - Updated "Ngadandari Fire Opals" station to "Napier Terminal"
+  - Updated "Wulpa Hyperbore Systems" station to "Williams Gateway"
+- **Added distance to star data** - All rares now include distance from arrival star to station
 
 ### Fixed
-- Fixed blank page issue in route planning mode
-- Fixed distance display showing 0.00 ly for systems that don't exist
-- Fixed pagination filtering out all results when distances are valid
-- Removed placeholder entries with invalid system names
-- Improved error handling for missing system coordinates
-- Fixed Netlify deployment build error (`@astrojs/netlify` plugin manifest issue)
-  - Removed incorrect plugin configuration from `netlify.toml`
-  - Updated build command to properly handle adapter configuration
-- Fixed `fetch-rare-systems` script execution on Windows
-  - Updated script to use `npx tsx` for cross-platform compatibility
+- Result sorting now properly places closest rares first
+- Systems with missing coordinates no longer appear at the top of results
+
+## [unstable v1.2] - 2025-12-08
+
+### Added
+- **Quick scan functionality** - Find rare goods near your current system
+- **Static rare goods dataset** - All rare commodity data is static (no updates needed)
+- **PowerPlay 2.0 integration** - Full CP divisor calculations for profit-based trading
+- **Legality evaluation** - Check if rares are legal in different systems
+- **Distance calculations** - Compute distances from current system to rare origins
+- **System autocomplete** - Search for systems using EDSM API with intelligent caching
+- **Power autocomplete** - Fuzzy search for PowerPlay powers with faction badges
+- **Two-column responsive layout** - Form on left, results on right (stacks on mobile)
+- **Dark theme UI** - Modern, clean interface with TailwindCSS
+- **Distance-based pagination** - Optional pagination by light-year ranges
+- **Comprehensive documentation** - Complete technical and API documentation
+
+### Features
+- **Static Data Philosophy**: All rare commodity data is static - locations never change
+- **Quick & Simple**: Single scan button, no complex route planning
+- **PowerPlay Ready**: Full PowerPlay 2.0 CP calculations preserved
+- **Manual Route Planning**: Users build routes manually from scan results
+- **No Maintenance**: No scripts or data updates needed - everything is static
+
+### Technical Stack
+- **Astro 5.x** - Framework for server-side rendering and API routes
+- **TypeScript** - Type-safe development throughout
+- **React 19.x** - Interactive UI components (islands)
+- **TailwindCSS 4.x** - Utility-first CSS framework
+- **EDSM API** - External data source for system information
+
+### Data Model
+- **Rare Goods**: Static dataset with system, station, pad, price, legality, distance, PowerPlay info
+- **PowerPlay Powers**: Complete list of 12 PowerPlay 2.0 powers with faction information
+- **System Cache**: Optional pre-built cache file for rare origin system coordinates
+
+### API Endpoints
+- `GET /api/systems` - System autocomplete
+- `GET /api/system-lookup` - System validation
+- `POST /api/rares-scan` - Scan for nearby rare goods
 
 ### Removed
-- Removed placeholder entries (PH prefix) from rare goods dataset
-- Removed invalid system names that don't exist in EDSM
+- Analyze/route planning mode (users plan routes manually)
+- Dynamic data fields (stationState, allocation)
+- HTML processing scripts (one-off comparison only)
+- Rare systems fetch script (cache file provided pre-built)
+- All maintenance/update scripts
 
-## [unstable v1.0] - 2025-12-07
-
-### Added
-- Initial project setup with Astro, TypeScript, React, and TailwindCSS
-- Server-side rendering support with Astro server mode
-- Node.js adapter for server deployment
-- Netlify adapter support for serverless deployment
-- System autocomplete functionality using EDSM API
-- Enhanced EDSM client with multi-layer caching system
-  - In-memory cache with TTL for system searches (15 minutes)
-  - Persistent disk-backed cache for system lookups (`data/systemCache.json`)
-  - Debounced disk writes (5-second delay) to reduce I/O
-  - User-Agent header for polite API usage
-  - 10-second timeout for fetch requests
-- Rare goods scanning mode
-- Rare goods analysis mode with route planning
-- Distance calculation between systems
-- Legality evaluation for rare goods
-- PowerPlay CP divisor calculations
-- PowerPlay 2.0 powers data with faction information
-- PowerInput component with fuzzy search autocomplete
-  - Case-insensitive matching
-  - Faction badges (Federation, Alliance, Empire, Independent)
-  - Color-coded faction display
-- Complete PowerPlay 2.0 powers list (12 powers total)
-- Two-column responsive layout (form left, results right)
-- Dark theme UI with TailwindCSS
-- TypeScript type definitions for all data models
-- API endpoints for system search, scanning, and analysis
-  - System lookup endpoint (`/api/system-lookup`) for validation
-  - Cache-Control headers on system autocomplete endpoint
-- React components for interactive UI
-- Enhanced API error handling with detailed error messages
-- Content-Type validation for API requests
-- Improved system validation with case-insensitive matching
-- Better closure handling in async validation functions
-- Comprehensive deployment documentation
-- Netlify deployment configuration
-- Documentation structure with `/docs` directory
-
-### Changed
-- Configured Astro for server mode (`output: 'server'`)
-- API endpoints now marked as server-rendered (`prerender = false`)
-- Improved JSON parsing error handling in API routes
-- Enhanced system input validation to prevent 400 errors
-- Better error messages for debugging API issues
-- Improved fuzzy search algorithm for power autocomplete
-  - More precise matching (removed overly lenient prefix matching)
-  - Better relevance scoring
-- Enhanced EDSM integration with error handling and graceful degradation
-
-### Fixed
-- Fixed 400 errors when validating system names (closure issue)
-- Fixed "Unexpected end of JSON input" errors in API routes
-- Fixed POST request handling in static mode (now requires server mode)
-- Improved system name validation to handle case-insensitive matching correctly
-- Fixed stale closure values in async validation functions
-- Power autocomplete now correctly filters results (e.g., "Arc" no longer shows "Arissa")
+### Philosophy
+This application focuses on **static route planning data**:
+- Rare commodities are always found in the same places
+- No need to keep data updated
+- Quick and easy tool for building routes based on distance
+- PowerPlay functionality fully preserved
+- Route planning done manually by user from scan results
