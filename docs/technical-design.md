@@ -1,12 +1,18 @@
 # Technical Design Document
 
 **ED Rare Router**  
-Version: unstable v1.3 (Unreleased)  
-Last Updated: December 8, 2025
+Version: unstable v1.4 (Unreleased)  
+Last Updated: January 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **License:** GNU General Public License v3.0
+
+## ⚠️ Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
 
 ## 1. Overview
 
@@ -17,7 +23,9 @@ ED Rare Router is a standalone web application built with Astro, TypeScript, Rea
 The application provides:
 - Quick scan to find rare goods near your current system
 - Distance calculations from current system to rare goods origins
-- Legality evaluation for rare goods in different systems
+- Enhanced legality evaluation with detailed restrictions and explanations
+- Comprehensive legality information showing which governments allow/disallow each item
+- Manual curation interface for legality data (development mode only)
 - PowerPlay 2.0 control point (CP) calculations for profit-based trading
 - Route planning is done manually by the user based on scan results
 
@@ -41,22 +49,28 @@ The application provides:
 ├── src/
 │   ├── pages/
 │   │   ├── index.astro          # Main page
+│   │   ├── curate.astro         # Legality curation page (dev only)
 │   │   └── api/                 # API endpoints
 │   │       ├── systems.ts       # System autocomplete
-│   │       └── rares-scan.ts    # Scan mode
+│   │       ├── rares-scan.ts    # Scan mode
+│   │       ├── system-lookup.ts # System validation
+│   │       └── curated-legality.ts # Curation API (dev only)
 │   ├── components/
 │   │   ├── Layout.astro         # Page layout
 │   │   ├── RaresPlannerIsland.tsx  # Main interactive component
 │   │   ├── SystemInput.tsx      # System autocomplete input
 │   │   ├── PowerInput.tsx       # Power autocomplete input
-│   │   └── ResultsList.tsx     # Results display with pagination
+│   │   ├── ResultsList.tsx      # Results display with pagination
+│   │   ├── LegalityCurator.tsx  # Individual rare legality editor
+│   │   └── CuratorApp.tsx       # Curation interface app
 │   ├── lib/                     # Business logic
 │   │   ├── edsm.ts              # EDSM API client (user systems)
 │   │   ├── rareSystemsCache.ts  # Rare origin systems cache loader
 │   │   ├── distances.ts         # Distance calculations
-│   │   ├── legality.ts          # Legality evaluation
+│   │   ├── legality.ts          # Legality evaluation with detailed restrictions
 │   │   ├── powerplay.ts         # PowerPlay CP calculations
-│   │   └── fuzzySearch.ts      # Fuzzy search utilities
+│   │   ├── fuzzySearch.ts      # Fuzzy search utilities
+│   │   └── curatedLegality.ts  # Curated legality data management
 │   ├── data/                    # Static data
 │   │   ├── rares.ts             # Rare goods dataset
 │   │   └── powers.ts             # PowerPlay powers list
@@ -69,7 +83,8 @@ The application provides:
 │       └── global.css            # TailwindCSS imports
 ├── data/                         # Runtime/cached data
 │   ├── rareSystemsCache.json    # Pre-fetched rare origin systems (generated)
-│   └── systemCache.json         # EDSM system cache for user systems (generated)
+│   ├── systemCache.json         # EDSM system cache for user systems (generated)
+│   └── curatedLegality.json     # Manually curated legality overrides (generated, dev only)
 ├── docs/                         # Project documentation
 └── public/                       # Static assets
 ```
@@ -88,7 +103,7 @@ The application provides:
   - Finance Ethos auto-detection from power selection
   - Quick scan functionality
   - API calls and result management
-  - Two-column responsive layout
+  - Vertical layout (selector panel above results)
 
 - **`SystemInput`**: Autocomplete input for system names
   - Debounced API calls to `/api/systems`
@@ -103,18 +118,34 @@ The application provides:
 - **`ResultsList`**: Displays analysis results
   - Card-based layout with 2-column grid (1 column on mobile, 2 columns on medium+ screens)
   - Shows comprehensive rare goods information (pad, cost, permit, distance, etc.)
+  - Three-state legality display: Always Legal (green), Always Illegal (red), Conditional (yellow)
+  - Expandable "Legality Details" section with comprehensive restriction information
   - Optional distance-based pagination (opt-in via checkbox, disabled by default)
-    - When enabled: Paginate by distance ranges (50, 100, 200 ly options)
+    - When enabled: Paginate by distance ranges (25-1000 ly options)
     - When disabled: Shows all results sorted by distance
   - Visual indicators for "at origin" vs "system not found"
   - Displays scan results with distance, legality, and PowerPlay information
+
+- **`LegalityCurator`**: Individual rare good legality editor (development only)
+  - Edit superpower restrictions, government restrictions, and combined restrictions
+  - Visual indicators for curated vs. base data
+  - Save/delete functionality for curated data
+
+- **`CuratorApp`**: Main curation interface (development only)
+  - Search and filter rares
+  - Load and display curated data
+  - Manage curated legality overrides
 
 ### 2.3 API Architecture
 
 All API endpoints are Astro API routes (`src/pages/api/*.ts`):
 
 1. **`GET /api/systems?q=<query>`**: System autocomplete
-2. **`POST /api/rares-scan`**: Scan mode analysis
+2. **`GET /api/system-lookup?name=<name>`**: System validation
+3. **`POST /api/rares-scan`**: Scan mode analysis
+4. **`GET /api/curated-legality`**: Get curated legality data (development only)
+5. **`POST /api/curated-legality`**: Update curated legality data (development only)
+6. **`DELETE /api/curated-legality`**: Delete curated legality data (development only)
 
 See [API Documentation](./api-documentation.md) for detailed specifications.
 
@@ -193,15 +224,50 @@ User Input → React Component → API Endpoint → Business Logic
 
 ### 3.4 Legality Evaluation (`src/lib/legality.ts`)
 
-**Purpose**: Determine if a rare good is legal in a system.
+**Purpose**: Determine if a rare good is legal in a system with comprehensive restriction details.
 
-**Function**:
-- `evaluateLegality(rare: RareGood, system: EDSMSystem)`: Returns `LegalityResult`
+**Functions**:
+- `evaluateLegality(rare: RareGood, system: EDSMSystem)`: Returns `LegalityResult` with detailed information
+- `getLegalityDetails(rare: RareGood)`: Returns comprehensive legality information for display
 
-**Logic**:
-1. Check if rare is illegal in system's superpower (allegiance)
-2. Check if rare is illegal in system's government type
-3. Return legal status with human-readable reason
+**Logic** (checked in order of specificity):
+1. Check combined superpower + government restrictions (most specific, e.g., "Federal Democracy")
+2. Check government type restrictions (applies to all superpowers, e.g., "Prison Colony")
+3. Check superpower restrictions (applies to all government types in that superpower, e.g., "Federation")
+
+**Features**:
+- Supports three types of restrictions:
+  - `illegalInSuperpowers`: Illegal in all systems of a superpower
+  - `illegalInGovs`: Illegal in all systems with that government type
+  - `illegalInSuperpowerGovs`: Illegal only in specific combinations (e.g., Federation + Democracy)
+- Returns detailed legality information including which governments allow/disallow the item
+- Provides human-readable explanations of all restrictions
+
+### 3.6 Curated Legality Management (`src/lib/curatedLegality.ts`)
+
+**Purpose**: Manage manually curated legality data that overrides base data.
+
+**Features**:
+- Load/save curated data from `data/curatedLegality.json`
+- Apply curated data to rare goods (overrides base data when present)
+- Development-only functionality (restricted by environment check)
+
+**Functions**:
+- `loadCuratedLegality()`: Load curated data from disk
+- `saveCuratedLegality(data)`: Save curated data to disk
+- `applyCuratedLegality(rare, curated)`: Apply curated data to a rare good
+- `getRaresWithCuratedData(rares, curated)`: Get all rares with curated data applied
+
+**Data Structure**:
+```typescript
+interface CuratedLegalityData {
+  [rareName: string]: {
+    illegalInSuperpowers?: string[];
+    illegalInGovs?: string[];
+    illegalInSuperpowerGovs?: Array<{ superpower: string; government: string }>;
+  };
+}
+```
 
 ### 3.5 PowerPlay Calculations (`src/lib/powerplay.ts`)
 
@@ -221,6 +287,26 @@ User Input → React Component → API Endpoint → Business Logic
 ### 4.1 Rare Goods
 
 See [Data Appendix](./data-appendix.md) for complete rare goods structure.
+
+**Key Fields**:
+- `illegalInSuperpowers`: Array of superpowers where illegal (all government types)
+- `illegalInGovs`: Array of government types where illegal (all superpowers)
+- `illegalInSuperpowerGovs`: Array of combined restrictions (specific superpower + government combinations)
+
+### 4.2 Legality Details
+
+```typescript
+interface LegalityDetails {
+  superpowerRestrictions: string[];  // Superpowers where illegal
+  illegalGovernments: string[];      // Government types where illegal
+  combinedRestrictions: Array<{     // Specific combinations where illegal
+    superpower: string;
+    government: string;
+  }>;
+  legalGovernments: string[];        // Government types where legal
+  explanation: string;               // Human-readable explanation
+}
+```
 
 **Key Fields**:
 - `rare`: Name of the rare good

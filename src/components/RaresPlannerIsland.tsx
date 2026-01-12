@@ -14,7 +14,7 @@ import { getPowerByName } from "../data/powers";
  * Features:
  * - System autocomplete
  * - PowerPlay configuration
- * - Two-column layout (form left, results right on desktop)
+ * - Vertical layout (selector panel above results)
  */
 export default function RaresPlannerIsland() {
   const [currentSystem, setCurrentSystem] = useState("Sol");
@@ -79,9 +79,9 @@ export default function RaresPlannerIsland() {
         </p>
       </div>
 
-      {/* Two-column layout: form on left, results on right */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left column: Form */}
+      {/* Vertical layout: selector panel above results */}
+      <div className="flex flex-col gap-6">
+        {/* Selector panel: Configuration */}
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-gray-100 mb-4">
             Configuration
@@ -127,7 +127,7 @@ export default function RaresPlannerIsland() {
           </div>
         </div>
 
-        {/* Right column: Results */}
+        {/* Results panel */}
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-gray-100 mb-4">
             Results ({scanResults.length} rare goods)

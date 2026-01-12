@@ -1,12 +1,18 @@
 # API Documentation
 
 **ED Rare Router API**  
-Version: unstable v1.3 (Unreleased)  
-Last Updated: December 8, 2025
+Version: unstable v1.4 (Unreleased)  
+Last Updated: January 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **License:** GNU General Public License v3.0
+
+## ⚠️ Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This API is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding accuracy, reliability, availability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this API. See the [LICENSE](../../LICENSE) file for full terms.
 
 ## Overview
 
@@ -261,8 +267,19 @@ Content-Type: application/json
 | `systemNotFound` | boolean \| undefined | True if origin system coordinates couldn't be found in EDSM |
 | `legal` | boolean | Whether rare is legal at current system |
 | `legalReason` | string | Human-readable legality explanation |
+| `legalityDetails` | object \| undefined | Detailed legality information (see LegalityDetails below) |
 | `ppEligible` | boolean | Always false (PowerPlay calculations disabled) |
 | `cpDivisors` | object \| null | Always null (PowerPlay calculations disabled) |
+
+**LegalityDetails Object**:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `superpowerRestrictions` | string[] | Superpowers where illegal (all government types) |
+| `illegalGovernments` | string[] | Government types where illegal (all superpowers) |
+| `combinedRestrictions` | Array<{superpower: string, government: string}> | Specific superpower + government combinations where illegal |
+| `legalGovernments` | string[] | Government types where legal (all except those in illegalGovernments) |
+| `explanation` | string | Human-readable explanation of all restrictions |
 
 **CpDivisors Object**:
 
@@ -372,6 +389,56 @@ All endpoints follow these error handling principles:
   - Cached after first lookup for performance
 - **System Autocomplete**: HTTP cache (5 minutes) + in-memory cache (15 minutes)
 - Cache-Control headers are set on the autocomplete endpoint
+
+### 4. Curated Legality Data (Development Only)
+
+**Endpoint**: `GET /api/curated-legality`  
+**Endpoint**: `POST /api/curated-legality`  
+**Endpoint**: `DELETE /api/curated-legality`
+
+**Description**: Manages manually curated legality data that overrides base data. **Only available in development mode** (`import.meta.env.DEV === true`). Returns 403 Forbidden in production.
+
+**GET Request**: Returns all curated legality data
+
+**Response** (200 OK):
+```json
+{
+  "Kamitra Cigars": {
+    "illegalInSuperpowers": [],
+    "illegalInGovs": ["Prison Colony", "Theocracy", "Corporate"],
+    "illegalInSuperpowerGovs": [
+      { "superpower": "Federation", "government": "Democracy" }
+    ]
+  }
+}
+```
+
+**POST Request**: Updates curated data for a rare good
+
+**Request Body**:
+```json
+{
+  "rareName": "Kamitra Cigars",
+  "data": {
+    "illegalInSuperpowers": [],
+    "illegalInGovs": ["Prison Colony", "Theocracy", "Corporate"],
+    "illegalInSuperpowerGovs": [
+      { "superpower": "Federation", "government": "Democracy" }
+    ]
+  }
+}
+```
+
+**DELETE Request**: Removes curated data for a rare good (reverts to base data)
+
+**Request Body**:
+```json
+{
+  "rareName": "Kamitra Cigars"
+}
+```
+
+**Security Note**: These endpoints are restricted to development mode only. In production, all requests return 403 Forbidden.
 
 ## External Dependencies
 

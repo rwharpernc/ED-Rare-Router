@@ -1,6 +1,15 @@
 export type PadSize = "S" | "M" | "L";
 
 /**
+ * Combined superpower + government restriction.
+ * Used for cases like "Federal Democracy" where both conditions must be met.
+ */
+export interface SuperpowerGovRestriction {
+  superpower: string;
+  government: string;
+}
+
+/**
  * Rare Good data structure for route planning.
  * 
  * All data is static - rare commodities are always found in the same places.
@@ -17,10 +26,12 @@ export interface RareGood {
   pad: PadSize;
   /** Optimal selling distance in lightyears for maximum profit */
   sellHintLy: number;
-  /** Superpowers where this rare is illegal */
+  /** Superpowers where this rare is illegal (applies to all government types in that superpower) */
   illegalInSuperpowers: string[];
-  /** Government types where this rare is illegal */
+  /** Government types where this rare is illegal (applies regardless of superpower) */
   illegalInGovs: string[];
+  /** Combined superpower + government restrictions (e.g., "Federal Democracy" = Federation + Democracy) */
+  illegalInSuperpowerGovs?: SuperpowerGovRestriction[];
   /** Distance from arrival star to station in light seconds */
   distanceToStarLs?: number;
   /** Typical market cost in credits (static baseline price) */

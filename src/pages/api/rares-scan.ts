@@ -5,6 +5,7 @@ import { getRareOriginSystem } from "../../lib/rareSystemsCache";
 import { lyDistance } from "../../lib/distances";
 import { evaluateLegality } from "../../lib/legality";
 import { ppEligibleForSystemType, cpDivisors } from "../../lib/powerplay";
+import { loadCuratedLegality, getRaresWithCuratedData } from "../../lib/curatedLegality";
 import type { ScanRequest, ScanResult } from "../../types/api";
 
 /**
@@ -79,9 +80,13 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
+    // Load curated legality data and apply it
+    const curatedData = await loadCuratedLegality();
+    const raresWithCurated = getRaresWithCuratedData(rares, curatedData);
+
     // Process each rare good
     const results: ScanResult[] = await Promise.all(
-      rares.map(async (rare) => {
+      raresWithCurated.map(async (rare) => {
         // Try to get rare origin system from cache first, fall back to API
         let originSystem = await getRareOriginSystem(rare.system);
         
@@ -122,6 +127,7 @@ export const POST: APIRoute = async ({ request }) => {
           systemNotFound,
           legal: legality.legal,
           legalReason: legality.reason,
+          legalityDetails: legality.details,
           ppEligible: eligible,
           cpDivisors: cpDivisorInfo,
         };

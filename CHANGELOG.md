@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **License:** GNU General Public License v3.0
 
+## ⚠️ Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project uses a three-tier versioning system: **unstable**, **beta**, and **release**.
 
@@ -14,6 +20,78 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **unstable**: Development versions with active changes and potential breaking changes
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
+
+## [unstable v1.4] - 2026-01-12
+
+### Added
+- **Enhanced legality system** - Comprehensive legality information with detailed restrictions
+  - Added support for combined superpower + government restrictions (e.g., "Federal Democracy")
+  - Detailed legality explanations showing which governments allow/disallow each item
+  - Three-state legality display: Always Legal, Always Illegal, or Conditional
+  - Expandable "Legality Details" section for each rare good
+  - Shows illegal superpowers, illegal governments, and combined restrictions separately
+  - Disclaimer on legality notes indicating information is still being validated
+- **Legality curation system** - Manual curation interface for development mode
+  - New `/curate` page (development only) for editing legality data
+  - API endpoints for reading/writing curated legality data (`/api/curated-legality`)
+  - Curated data stored in `data/curatedLegality.json` and overrides base data
+  - Search and filter functionality for finding rares to curate
+  - Visual indicators for curated vs. base data
+- **Legality categories documentation** - Reference guide for legality patterns
+  - Alcohol/Liquor category rules (Prison Colony + Federal/Alliance Theocracies)
+  - Narcotics category rules (Federal/Imperial + most Alliance systems)
+  - Tobacco category rules
+  - Weapons category notes
+  - Documentation file: `docs/legality-categories.md`
+- **Data accuracy documentation** - Guide for maintaining legality data
+  - Instructions for manually curating data from Inara.cz
+  - Examples of translating Inara notes to data structure
+  - Documentation file: `docs/data-accuracy-notes.md`
+- **Prison government type** - Added "Prison" to government types list
+  - "Prison Colony" remains the standard system government type
+  - "Prison" added for Detention Centres (facilities, not full systems)
+  - Both types available in curation UI
+- **Project disclaimers** - Added comprehensive disclaimers throughout documentation
+  - Prominent warnings in all documentation files that this is a development/hobby project
+  - "Use at your own risk" notices with warranty disclaimers
+  - References to GPL v3.0 license terms
+  - Updated files: README.md, CHANGELOG.md, TODO.md, and all docs/*.md files
+
+### Changed
+- **Layout redesign** - Changed from side-by-side to vertical layout
+  - Selector panel (Configuration) now appears above results on all screen sizes
+  - Removed responsive two-column layout (grid)
+  - Consistent vertical stacking regardless of viewport size
+- **Legality data structure** - Enhanced to support complex restrictions
+  - Added `illegalInSuperpowerGovs` field for combined restrictions
+  - Updated data for multiple rares based on category rules:
+    - Alcohol/Liquor: Lavian Brandy, Centauri Mega Gin, Eranin Pearl Whisky, Kongga Ale
+    - Narcotics: All Onionhead variants, Lyrae Weed, Tarach Spice
+    - Tobacco: Kamitra Cigars (already had data), Rusani Old Smokey
+- **Legality badge display** - Three-state system for clarity
+  - Green "Legal" badge for items legal in all systems
+  - Red "Illegal" badge for items illegal in all systems
+  - Yellow "Conditional" badge for items with restrictions (indicates details available)
+- **Legality details display** - Streamlined to remove duplicate information
+  - Removed redundant explanation text that duplicated structured breakdown
+  - Now shows only structured lists (illegal superpowers, governments, combinations, legal governments)
+  - Cleaner, more scannable format without information duplication
+- **Government types list** - Expanded from 11 to 12 types
+  - Added "Prison" government type alongside "Prison Colony"
+  - Complete list: Anarchy, Communism, Confederacy, Cooperative, Corporate, Democracy, Dictatorship, Feudal, Patronage, Prison, Prison Colony, Theocracy
+
+### Fixed
+- **Legality accuracy** - Updated multiple rare goods with correct legality data
+  - Fixed Kamitra Cigars (Prison Colony, Theocracy, Corporate + Federal Democracy)
+  - Fixed Centauri Mega Gin (Prison Colony + Federal Theocracy)
+  - Fixed Xihe Biomorphic Companions (Prison Colony + Federal Theocracy)
+  - Applied category-based rules to alcohol and narcotics rares
+
+### Security
+- **Development-only curation** - Curation interface restricted to development mode
+  - `/curate` page only accessible when `import.meta.env.DEV === true`
+  - API endpoints return 403 Forbidden in production
+  - Prevents unauthorized data modification in production
 
 ## [unstable v1.3] - 2025-12-08
 

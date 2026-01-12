@@ -2,6 +2,14 @@
 
 Welcome to the ED Rare Router documentation. This directory contains comprehensive technical documentation for the project.
 
+## ⚠️ Important Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding accuracy, reliability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this software.
+
+See the [LICENSE](../LICENSE) file for full terms under the GNU General Public License v3.0.
+
 ## Available Documentation
 
 - **[Technical Design Document](./technical-design.md)** - Comprehensive technical architecture and design decisions
@@ -9,6 +17,8 @@ Welcome to the ED Rare Router documentation. This directory contains comprehensi
 - **[Data Appendix](./data-appendix.md)** - Data structures and static datasets
 - **[Architecture Overview](./architecture-overview.md)** - System architecture and data flow
 - **[Deployment Guide](./deployment-guide.md)** - Step-by-step deployment instructions for various platforms
+- **[Data Accuracy Notes](./data-accuracy-notes.md)** - Guide for maintaining legality data accuracy
+- **[Legality Categories](./legality-categories.md)** - Reference guide for legality patterns by category
 
 **User Guide**: See the [How to Use](../README.md#how-to-use) section in the main README for usage instructions.
 

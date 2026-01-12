@@ -44,6 +44,37 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
   const formatNumber = (value?: number) =>
     value != null ? value.toLocaleString() : "N/A";
 
+  /**
+   * Determines the overall legality status of a rare good.
+   * Returns: 'always-legal' | 'always-illegal' | 'conditional'
+   */
+  const getLegalityStatus = (result: ScanResult): 'always-legal' | 'always-illegal' | 'conditional' => {
+    if (!result.legalityDetails) {
+      // If no details, use the current legal status as fallback
+      return result.legal ? 'always-legal' : 'conditional';
+    }
+
+    const details = result.legalityDetails;
+    const hasRestrictions = 
+      details.superpowerRestrictions.length > 0 ||
+      details.illegalGovernments.length > 0 ||
+      details.combinedRestrictions.length > 0;
+
+    // If no restrictions at all, it's always legal
+    if (!hasRestrictions) {
+      return 'always-legal';
+    }
+
+    // If illegal in all 4 superpowers, it's always illegal
+    // (This is rare but possible)
+    if (details.superpowerRestrictions.length >= 4) {
+      return 'always-illegal';
+    }
+
+    // Otherwise, it's conditional (legal in some, illegal in others)
+    return 'conditional';
+  };
+
   // Sort results by distance (closest first)
   // Put systems with distance 0 (not found) at the end
   const sortedResults = useMemo(() => {
@@ -224,16 +255,29 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
                   {result.rare}
                 </h3>
                 <div className="flex flex-col gap-1">
-                  {!result.legal && (
-                    <span className="px-2 py-1 text-xs font-medium bg-red-900 text-red-200 rounded">
-                      Illegal
-                    </span>
-                  )}
-                  {result.legal && (
-                    <span className="px-2 py-1 text-xs font-medium bg-green-900 text-green-200 rounded">
-                      Legal
-                    </span>
-                  )}
+                  {(() => {
+                    const legalityStatus = getLegalityStatus(result);
+                    if (legalityStatus === 'always-legal') {
+                      return (
+                        <span className="px-2 py-1 text-xs font-medium bg-green-900 text-green-200 rounded">
+                          Legal
+                        </span>
+                      );
+                    } else if (legalityStatus === 'always-illegal') {
+                      return (
+                        <span className="px-2 py-1 text-xs font-medium bg-red-900 text-red-200 rounded">
+                          Illegal
+                        </span>
+                      );
+                    } else {
+                      // Conditional - legal in some, illegal in others
+                      return (
+                        <span className="px-2 py-1 text-xs font-medium bg-yellow-900 text-yellow-200 rounded" title="Legal in some systems, illegal in others - see details below">
+                          Conditional
+                        </span>
+                      );
+                    }
+                  })()}
                   {result.ppEligible && (
                     <span className="px-2 py-1 text-xs font-medium bg-yellow-900 text-yellow-200 rounded">
                       PP Eligible
@@ -301,8 +345,48 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
                     </span>
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 italic">
-                  {result.legalReason}
+                <div className="space-y-2">
+                  <div className="text-xs text-gray-500 italic">
+                    {result.legalReason}
+                  </div>
+                  {result.legalityDetails && (
+                    <details className="text-xs">
+                      <summary className="cursor-pointer text-blue-400 hover:text-blue-300 font-medium">
+                        Legality Details
+                      </summary>
+                      <div className="mt-2 pl-4 space-y-1 text-gray-400 border-l-2 border-gray-700">
+                        {result.legalityDetails.superpowerRestrictions.length > 0 && (
+                          <div>
+                            <span className="text-red-400 font-medium">Illegal in superpowers (all government types):</span>{" "}
+                            {result.legalityDetails.superpowerRestrictions.join(", ")}
+                          </div>
+                        )}
+                        {result.legalityDetails.illegalGovernments.length > 0 && (
+                          <div>
+                            <span className="text-red-400 font-medium">Illegal in governments (all superpowers):</span>{" "}
+                            {result.legalityDetails.illegalGovernments.join(", ")}
+                          </div>
+                        )}
+                        {result.legalityDetails.combinedRestrictions && result.legalityDetails.combinedRestrictions.length > 0 && (
+                          <div>
+                            <span className="text-red-400 font-medium">Illegal in combinations:</span>{" "}
+                            {result.legalityDetails.combinedRestrictions.map(
+                              (r) => `${r.superpower} ${r.government}`
+                            ).join(", ")}
+                          </div>
+                        )}
+                        {result.legalityDetails.legalGovernments.length > 0 && (
+                          <div>
+                            <span className="text-green-400 font-medium">Legal in governments:</span>{" "}
+                            {result.legalityDetails.legalGovernments.join(", ")}
+                          </div>
+                        )}
+                        <div className="pt-2 mt-2 text-xs text-yellow-400 italic border-t border-gray-700">
+                          ⚠️ Legality information is still being validated and may not be complete or accurate.
+                        </div>
+                      </div>
+                    </details>
+                  )}
                 </div>
                 {result.ppEligible && result.cpDivisors && (
                   <div className="mt-2 pt-2 border-t border-gray-700">
