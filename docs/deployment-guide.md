@@ -12,6 +12,7 @@ Last Updated: December 8, 2025
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Email:** easyday [at] rwharper [dot] com  
 **License:** GNU General Public License v3.0
 
 ## Overview

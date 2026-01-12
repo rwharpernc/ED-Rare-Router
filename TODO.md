@@ -6,6 +6,7 @@ Last Updated: January 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Email:** easyday [at] rwharper [dot] com  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -99,13 +100,6 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
 
 ## Data & Content
 
-- [ ] **Improve legal interpretation logic**
-  - Current logic only checks superpower and government restrictions
-  - Some goods are legal in some systems but not others based on more complex rules
-  - Need to research and implement more accurate legality evaluation
-  - May require per-system or per-station legality data
-  - Consider edge cases and exceptions to general rules
-
 - [ ] Expand rare goods dataset
   - Verify and add any missing rare goods
   - Add more detailed metadata (prices, etc.)
@@ -167,6 +161,36 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
 - [ ] Bookmark/favorite systems
 - [ ] Shareable route links
 - [ ] Community contributions for rare goods data
+
+---
+
+## DONE
+
+### Completed Features
+
+- [x] **Improve legal interpretation logic** (Completed: January 12, 2026)
+  - Enhanced legality system with support for combined superpower + government restrictions
+  - Implemented detailed legality explanations showing which governments allow/disallow each item
+  - Added three-state legality display: Always Legal, Always Illegal, or Conditional
+  - Created expandable "Legality Details" section for each rare good
+  - Shows illegal superpowers, illegal governments, and combined restrictions separately
+  - Added manual curation system for development mode to maintain data accuracy
+  - Updated multiple rare goods with correct legality data based on Inara.cz
+  - Added support for complex restrictions (e.g., "Federal Democracy", "Alliance Theocracy")
+  - Created documentation for legality categories and data accuracy maintenance
+
+- [x] **Layout redesign** (Completed: January 12, 2026)
+  - Changed from side-by-side to vertical layout
+  - Selector panel (Configuration) now appears above results on all screen sizes
+  - Removed responsive two-column layout (grid)
+  - Consistent vertical stacking regardless of viewport size
+
+- [x] **Documentation updates** (Completed: January 12, 2026)
+  - Added comprehensive disclaimers throughout all documentation files
+  - Updated README, CHANGELOG, TODO, and all docs/*.md files with project disclaimers
+  - Added legality categories documentation
+  - Added data accuracy notes documentation
+  - Updated all documentation to reflect current design and features
 
 ---
 
