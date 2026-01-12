@@ -254,6 +254,7 @@ For detailed feature documentation, see the [API Documentation](./docs/api-docum
 **R.W. Harper - Easy Day Gamer**
 
 - LinkedIn: [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)
+- Email: easyday [at] rwharper [dot] com
 
 ## License
 

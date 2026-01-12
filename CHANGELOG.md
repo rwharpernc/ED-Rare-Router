@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Email:** easyday [at] rwharper [dot] com  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
