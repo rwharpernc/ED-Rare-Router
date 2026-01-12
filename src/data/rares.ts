@@ -7,6 +7,22 @@ import type { RareGood } from '../types/rares';
  * and PowerPlay eligibility information.
  * 
  * All entries use verified system names that exist in EDSM.
+ * 
+ * IMPORTANT: Legality data must be manually curated from Inara.cz
+ * 
+ * There is no public API available for rare goods legality data from Inara, EDSM, or Spansh.
+ * To ensure accuracy:
+ * 1. Visit https://inara.cz/galaxy-commodity/ for each rare good
+ * 2. Check the "Legal in systems" section which shows restrictions
+ * 3. Update the following fields based on Inara's notes:
+ *    - illegalInSuperpowers: Array of superpowers where illegal (e.g., ["Federation"])
+ *    - illegalInGovs: Array of government types where illegal regardless of superpower (e.g., ["Prison Colony", "Theocracy"])
+ *    - illegalInSuperpowerGovs: Array of combined restrictions (e.g., [{ superpower: "Federation", government: "Democracy" }])
+ * 
+ * Example Inara note: "This rare good is legal in all systems except for Prison Colony systems and Federal Theocracy systems."
+ * This translates to:
+ *   illegalInGovs: ["Prison Colony"]
+ *   illegalInSuperpowerGovs: [{ superpower: "Federation", government: "Theocracy" }]
  */
 export const rares: RareGood[] = [
   // Well-known rare goods from the Lave cluster and beyond
@@ -18,7 +34,11 @@ export const rares: RareGood[] = [
     sellHintLy: 160,
     distanceToStarLs: 288,
     illegalInSuperpowers: [],
-    illegalInGovs: [],
+    illegalInGovs: ['Prison Colony'],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Federation', government: 'Theocracy' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -109,7 +129,11 @@ export const rares: RareGood[] = [
     sellHintLy: 150,
     distanceToStarLs: 294,
     illegalInSuperpowers: [],
-    illegalInGovs: [],
+    illegalInGovs: ['Prison Colony'],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Federation', government: 'Theocracy' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -252,7 +276,11 @@ export const rares: RareGood[] = [
     sellHintLy: 200,
     distanceToStarLs: 253,
     illegalInSuperpowers: [],
-    illegalInGovs: [],
+    illegalInGovs: ['Prison Colony'],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Federation', government: 'Theocracy' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -369,7 +397,10 @@ export const rares: RareGood[] = [
     sellHintLy: 200,
     distanceToStarLs: 82,
     illegalInSuperpowers: [],
-    illegalInGovs: [],
+    illegalInGovs: ['Prison Colony', 'Theocracy', 'Corporate'],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Federation', government: 'Democracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -486,7 +517,11 @@ export const rares: RareGood[] = [
     sellHintLy: 200,
     distanceToStarLs: 6395387,
     illegalInSuperpowers: [],
-    illegalInGovs: [],
+    illegalInGovs: ['Prison Colony'],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Federation', government: 'Theocracy' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -707,8 +742,21 @@ export const rares: RareGood[] = [
     pad: 'M',
     sellHintLy: 200,
     distanceToStarLs: 414,
-    illegalInSuperpowers: [],
+    illegalInSuperpowers: ['Federation', 'Empire'],
     illegalInGovs: [],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Alliance', government: 'Communism' },
+      { superpower: 'Alliance', government: 'Confederacy' },
+      { superpower: 'Alliance', government: 'Cooperative' },
+      { superpower: 'Alliance', government: 'Corporate' },
+      { superpower: 'Alliance', government: 'Democracy' },
+      { superpower: 'Alliance', government: 'Dictatorship' },
+      { superpower: 'Alliance', government: 'Feudal' },
+      { superpower: 'Alliance', government: 'Patronage' },
+      { superpower: 'Alliance', government: 'Prison' },
+      { superpower: 'Alliance', government: 'Prison Colony' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -772,8 +820,21 @@ export const rares: RareGood[] = [
     pad: 'M',
     sellHintLy: 200,
     distanceToStarLs: 359,
-    illegalInSuperpowers: [],
+    illegalInSuperpowers: ['Federation', 'Empire'],
     illegalInGovs: [],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Alliance', government: 'Communism' },
+      { superpower: 'Alliance', government: 'Confederacy' },
+      { superpower: 'Alliance', government: 'Cooperative' },
+      { superpower: 'Alliance', government: 'Corporate' },
+      { superpower: 'Alliance', government: 'Democracy' },
+      { superpower: 'Alliance', government: 'Dictatorship' },
+      { superpower: 'Alliance', government: 'Feudal' },
+      { superpower: 'Alliance', government: 'Patronage' },
+      { superpower: 'Alliance', government: 'Prison' },
+      { superpower: 'Alliance', government: 'Prison Colony' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -785,8 +846,21 @@ export const rares: RareGood[] = [
     pad: 'M',
     sellHintLy: 200,
     distanceToStarLs: 918,
-    illegalInSuperpowers: [],
+    illegalInSuperpowers: ['Federation', 'Empire'],
     illegalInGovs: [],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Alliance', government: 'Communism' },
+      { superpower: 'Alliance', government: 'Confederacy' },
+      { superpower: 'Alliance', government: 'Cooperative' },
+      { superpower: 'Alliance', government: 'Corporate' },
+      { superpower: 'Alliance', government: 'Democracy' },
+      { superpower: 'Alliance', government: 'Dictatorship' },
+      { superpower: 'Alliance', government: 'Feudal' },
+      { superpower: 'Alliance', government: 'Patronage' },
+      { superpower: 'Alliance', government: 'Prison' },
+      { superpower: 'Alliance', government: 'Prison Colony' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -889,8 +963,21 @@ export const rares: RareGood[] = [
     pad: 'M',
     sellHintLy: 200,
     distanceToStarLs: 303,
-    illegalInSuperpowers: [],
+    illegalInSuperpowers: ['Federation', 'Empire'],
     illegalInGovs: [],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Alliance', government: 'Communism' },
+      { superpower: 'Alliance', government: 'Confederacy' },
+      { superpower: 'Alliance', government: 'Cooperative' },
+      { superpower: 'Alliance', government: 'Corporate' },
+      { superpower: 'Alliance', government: 'Democracy' },
+      { superpower: 'Alliance', government: 'Dictatorship' },
+      { superpower: 'Alliance', government: 'Feudal' },
+      { superpower: 'Alliance', government: 'Patronage' },
+      { superpower: 'Alliance', government: 'Prison' },
+      { superpower: 'Alliance', government: 'Prison Colony' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -1189,7 +1276,10 @@ export const rares: RareGood[] = [
     sellHintLy: 200,
     distanceToStarLs: 1944,
     illegalInSuperpowers: [],
-    illegalInGovs: [],
+    illegalInGovs: ['Prison Colony'],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Federation', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -1266,8 +1356,21 @@ export const rares: RareGood[] = [
     pad: 'M',
     sellHintLy: 200,
     distanceToStarLs: 8736,
-    illegalInSuperpowers: [],
+    illegalInSuperpowers: ['Federation', 'Empire'],
     illegalInGovs: [],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Alliance', government: 'Communism' },
+      { superpower: 'Alliance', government: 'Confederacy' },
+      { superpower: 'Alliance', government: 'Cooperative' },
+      { superpower: 'Alliance', government: 'Corporate' },
+      { superpower: 'Alliance', government: 'Democracy' },
+      { superpower: 'Alliance', government: 'Dictatorship' },
+      { superpower: 'Alliance', government: 'Feudal' },
+      { superpower: 'Alliance', government: 'Patronage' },
+      { superpower: 'Alliance', government: 'Prison' },
+      { superpower: 'Alliance', government: 'Prison Colony' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },
@@ -1396,8 +1499,21 @@ export const rares: RareGood[] = [
     pad: 'M',
     sellHintLy: 200,
     distanceToStarLs: 1464,
-    illegalInSuperpowers: [],
+    illegalInSuperpowers: ['Federation', 'Empire'],
     illegalInGovs: [],
+    illegalInSuperpowerGovs: [
+      { superpower: 'Alliance', government: 'Communism' },
+      { superpower: 'Alliance', government: 'Confederacy' },
+      { superpower: 'Alliance', government: 'Cooperative' },
+      { superpower: 'Alliance', government: 'Corporate' },
+      { superpower: 'Alliance', government: 'Democracy' },
+      { superpower: 'Alliance', government: 'Dictatorship' },
+      { superpower: 'Alliance', government: 'Feudal' },
+      { superpower: 'Alliance', government: 'Patronage' },
+      { superpower: 'Alliance', government: 'Prison' },
+      { superpower: 'Alliance', government: 'Prison Colony' },
+      { superpower: 'Alliance', government: 'Theocracy' },
+    ],
     pp: {
       eligibleSystemTypes: ['acquisition', 'exploit'],
     },

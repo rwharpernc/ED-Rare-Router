@@ -6,29 +6,43 @@ A standalone web application for Elite Dangerous players to plan rare goods trad
 
 ## Version
 
-**Current Version**: unstable v1.3 (December 8, 2025) - **Unreleased**
+**Current Version**: unstable v1.4 (January 12, 2026) - **Unreleased**
 
-This version includes a comprehensive dataset of 142 rare commodities, enhanced pagination options, improved sorting, and better Finance Ethos visibility. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
+This version includes a comprehensive dataset of 142 rare commodities, enhanced legality system with detailed restrictions, manual curation interface for development, and improved layout. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
 
-## ⚠️ Developer Notes
+## ⚠️ Important Disclaimers
 
-**This project is still very much in design and prototyping** as we examine ideas and try new things.
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-**This is not ready for release to Alpha or Beta testing.**
+**NO WARRANTIES OR GUARANTEES ARE PROVIDED**
+
+This project is:
+- **A personal hobby project** - Not a commercial product
+- **In active development** - Still in design and prototyping phase
+- **Not ready for production use** - Not ready for Alpha or Beta testing
+- **Subject to frequent changes** - Refactors and breaking changes may occur
+
+**By using this software, you acknowledge that:**
+- The software is provided "AS IS" without warranty of any kind
+- No guarantees are made regarding accuracy, reliability, or fitness for any purpose
+- You assume all risks associated with using this software
+- The authors and contributors are not liable for any damages arising from use of this software
 
 **Important Notes:**
 - Refactors are going to happen frequently
 - Documentation will be kept updated
 - Code is commented
+- Features may be incomplete, unstable, or subject to significant changes
 
-Features may be incomplete, unstable, or subject to significant changes. Use at your own risk.
+This software is licensed under the **GNU General Public License v3.0**, which includes warranty disclaimers. See the [LICENSE](./LICENSE) file for full terms.
 
 ## Overview
 
 ED Rare Router helps commanders:
 - Quickly scan for rare goods near their current location
 - Find rare goods origins and calculate distances from current system
-- Evaluate legality of rare goods in different systems
+- Evaluate legality of rare goods in different systems with detailed restrictions
+- View comprehensive legality information (which governments allow/disallow each item)
 - Build routes manually from scan results (all data is static - no updates needed)
 
 ## Tech Stack
@@ -140,6 +154,8 @@ Complete project documentation is available in the following locations:
       SystemInput.tsx
       PowerInput.tsx
       ResultsList.tsx
+      LegalityCurator.tsx
+      CuratorApp.tsx
     data/
       rares.ts
       powers.ts
@@ -150,6 +166,9 @@ Complete project documentation is available in the following locations:
       legality.ts
       powerplay.ts
       fuzzySearch.ts
+      curatedLegality.ts
+    pages/
+      curate.astro (development only)
     types/
       rares.ts
       edsm.ts
@@ -158,6 +177,7 @@ Complete project documentation is available in the following locations:
   data/
     rareSystemsCache.json (generated)
     systemCache.json (generated)
+    curatedLegality.json (generated, development only)
   styles/
     global.css
 ```
@@ -181,7 +201,11 @@ Complete project documentation is available in the following locations:
 - **Results are sorted by distance** (closest first)
 - Each rare shows:
   - **Distance** from your current system to the rare's origin
-  - **Legality** at your current system (green = legal, red = illegal)
+  - **Legality status** at your current system:
+    - **Green "Legal"** = Legal in all systems
+    - **Red "Illegal"** = Illegal in all systems
+    - **Yellow "Conditional"** = Legal in some systems, illegal in others (see details)
+  - **Expandable Legality Details** showing which governments/superpowers restrict the item
   - **Pad size**, **cost**, **permit requirements**, and other details
 - **Back to Top button** appears at the end of results for easy navigation
 
@@ -205,7 +229,11 @@ Finance Ethos is automatically determined from your selected power - no checkbox
 - **Quick Scan** - Single button to scan for all rare goods near your current system
 - **System Autocomplete** - Search for systems using EDSM API with intelligent caching
 - **Distance Calculations** - Compute lightyear distances between systems
-- **Legality Evaluation** - Check if rare goods are legal in specific systems
+- **Enhanced Legality Evaluation** - Comprehensive legality checking with detailed restrictions
+  - Three-state legality display (Always Legal, Always Illegal, Conditional)
+  - Detailed information about which governments allow/disallow each item
+  - Support for combined superpower + government restrictions (e.g., "Federal Democracy")
+  - Expandable legality details for each rare good
 - **Power Autocomplete** - Fuzzy search for PowerPlay powers with faction badges
 - **Distance-Based Pagination** - Optional pagination with 9 page size options (25-1000 ly)
 - **Comprehensive Rare Goods Display** - Shows pad size, cost, permit requirements, and legality
@@ -214,10 +242,10 @@ Finance Ethos is automatically determined from your selected power - no checkbox
 - **Manual Route Planning** - Users build routes manually from scan results
 - **Smart Sorting** - Results sorted closest first, with unknown systems at the end
 - **Finance Ethos Auto-Detection** - Automatically determines Finance Ethos from selected power
+- **Vertical Layout** - Selector panel above results on all screen sizes
 - **Back to Top Navigation** - Button at end of results for easy navigation
 - **Footer with Copyright** - Dynamic copyright year in page footer
-- **Back to Top Navigation** - Button at end of results for easy navigation
-- **Footer with Copyright** - Dynamic copyright year in page footer
+- **Development Curation Tools** - Manual legality data curation interface (development mode only)
 
 For detailed feature documentation, see the [API Documentation](./docs/api-documentation.md) and [Technical Design Document](./docs/technical-design.md).
 
@@ -230,6 +258,8 @@ For detailed feature documentation, see the [API Documentation](./docs/api-docum
 ## License
 
 This project is licensed under the **GNU General Public License v3.0**.
+
+**Important**: This license includes warranty disclaimers. The software is provided "AS IS" without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
 
 See the [LICENSE](./LICENSE) file for the full license text.
 

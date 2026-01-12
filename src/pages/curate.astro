@@ -1,0 +1,41 @@
+---
+import Layout from '../components/Layout.astro';
+import CuratorApp from '../components/CuratorApp';
+
+// Only allow curation in development mode
+const isDev = import.meta.env.DEV;
+---
+
+<Layout title="Curate Legality Data - ED Rare Router">
+  {isDev ? (
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-100 mb-2">
+          Curate Rare Goods Legality Data
+        </h1>
+        <p class="text-gray-400">
+          Manually curate legality restrictions for rare goods. Data is saved to <code class="bg-gray-800 px-2 py-1 rounded">data/curatedLegality.json</code>
+        </p>
+        <p class="text-yellow-400 text-sm mt-2">
+          ⚠️ This page is only available in development mode.
+        </p>
+      </div>
+
+      <CuratorApp client:load />
+    </div>
+  ) : (
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <div class="bg-red-900/30 border border-red-700 rounded-lg p-8 text-center">
+        <h1 class="text-2xl font-bold text-red-200 mb-4">
+          Curation Not Available
+        </h1>
+        <p class="text-gray-300 mb-2">
+          The curation interface is only available in development mode.
+        </p>
+        <p class="text-gray-400 text-sm">
+          To curate legality data, run the application locally with <code class="bg-gray-800 px-2 py-1 rounded">npm run dev</code>
+        </p>
+      </div>
+    </div>
+  )}
+</Layout>

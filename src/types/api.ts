@@ -7,6 +7,14 @@ export interface ScanRequest {
   hasFinanceEthos: boolean;
 }
 
+export interface LegalityDetails {
+  superpowerRestrictions: string[];
+  illegalGovernments: string[];
+  combinedRestrictions: Array<{ superpower: string; government: string }>;
+  legalGovernments: string[];
+  explanation: string;
+}
+
 export interface ScanResult {
   rare: string;
   originSystem: string;
@@ -20,6 +28,7 @@ export interface ScanResult {
   systemNotFound?: boolean; // True if origin system coordinates couldn't be found
   legal: boolean;
   legalReason: string;
+  legalityDetails?: LegalityDetails;
   ppEligible: boolean;
   cpDivisors: CpDivisors | null;
 }

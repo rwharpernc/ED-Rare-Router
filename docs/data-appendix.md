@@ -1,12 +1,18 @@
 # Data Appendix
 
 **ED Rare Router**  
-Version: unstable v1.3 (Unreleased)  
-Last Updated: December 8, 2025
+Version: unstable v1.4 (Unreleased)  
+Last Updated: January 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **License:** GNU General Public License v3.0
+
+## ⚠️ Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This software and its data are provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding data accuracy, completeness, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this software or its data. See the [LICENSE](../../LICENSE) file for full terms.
 
 ## Overview
 
@@ -27,8 +33,12 @@ interface RareGood {
   station: string;                       // Origin station name
   pad: "S" | "M" | "L";                 // Landing pad size required
   sellHintLy: number;                    // Optimal selling distance (lightyears)
-  illegalInSuperpowers: string[];        // Superpowers where illegal
-  illegalInGovs: string[];                // Government types where illegal
+  illegalInSuperpowers: string[];        // Superpowers where illegal (all government types)
+  illegalInGovs: string[];              // Government types where illegal (all superpowers)
+  illegalInSuperpowerGovs?: Array<{      // Combined restrictions (specific combinations)
+    superpower: string;
+    government: string;
+  }>;
   distanceToStarLs?: number;            // Distance from arrival star to station (light seconds)
   cost?: number;                         // Typical market cost in credits (static baseline)
   permitRequired?: boolean;              // Whether system requires a permit
@@ -48,8 +58,13 @@ interface RareGood {
   station: "Lave Station",
   pad: "L",
   sellHintLy: 160,
+  distanceToStarLs: 288,
   illegalInSuperpowers: [],
-  illegalInGovs: [],
+  illegalInGovs: ["Prison Colony"],
+  illegalInSuperpowerGovs: [
+    { superpower: "Federation", government: "Theocracy" },
+    { superpower: "Alliance", government: "Theocracy" },
+  ],
   pp: {
     eligibleSystemTypes: ["acquisition", "exploit"],
   },
@@ -66,10 +81,14 @@ interface RareGood {
   - `"M"`: Medium pad (Python, Krait, etc.)
   - `"L"`: Large pad (Anaconda, Cutter, etc.)
 - **`sellHintLy`**: Optimal distance to sell the rare good for maximum profit
-- **`illegalInSuperpowers`**: Array of superpower names where the rare is illegal
-  - Common values: `"Federation"`, `"Empire"`, `"Alliance"`
-- **`illegalInGovs`**: Array of government types where the rare is illegal
-  - Common values: `"Anarchy"`, `"Dictatorship"`, etc.
+- **`illegalInSuperpowers`**: Array of superpower names where the rare is illegal (applies to all government types in that superpower)
+  - Common values: `"Federation"`, `"Empire"`, `"Alliance"`, `"Independent"`
+- **`illegalInGovs`**: Array of government types where the rare is illegal (applies regardless of superpower)
+  - Common values: `"Anarchy"`, `"Prison Colony"`, `"Theocracy"`, `"Corporate"`, etc.
+  - All 12 government types: Anarchy, Communism, Confederacy, Cooperative, Corporate, Democracy, Dictatorship, Feudal, Patronage, Prison, Prison Colony, Theocracy
+- **`illegalInSuperpowerGovs`**: Array of combined restrictions (specific superpower + government combinations)
+  - Example: `[{ superpower: "Federation", government: "Democracy" }]` means illegal in Federal Democracy systems
+  - Used for cases like "Federal Theocracy" or "Alliance Theocracy" where both conditions must match
 - **`pp.eligibleSystemTypes`**: PowerPlay system types where the rare can generate CP
   - `"acquisition"`: Acquisition systems
   - `"exploit"`: Exploit systems

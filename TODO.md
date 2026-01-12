@@ -1,12 +1,20 @@
 # TODO
 
 **ED Rare Router**  
-Version: unstable v1.3 (Unreleased)  
-Last Updated: December 8, 2025
+Version: unstable v1.4 (Unreleased)  
+Last Updated: January 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **License:** GNU General Public License v3.0
+
+## ⚠️ Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](./LICENSE) file for full terms.
+
+---
 
 This file tracks planned improvements, features, and technical debt for ED Rare Router.
 
@@ -26,6 +34,15 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
   - Display route visualization with waypoints
 
 ## Features
+
+- [ ] **Destination system legality checker**
+  - Add input field for destination system name
+  - Query Inara or EDSM API to get controlling faction and government type for destination
+  - Check legality status for all rare goods at the destination system
+  - Display results showing which rares are legal/illegal at destination
+  - Show controlling faction name, government type, and superpower
+  - Allow comparison between current system and destination system legality
+  - Useful for route planning to verify legality before traveling
 
 - [ ] Add filtering/sorting options to results display
   - Filter by legality status

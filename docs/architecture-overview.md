@@ -1,12 +1,18 @@
 # Architecture Overview
 
 **ED Rare Router**  
-Version: unstable v1.3 (Unreleased)  
-Last Updated: December 8, 2025
+Version: unstable v1.4 (Unreleased)  
+Last Updated: January 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **License:** GNU General Public License v3.0
+
+## ⚠️ Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
 
 ## System Architecture
 
@@ -21,6 +27,8 @@ Last Updated: December 8, 2025
 │  │  - SystemInput                                        │  │
 │  │  - PowerInput                                         │  │
 │  │  - ResultsList                                        │  │
+│  │  - LegalityCurator (dev only)                         │  │
+│  │  - CuratorApp (dev only)                              │  │
 │  └──────────────────────────────────────────────────────┘  │
 └───────────────────────┬─────────────────────────────────────┘
                         │ HTTP Requests
@@ -30,7 +38,9 @@ Last Updated: December 8, 2025
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │  API Routes (src/pages/api/)                         │  │
 │  │  - GET  /api/systems                                 │  │
+│  │  - GET  /api/system-lookup                            │  │
 │  │  - POST /api/rares-scan                              │  │
+│  │  - GET/POST/DELETE /api/curated-legality (dev only)  │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
@@ -38,9 +48,10 @@ Last Updated: December 8, 2025
 │  │  - edsm.ts            (EDSM client + caching)         │  │
 │  │  - rareSystemsCache.ts (Rare origin systems cache)    │  │
 │  │  - distances.ts       (3D distance calculations)      │  │
-│  │  - legality.ts       (Legality evaluation)            │  │
+│  │  - legality.ts       (Enhanced legality evaluation)    │  │
 │  │  - powerplay.ts      (PP CP calculations)            │  │
 │  │  - fuzzySearch.ts    (Fuzzy search utilities)         │  │
+│  │  - curatedLegality.ts (Curated data management)      │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
@@ -53,6 +64,7 @@ Last Updated: December 8, 2025
 │  │  Cached Data (data/)                                  │  │
 │  │  - rareSystemsCache.json (Pre-fetched rare origins)   │  │
 │  │  - systemCache.json      (Runtime user system cache)  │  │
+│  │  - curatedLegality.json  (Manual legality overrides)  │  │
 │  └──────────────────────────────────────────────────────┘  │
 └───────────────────────┬─────────────────────────────────────┘
                         │
