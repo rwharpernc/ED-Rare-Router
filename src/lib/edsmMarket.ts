@@ -2,7 +2,7 @@
  * EDSM Market Data Client
  * 
  * Queries EDSM API for market/commodity data at stations.
- * Works with Netlify's serverless architecture (no persistent processes needed).
+ * Works with local file-based caching (no persistent processes needed).
  * 
  * Note: EDSM market data may not always be available or up-to-date for rare goods.
  */
