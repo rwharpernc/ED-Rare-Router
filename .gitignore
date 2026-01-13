@@ -28,3 +28,10 @@ pnpm-debug.log*
 
 # EDSM cache file
 data/systemCache.json
+
+# EDDN worker cache (generated at runtime)
+data/eddnMarketCache.json
+
+# EDSM market data cache (can be committed, but ignore if you prefer)
+# Uncomment the line below if you don't want to commit market data
+# data/edsmMarketData.json

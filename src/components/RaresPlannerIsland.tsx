@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import SystemInput from "./SystemInput";
 import PowerInput from "./PowerInput";
 import ResultsList from "./ResultsList";
+import CacheStatus from "./CacheStatus";
 import type { ScanResult } from "../types/api";
 import { getPowerByName } from "../data/powers";
 
@@ -125,6 +126,9 @@ export default function RaresPlannerIsland() {
               </div>
             )}
           </div>
+          
+          {/* Cache Status */}
+          <CacheStatus />
         </div>
 
         {/* Results panel */}

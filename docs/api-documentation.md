@@ -2,7 +2,7 @@
 
 **ED Rare Router API**  
 Version: unstable v1.4 (Unreleased)  
-Last Updated: January 12, 2026
+Last Updated: January 13, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -34,8 +34,8 @@ When a power with Finance Ethos is selected, the `hasFinanceEthos` flag is autom
 ## Base URL
 
 All endpoints are relative to the application root:
-- Development: `http://localhost:4321`
-- Production: `https://your-domain.com`
+- Local: `http://localhost:4321` (default port)
+- Custom port: Configure in `astro.config.mjs` if using a different port
 
 ## Endpoints
 
@@ -440,6 +440,160 @@ All endpoints follow these error handling principles:
 ```
 
 **Security Note**: These endpoints are restricted to development mode only. In production, all requests return 403 Forbidden.
+
+### 5. Market Data
+
+**Endpoint**: `GET /api/market-data`
+
+**Description**: Returns market data for rare goods stations. Reads from cached EDDN or EDSM data, falling back to live EDSM API if cache is stale.
+
+**Query Parameters**:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `system` | string | Conditional | System name (required if `station` provided) |
+| `station` | string | Conditional | Station name (required if `system` provided) |
+| `rare` | string | Optional | Rare good name (filters to specific commodity) |
+
+**Examples**:
+
+Get market data for specific station and rare good:
+```http
+GET /api/market-data?system=Lave&station=Lave Station&rare=Lavian Brandy
+```
+
+Get all market data for a station:
+```http
+GET /api/market-data?system=Lave&station=Lave Station
+```
+
+Get market data by rare good name:
+```http
+GET /api/market-data?rare=Lavian Brandy
+```
+
+Get all cached market data:
+```http
+GET /api/market-data
+```
+
+**Response** (200 OK):
+```json
+{
+  "found": true,
+  "system": "Lave",
+  "station": "Lave Station",
+  "rare": "Lavian Brandy",
+  "data": {
+    "name": "Lavian Brandy",
+    "buyPrice": 0,
+    "sellPrice": 0,
+    "stock": 0,
+    "stockBracket": 0,
+    "demand": 0,
+    "demandBracket": 0
+  },
+  "source": "cache",
+  "cacheFresh": true,
+  "metadata": {
+    "fetchedAt": "2026-01-12T12:00:00.000Z",
+    "totalEntries": 10
+  }
+}
+```
+
+**Response Fields**:
+- `found`: Boolean indicating if data was found
+- `system`: System name (if specified)
+- `station`: Station name (if specified)
+- `rare`: Rare good name (if specified)
+- `data`: Market commodity data or full station market data
+- `source`: Data source ("cache" or "live")
+- `cacheFresh`: Boolean indicating if cache is fresh (<12 hours old)
+- `metadata`: Cache metadata (last fetched time, entry count)
+
+**Note**: Market data depends on player contributions via EDMC. Data may not always be available or up-to-date for all stations.
+
+### 6. Price Curation (Development Only)
+
+**Endpoints**: `GET /api/curated-prices`, `POST /api/curated-prices`, `DELETE /api/curated-prices`
+
+**Description**: Manage baseline purchase prices for rare goods. These prices are used as fallback when EDDN market data is not available. Only available in development mode.
+
+**IMPORTANT**: These endpoints are only available when running in development mode (`npm run dev`). They return 403 Forbidden in production builds.
+
+#### GET /api/curated-prices
+
+Returns all curated price data.
+
+**Response** (200 OK):
+```json
+{
+  "Lavian Brandy": {
+    "cost": 5000
+  },
+  "Centauri Mega Gin": {
+    "cost": 4500
+  }
+}
+```
+
+#### POST /api/curated-prices
+
+Updates or adds curated price data for a rare good.
+
+**Request Body**:
+```json
+{
+  "rareName": "Lavian Brandy",
+  "data": {
+    "cost": 5000
+  }
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "rareName": "Lavian Brandy",
+  "data": {
+    "cost": 5000
+  }
+}
+```
+
+**Validation**:
+- `rareName` is required
+- `cost` must be a non-negative number (optional - omit to remove curated entry)
+
+#### DELETE /api/curated-prices
+
+Removes curated price data for a rare good.
+
+**Request Body**:
+```json
+{
+  "rareName": "Lavian Brandy"
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "rareName": "Lavian Brandy",
+  "message": "Deleted"
+}
+```
+
+**Price Priority**: When displaying costs, the system uses this priority:
+1. **EDDN live market data** (if available) - shows "(Live)"
+2. **Curated baseline price** (if set) - shows "(Est.)"
+3. **Static cost from rares.ts** (if exists) - shows "(Est.)"
+4. **"N/A"** if none of the above
+
+**Data Storage**: Curated prices are saved to `data/curatedPrices.json`.
 
 ## External Dependencies
 

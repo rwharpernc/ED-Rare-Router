@@ -1,243 +1,150 @@
 # Deployment Guide
 
-## ⚠️ Disclaimer
-
-**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
-
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding deployment, availability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
-
 **ED Rare Router**  
-Version: unstable v1.3 (Unreleased)  
-Last Updated: December 8, 2025
+Version: unstable v1.4 (Unreleased)  
+Last Updated: January 13, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **Email:** easyday [at] rwharper [dot] com  
 **License:** GNU General Public License v3.0
 
+## ⚠️ Disclaimer
+
+**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
+
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding deployment, availability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
+
 ## Overview
 
-ED Rare Router uses Astro's server mode to enable API endpoints. This requires a server adapter for deployment. The application is configured to work with multiple deployment platforms.
+ED Rare Router is designed to run as a **local application** on your own machine. This guide covers local deployment and setup.
 
-## Prerequisites
+For detailed local deployment instructions, see the [Local Deployment Guide](./local-deployment.md).
 
-- Node.js 18+ installed
-- npm or yarn package manager
-- Git repository connected to your deployment platform
-- Account on your chosen deployment platform
+## Quick Start
 
-## Deployment Options
-
-### Netlify (Recommended)
-
-Netlify provides excellent support for Astro serverless functions and is the recommended deployment platform. This is the primary deployment target and is regularly tested.
-
-#### Setup
+### Basic Setup
 
 1. **Install dependencies**:
    ```bash
    npm install
    ```
 
-2. **Pre-fetch rare systems data** (recommended for faster performance):
+2. **Generate initial data**:
    ```bash
+   npm run export:rares
    ```
-   This creates `data/rareSystemsCache.json` with all rare origin system coordinates. The cache file should be committed to your repository.
-   
-   **Important Notes**:
-   - The application will work without this cache (it falls back to API lookups), but performance will be slower
-   - If you see an error about `tsx` not being found, ensure you've run `npm install` first
-   - Commit the generated `data/rareSystemsCache.json` file to your repository
-   
-   **When to run this script**:
-   - **Before first deployment** (recommended for production)
-   - After adding new rare goods to the dataset
-   - After correcting system names in the rare goods data
-   - Periodically to refresh system data (optional)
 
-3. **Configure for Netlify**:
-   - The `netlify.toml` file is already configured with the correct build command
-   - The build command automatically copies `astro.config.netlify.mjs` to `astro.config.mjs` before building
-   - **Important**: Do NOT add `@astrojs/netlify` as a plugin in `netlify.toml` - it is an Astro adapter, not a Netlify build plugin
-   - The `netlify.toml` build command handles the adapter configuration automatically
-
-4. **Deploy via Netlify Dashboard**:
-   - Connect your Git repository to Netlify
-   - Netlify will auto-detect the build settings from `netlify.toml`
-   - The build command in `netlify.toml` will:
-     1. Copy `astro.config.netlify.mjs` to `astro.config.mjs`
-     2. Run `npm run build`
-   - Publish directory: `dist`
-   - Deploy!
-
-5. **Deploy via Netlify CLI**:
+3. **Start the application**:
    ```bash
-   npm install -g netlify-cli
-   netlify login
-   netlify deploy --prod
+   npm run dev
    ```
 
-#### Troubleshooting Netlify Builds
+4. **Access the application**:
+   Open `http://localhost:4321` in your browser
 
-If you encounter the error: `"The plugin '@astrojs/netlify' is missing a manifest.yml"`:
-- **Cause**: `@astrojs/netlify` was incorrectly added as a Netlify build plugin in `netlify.toml`
-- **Solution**: Remove any `[[plugins]]` section from `netlify.toml` that references `@astrojs/netlify`
-- The adapter is configured in `astro.config.netlify.mjs`, not as a Netlify plugin
+### With EDDN Worker (Real-time Market Data)
 
-#### Environment Variables
+1. **Install ZeroMQ** (see [EDDN Worker Setup Guide](./eddn-worker-setup.md))
 
-Set these in Netlify dashboard under Site settings > Environment variables:
-- `EDSM_USER_AGENT` (optional) - Custom User-Agent for EDSM API requests
-
-#### Serverless Functions
-
-Netlify automatically converts Astro API routes to serverless functions. All endpoints in `src/pages/api/` will be available as:
-- `/api/systems`
-- `/api/rares-scan`
-- `/api/system-lookup`
-
-### Vercel
-
-> **Note**: Vercel deployment is not regularly tested or verified. If you encounter issues or need updates to these instructions, please report them.
-
-1. **Install Vercel adapter**:
+2. **Start web server** (Terminal 1):
    ```bash
-   npm install @astrojs/vercel
+   npm run dev
    ```
 
-2. **Update `astro.config.mjs`**:
-   ```javascript
-   import vercel from '@astrojs/vercel';
-   
-   export default defineConfig({
-     output: 'server',
-     adapter: vercel(),
-     // ... rest of config
-   });
-   ```
-
-3. **Pre-fetch rare systems data** (recommended):
+3. **Start EDDN worker** (Terminal 2):
    ```bash
-   ```
-   Commit `data/rareSystemsCache.json` to your repository.
-   
-   **Note**: The application will work without this cache (it falls back to API lookups), but performance will be slower.
-
-4. **Deploy**:
-   - Connect repository to Vercel
-   - Vercel will auto-detect Astro and configure appropriately
-
-### Cloudflare Pages
-
-> **Note**: Cloudflare Pages deployment is not regularly tested or verified. If you encounter issues or need updates to these instructions, please report them.
-
-1. **Install Cloudflare adapter**:
-   ```bash
-   npm install @astrojs/cloudflare
+   npm run worker
    ```
 
-2. **Update `astro.config.mjs`**:
-   ```javascript
-   import cloudflare from '@astrojs/cloudflare';
-   
-   export default defineConfig({
-     output: 'server',
-     adapter: cloudflare(),
-     // ... rest of config
-   });
-   ```
+## Production Deployment
 
-3. **Pre-fetch rare systems data** (recommended):
-   ```bash
-   ```
-   Commit `data/rareSystemsCache.json` to your repository.
-   
-   **Note**: The application will work without this cache (it falls back to API lookups), but performance will be slower.
+For production use, see the [Local Deployment Guide](./local-deployment.md) which covers:
+- Process management (PM2, systemd)
+- Running as a service
+- Network access configuration
+- Scheduled tasks
+- Security considerations
 
-4. **Deploy**:
-   - Connect repository to Cloudflare Pages
-   - Set build command: `npm run build`
-   - Set output directory: `dist`
+## Build for Production
 
-### Node.js (Self-hosted)
+Build the production version:
 
-> **Note**: Self-hosted Node.js deployment is primarily used for local development. Production self-hosting is not regularly tested or verified. If you encounter issues or need updates to these instructions, please report them.
+```bash
+npm run build
+npm run preview
+```
 
-The application is already configured with the Node.js adapter for local development.
+## Data Files
 
-1. **Pre-fetch rare systems data** (recommended):
-   ```bash
-   ```
-   
-   **Note**: The application will work without this cache (it falls back to API lookups), but performance will be slower.
+The application uses these data files (in `data/` directory):
 
-2. **Build the application**:
-   ```bash
-   npm run build
-   ```
+- `rareSystemsCache.json` - Pre-fetched rare origin system coordinates
+- `systemCache.json` - Cached EDSM system lookups
+- `edsmMarketData.json` - Bulk-fetched EDSM market data
+- `eddnMarketCache.json` - Real-time EDDN market data (if worker running)
+- `rares.json` - Rare goods data export (for worker)
+- `curatedLegality.json` - Manually curated legality overrides (dev only)
 
-3. **Start the server**:
-   ```bash
-   node dist/server/entry.mjs
-   ```
+These files are generated automatically and can be committed to your repository.
 
-4. **Configure your web server** (nginx, Apache, etc.) to proxy to the Node.js server.
+## Configuration
 
-## Build Configuration
+### Port Configuration
 
-### Local Development
+Default port is 4321. To change it, modify `astro.config.mjs`:
 
-For local development, use the default `astro.config.mjs` with the Node adapter:
 ```javascript
-import node from '@astrojs/node';
-
 export default defineConfig({
-  output: 'server',
-  adapter: node({ mode: 'standalone' }),
-  // ...
+  server: {
+    port: 3000, // Change to your preferred port
+    host: true, // Listen on all interfaces (for network access)
+  },
 });
 ```
 
-### Production Deployment
+### Environment Variables
 
-Switch to your platform's adapter before building:
-- Netlify: Use `astro.config.netlify.mjs`
-- Vercel: Update config to use `@astrojs/vercel`
-- Cloudflare: Update config to use `@astrojs/cloudflare`
+Create a `.env` file in the project root:
+
+```env
+# EDSM API User-Agent (optional)
+EDSM_USER_AGENT=ED-Rare-Router/1.0 (contact: your-email@example.com)
+
+# Node environment
+NODE_ENV=production
+```
 
 ## Troubleshooting
 
+### Port Already in Use
+
+**Error: "Port 4321 is already in use"**
+
+```bash
+# Find process using port
+# Windows
+netstat -ano | findstr :4321
+
+# Linux/macOS
+lsof -i :4321
+
+# Kill the process or change port in config
+```
+
 ### Build Errors
 
-- **"No adapter installed"**: Make sure you've installed and configured the appropriate adapter for your deployment platform
-- **"POST requests not available"**: Ensure `output: 'server'` is set and API routes have `export const prerender = false;`
+- **"No adapter installed"**: The Node adapter is already configured in `astro.config.mjs`
+- **"POST requests not available"**: Ensure `output: 'server'` is set in config
 
 ### Runtime Errors
 
-- **API endpoints return 404**: Verify the adapter is correctly configured and the build completed successfully
-- **CORS errors**: Check that your API routes are properly configured for server-side rendering
+- **API endpoints return 404**: Verify the build completed successfully
+- **CORS errors**: Check that your API routes are properly configured
 
-### Environment Variables
+## See Also
 
-If you need to set environment variables:
-- **Netlify**: Site settings > Environment variables
-- **Vercel**: Project settings > Environment variables
-- **Cloudflare Pages**: Settings > Environment variables
-
-## Post-Deployment
-
-After deployment, verify:
-1. ✅ Main page loads correctly
-2. ✅ System autocomplete works
-3. ✅ Scan mode returns results
-4. ✅ Scan mode returns results correctly
-5. ✅ API endpoints respond correctly
-
-## Support
-
-For platform-specific issues, consult:
-- [Astro Deployment Docs](https://docs.astro.build/en/guides/deploy/)
-- [Netlify Docs](https://docs.netlify.com/)
-- [Vercel Docs](https://vercel.com/docs)
-- [Cloudflare Pages Docs](https://developers.cloudflare.com/pages/)
-
+- [Local Deployment Guide](./local-deployment.md) - Complete local deployment guide
+- [EDDN Worker Setup Guide](./eddn-worker-setup.md) - EDDN worker configuration
+- [Bulk Market Data Fetch](./bulk-market-data-fetch.md) - Market data fetching
+- [Testing Market Data Fetch](./testing-market-data-fetch.md) - Testing instructions

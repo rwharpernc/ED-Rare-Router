@@ -2,13 +2,12 @@
 
 A standalone web application for Elite Dangerous players to plan rare goods trading routes with PowerPlay integration.
 
-🌐 **Live Demo**: [https://edrr.netlify.app/](https://edrr.netlify.app/)
 
 ## Version
 
-**Current Version**: unstable v1.4 (January 12, 2026) - **Unreleased**
+**Current Version**: unstable v1.4 (January 13, 2026) - **Unreleased**
 
-This version includes a comprehensive dataset of 142 rare commodities, enhanced legality system with detailed restrictions, manual curation interface for development, and improved layout. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
+This version includes a comprehensive dataset of 140-142 rare commodities (still being verified), enhanced legality system with detailed restrictions, manual curation interface for development, and improved layout. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
 
 ## ⚠️ Important Disclaimers
 
@@ -45,6 +44,53 @@ ED Rare Router helps commanders:
 - View comprehensive legality information (which governments allow/disallow each item)
 - Build routes manually from scan results (all data is static - no updates needed)
 
+## Features
+
+### Core Functionality
+- **Quick Scan** - Single button to scan for all rare goods near your current system
+- **140-142 Rare Commodities** - Complete dataset including all major rare goods from Elite Dangerous (count still being verified)
+- **System Autocomplete** - Search for systems using EDSM API with intelligent caching
+- **Distance Calculations** - Compute lightyear distances between systems
+- **Smart Sorting** - Results sorted closest first, with unknown systems at the end
+
+### Legality System
+- **Enhanced Legality Evaluation** - Comprehensive legality checking with detailed restrictions
+- **Three-State Legality Display** - Always Legal, Always Illegal, or Conditional
+- **Detailed Restrictions** - Shows which governments and superpowers allow/disallow each item
+- **Combined Restrictions** - Support for combined superpower + government restrictions (e.g., "Federal Democracy")
+- **Expandable Details** - Click to see full legality information for each rare good
+
+### PowerPlay Integration
+- **Power Autocomplete** - Fuzzy search for PowerPlay powers with faction badges
+- **Finance Ethos Auto-Detection** - Automatically determines Finance Ethos from selected power
+- **CP Divisor Calculation** - Shows effective CP divisors with Finance Ethos applied
+
+### User Interface
+- **Vertical Layout** - Selector panel above results on all screen sizes
+- **Distance-Based Pagination** - Optional pagination with 9 page size options (25-1000 ly)
+- **Comprehensive Display** - Shows pad size, cost, permit requirements, and legality
+- **Back to Top Navigation** - Button at end of results for easy navigation
+- **Real-Time Market Data** - Live buy/sell prices and stock information from EDDN (when worker is running)
+- **Price Display with Fallbacks** - Shows prices with source indicators:
+  - "(Live)" for real-time EDDN market data
+  - "(Est.)" for curated baseline prices or static costs
+  - Stock and sell price information when available
+
+### Data & Performance
+- **Static Data** - All rare commodity data is static (locations never change - no updates needed)
+- **Intelligent Caching** - System coordinates and market data cached locally
+- **Manual Route Planning** - Users build routes manually from scan results
+- **EDDN Integration** - Optional real-time market data via EDDN worker service
+
+### Development Tools
+- **Development Curation Tools** - Manual data curation interfaces (development mode only)
+  - **Legality Curation** - Manual legality data curation interface (`/curate`)
+  - **Price Curation** - Manual baseline price curation interface (`/curate-prices`)
+- **Cache Status Display** - Shows when data was last updated
+- **Comprehensive Logging** - Detailed console output for debugging
+
+For detailed feature documentation, see the [API Documentation](./docs/api-documentation.md) and [Technical Design Document](./docs/technical-design.md).
+
 ## Tech Stack
 
 - **Astro** - Main framework for server-side rendering and API routes
@@ -55,27 +101,40 @@ ED Rare Router helps commanders:
 
 See the [Technical Design Document](./docs/technical-design.md) for detailed architecture information.
 
+## Prerequisites
+
+- **Node.js 18+** - [Download](https://nodejs.org/)
+- **npm** - Comes with Node.js
+
+**Optional (for EDDN Worker - Real-time Market Data):**
+- **ZeroMQ** - Required for EDDN worker service
+  - **Windows**: Download from [zeromq.org](https://zeromq.org/download/) or use `vcpkg install zeromq`
+  - **macOS**: `brew install zeromq`
+  - **Linux (Debian/Ubuntu)**: `sudo apt-get install libzmq3-dev`
+  - **Linux (Fedora)**: `sudo dnf install zeromq-devel`
+
 ## Installation
 
-1. Clone the repository
-2. Install dependencies:
+1. **Clone or download the repository**
 
-```bash
-npm install
-```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+   This installs all required packages including Astro, React, and ZeroMQ (if available).
 
-   This installs all required packages including `tsx` (needed for utility scripts).
-
-3. (Optional) Provide `data/rareSystemsCache.json` for faster performance:
-
-   The application uses a pre-built cache file (`data/rareSystemsCache.json`) containing system coordinates for all rare origin systems. This reduces API calls during runtime.
+3. **Generate initial data files (optional but recommended):**
+   ```bash
+   # Export rare goods to JSON (for EDDN worker)
+   npm run export:rares
    
-   **Note**: 
-   - The application will work without this cache (it falls back to API lookups), but performance will be slower
-   - The cache file should be committed to your repository for deployments
-   - This is a one-time setup - the cache is static and doesn't need updates
+   # Fetch initial market data from EDSM (optional)
+   npm run fetch:market
+   ```
 
-## Development
+## Running the Application
+
+### Basic Usage (Web Server Only)
 
 Start the development server:
 
@@ -85,37 +144,60 @@ npm run dev
 
 The application will be available at `http://localhost:4321`
 
-## Building for Production
+### With EDDN Worker (Real-time Market Data)
 
-Build the production-ready site:
+For real-time market data updates, run both services:
+
+**Terminal 1 - Web Server:**
+```bash
+npm run dev
+```
+
+**Terminal 2 - EDDN Worker:**
+```bash
+npm run worker
+```
+
+The worker connects to EDDN via ZeroMQ and caches market data to `data/eddnMarketCache.json`.
+
+### Production Build
+
+Build the production version:
 
 ```bash
 npm run build
 ```
 
-Preview the production build locally:
+Preview the production build:
 
 ```bash
 npm run preview
 ```
 
+For production deployment, see the [Local Deployment Guide](./docs/local-deployment.md) for process management (PM2, systemd) and running as a service.
+
 ## Deployment
 
-This application uses Astro's server mode and requires a server adapter for deployment. The Netlify adapter is already installed and configured.
+### Local Deployment (Recommended)
 
-🌐 **Live Site**: [https://edrr.netlify.app/](https://edrr.netlify.app/)
+This application is designed to run **locally on your own machine**. This enables all features including:
+- EDDN worker service for real-time market data
+- Persistent file storage
+- Full control over the environment
+- No serverless limitations
 
-For detailed deployment instructions, see the [Deployment Guide](./docs/deployment-guide.md).
+**Quick Start (Local):**
+1. Install dependencies: `npm install`
+2. Generate initial data: `npm run export:rares`
+3. Start the application: `npm run dev`
+4. Access at: `http://localhost:4321`
 
-**Quick Start (Netlify - Recommended):**
-1. Ensure `data/rareSystemsCache.json` is included in your repository (optional but recommended)
-2. Connect your repository to Netlify
-3. Netlify will auto-detect settings from `netlify.toml`
-4. The build command in `netlify.toml` automatically handles adapter configuration
+**Optional - Start EDDN Worker:**
+- Install ZeroMQ (see [Local Deployment Guide](./docs/local-deployment.md))
+- Run in separate terminal: `npm run worker`
 
-**Important:** The `netlify.toml` file is already configured correctly. Do not add `@astrojs/netlify` as a plugin - it's an Astro adapter configured in `astro.config.netlify.mjs`, not a Netlify build plugin.
+For detailed local deployment instructions, see the [Local Deployment Guide](./docs/local-deployment.md).
 
-**Note:** For local development, keep using `@astrojs/node` adapter. The Netlify adapter is only used during deployment builds.
 
 ## Documentation
 
@@ -194,7 +276,7 @@ Complete project documentation is available in the following locations:
    - If your power has Finance Ethos, a green message will appear showing the CP divisor reduction
    - Powers with Finance Ethos: Denton Patreus, Jerome Archer, Li Yong-Rui, Zemina Torval
 
-3. **Click "Scan Nearby Rares"**: The app will calculate distances and legality for all 142 rare commodities.
+3. **Click "Scan Nearby Rares"**: The app will calculate distances and legality for all rare commodities (140-142, count still being verified).
 
 ### Understanding Results
 
@@ -223,31 +305,6 @@ Finance Ethos is automatically determined from your selected power - no checkbox
 - **Jerome Archer** (Federation)
 - **Li Yong-Rui** (Independent)
 - **Zemina Torval** (Empire)
-
-## Features
-
-- **Quick Scan** - Single button to scan for all rare goods near your current system
-- **System Autocomplete** - Search for systems using EDSM API with intelligent caching
-- **Distance Calculations** - Compute lightyear distances between systems
-- **Enhanced Legality Evaluation** - Comprehensive legality checking with detailed restrictions
-  - Three-state legality display (Always Legal, Always Illegal, Conditional)
-  - Detailed information about which governments allow/disallow each item
-  - Support for combined superpower + government restrictions (e.g., "Federal Democracy")
-  - Expandable legality details for each rare good
-- **Power Autocomplete** - Fuzzy search for PowerPlay powers with faction badges
-- **Distance-Based Pagination** - Optional pagination with 9 page size options (25-1000 ly)
-- **Comprehensive Rare Goods Display** - Shows pad size, cost, permit requirements, and legality
-- **142 Rare Commodities** - Complete dataset including all major rare goods from Elite Dangerous
-- **Static Data** - All rare commodity data is static (locations never change - no updates needed)
-- **Manual Route Planning** - Users build routes manually from scan results
-- **Smart Sorting** - Results sorted closest first, with unknown systems at the end
-- **Finance Ethos Auto-Detection** - Automatically determines Finance Ethos from selected power
-- **Vertical Layout** - Selector panel above results on all screen sizes
-- **Back to Top Navigation** - Button at end of results for easy navigation
-- **Footer with Copyright** - Dynamic copyright year in page footer
-- **Development Curation Tools** - Manual legality data curation interface (development mode only)
-
-For detailed feature documentation, see the [API Documentation](./docs/api-documentation.md) and [Technical Design Document](./docs/technical-design.md).
 
 ## Author
 

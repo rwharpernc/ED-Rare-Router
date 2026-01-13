@@ -2,7 +2,7 @@
 
 **ED Rare Router**  
 Version: unstable v1.4 (Unreleased)  
-Last Updated: January 12, 2026
+Last Updated: January 13, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -30,6 +30,8 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - ResultsList                                        │  │
 │  │  - LegalityCurator (dev only)                         │  │
 │  │  - CuratorApp (dev only)                              │  │
+│  │  - PriceCurator (dev only)                             │  │
+│  │  - PriceCuratorApp (dev only)                          │  │
 │  └──────────────────────────────────────────────────────┘  │
 └───────────────────────┬─────────────────────────────────────┘
                         │ HTTP Requests
@@ -42,6 +44,9 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - GET  /api/system-lookup                            │  │
 │  │  - POST /api/rares-scan                              │  │
 │  │  - GET/POST/DELETE /api/curated-legality (dev only)  │  │
+│  │  - GET/POST/DELETE /api/curated-prices (dev only)    │  │
+│  │  - GET /api/market-data                              │  │
+│  │  - GET /api/cache-status                             │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
@@ -52,7 +57,10 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - legality.ts       (Enhanced legality evaluation)    │  │
 │  │  - powerplay.ts      (PP CP calculations)            │  │
 │  │  - fuzzySearch.ts    (Fuzzy search utilities)         │  │
-│  │  - curatedLegality.ts (Curated data management)      │  │
+│  │  - curatedLegality.ts (Curated legality management) │  │
+│  │  - curatedPrices.ts (Curated price management)      │  │
+│  │  - eddnMarketCache.ts (EDDN market data cache)      │  │
+│  │  - edsmMarketCache.ts (EDSM market data cache)       │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
@@ -66,6 +74,9 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - rareSystemsCache.json (Pre-fetched rare origins)   │  │
 │  │  - systemCache.json      (Runtime user system cache)  │  │
 │  │  - curatedLegality.json  (Manual legality overrides)  │  │
+│  │  - curatedPrices.json    (Manual price overrides)     │  │
+│  │  - eddnMarketCache.json  (EDDN real-time market data) │  │
+│  │  - edsmMarketData.json   (EDSM bulk market data)      │  │
 │  └──────────────────────────────────────────────────────┘  │
 └───────────────────────┬─────────────────────────────────────┘
                         │
@@ -77,6 +88,18 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  EDSM API (www.edsm.net/api-v1)                      │  │
 │  │  - /systems?systemName=<query>                        │  │
 │  │  - /system?systemName=<name>                         │  │
+│  └──────────────────────────────────────────────────────┘  │
+└───────────────────────┬─────────────────────────────────────┘
+                        │
+                        │ ZeroMQ (EDDN)
+                        ▼
+┌─────────────────────────────────────────────────────────────┐
+│              EDDN Worker (Background Service)                 │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  - Connects to EDDN via ZeroMQ                       │  │
+│  │  - Receives real-time market data                    │  │
+│  │  - Caches to eddnMarketCache.json                    │  │
+│  │  - Updates as market data is received                │  │
 │  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -362,22 +385,14 @@ dist/ directory
     │   ├─► index.html
     │   └─► _astro/ (bundled JS/CSS)
     └─► server/ (server entry points)
-        └─► entry.mjs (Node.js) or serverless functions
+        └─► entry.mjs (Node.js server)
 ```
-
-### Serverless Functions
-
-API routes are deployed as serverless functions based on adapter:
-- **Netlify**: Serverless functions (AWS Lambda)
-- **Vercel**: Edge functions or serverless functions
-- **Cloudflare Pages**: Workers
-- **Node.js**: Standalone server process
 
 ### API Endpoints
 
 All endpoints in `src/pages/api/` are:
 - Server-rendered (`prerender = false`)
-- Converted to platform-specific serverless functions
+- Handled by the Node.js server process
 - Available at `/api/*` paths
 
 ## Scalability

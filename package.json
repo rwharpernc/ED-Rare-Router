@@ -11,10 +11,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "export:rares": "node scripts/export-rares-json.js",
+    "fetch:market": "node scripts/fetch-edsm-market-data.js",
+    "worker": "node workers/eddn-worker.js",
+    "worker:dev": "node --watch workers/eddn-worker.js",
+    "start": "npm run dev"
   },
   "dependencies": {
-    "@astrojs/netlify": "^6.6.3",
     "@astrojs/node": "^9.5.1",
     "@astrojs/react": "^4.4.2",
     "@tailwindcss/vite": "^4.1.17",
@@ -23,7 +27,8 @@
     "astro": "^5.16.4",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "zeromq": "^6.0.0-beta.20"
   },
   "devDependencies": {}
 }
