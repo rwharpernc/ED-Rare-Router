@@ -22,7 +22,7 @@ export interface ScanResult {
   pad?: string;
   sellHintLy?: number;
   distanceToStarLs?: number;
-  cost?: number;
+  cost?: number; // Static baseline price from rares.ts
   permitRequired?: boolean;
   distanceFromCurrentLy: number;
   systemNotFound?: boolean; // True if origin system coordinates couldn't be found
@@ -31,6 +31,14 @@ export interface ScanResult {
   legalityDetails?: LegalityDetails;
   ppEligible: boolean;
   cpDivisors: CpDivisors | null;
+  // Real-time market data from EDDN
+  marketData?: {
+    buyPrice: number;
+    sellPrice: number;
+    stock: number;
+    stockBracket: number;
+    timestamp: string;
+  };
 }
 
 export interface CpDivisors {

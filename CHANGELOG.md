@@ -22,6 +22,64 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
 
+## [unstable v1.4] - 2026-01-13
+
+### Added
+- **Price Curation System** - Manual curation interface for baseline purchase prices
+  - New `/curate-prices` page for managing baseline prices (development mode only)
+  - Price curation API endpoints (`GET`, `POST`, `DELETE /api/curated-prices`)
+  - Price fallback system: EDDN live data → Curated prices → Static costs → N/A
+  - Prices displayed in scan results with source indicators (Live/Est.)
+  - Stock and sell price information from EDDN when available
+- **EDDN Market Data Integration** - Real-time market data from EDDN worker
+  - Live buy/sell prices and stock information
+  - Automatic cache updates as market data is received
+  - Market data displayed in scan results when available
+  - EDDN cache reader with nested structure handling
+  - ZeroMQ v6 API migration for EDDN worker
+  - Zlib decompression for EDDN messages
+- **Troubleshooting Documentation** - New troubleshooting notes document
+  - Rare commodities count discrepancy analysis (140 vs 142)
+  - EDDN market data limitations explanation
+  - Price display priority system documentation
+  - Cache status API fix documentation
+  - ZeroMQ v6 API migration notes
+  - Nested cache structure fix documentation
+- **Cache Status Fixes** - Fixed `existsSync` import error in cache-status API
+- **Navigation Improvements** - Return links on curation pages, temporary curation buttons in footer (development mode only)
+- **EDDN Worker Enhancements** - Improved logging and error handling
+  - Progress messages with time estimates
+  - Enhanced notifications when market data is received
+  - Better error messages for missing market data
+  - Increased API delay to 2 seconds (more polite to EDSM)
+
+### Changed
+- **Rare Commodities Count** - Updated documentation to reflect 140-142 rare commodities (still being verified)
+  - Updated all references from fixed "142" to "140-142 (still being verified)"
+  - Added notes about count discrepancy investigation
+  - Updated README, CHANGELOG, and all documentation files
+- **Documentation cleanup** - Comprehensive cleanup of all documentation
+  - Removed Netlify-specific documentation and workarounds
+  - Updated all docs to reflect local deployment as primary approach
+  - Removed abandoned methods and trial-and-error references
+  - Cleaned up deployment guide to focus on local deployment
+  - Updated EDDN integration docs to reflect current implementation
+  - Removed serverless architecture references from technical docs
+  - Updated API documentation base URLs for local deployment
+  - Added market-data API endpoint documentation
+  - Reorganized documentation index for clarity
+  - All documentation now reflects clean, production-ready approach
+
+### Removed
+- **Netlify dependencies and configuration** - Removed all Netlify-specific files and dependencies
+  - Removed `@astrojs/netlify` package dependency
+  - Deleted `astro.config.netlify.mjs` configuration file
+  - Deleted `netlify.toml` deployment configuration
+  - Removed unused `start:local` script reference
+- **Unused code** - Cleaned up unused files
+  - Deleted `src/lib/eddnCache.ts` (replaced by `edsmMarketCache.ts`)
+  - Package.json now contains only dependencies needed for local deployment
+
 ## [unstable v1.4] - 2026-01-12
 
 ### Added
@@ -101,7 +159,7 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
   - Live demo link prominently displayed at top of README
   - Deployment section includes live site link
   - Site available at: https://edrr.netlify.app/
-- **Comprehensive rare goods dataset** - Expanded from 36 to 142 rare commodities
+- **Comprehensive rare goods dataset** - Expanded from 36 to 140-142 rare commodities (count still being verified)
   - Added 106 new rare goods from Inara data
   - Includes all major rare commodities from Elite Dangerous
   - Complete system and station information with distance to star data

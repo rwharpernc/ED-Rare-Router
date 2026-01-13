@@ -2,7 +2,7 @@
 
 **ED Rare Router**  
 Version: unstable v1.4 (Unreleased)  
-Last Updated: January 12, 2026
+Last Updated: January 13, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -96,7 +96,7 @@ interface RareGood {
 
 #### Dataset Statistics
 
-- **Total Rare Goods**: 142 (as of unstable v1.3)
+- **Total Rare Goods**: 140-142 (still being verified, as of unstable v1.4)
   - All entries use verified system names that exist in EDSM
   - No placeholder entries
   - All data is static - locations never change

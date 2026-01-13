@@ -110,6 +110,12 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
   - Add station services data
   - Add system security levels
   - Add faction influence data
+- [ ] **Real-time stock/allocation data integration**
+  - Research EDDN integration for real-time market data (see `docs/eddn-integration-research.md`)
+  - Test EDSM API for market data availability on rare goods stations
+  - Evaluate infrastructure requirements (worker service, database)
+  - Consider simpler alternatives (static allocation data, EDSM API with caching)
+  - Implement chosen approach based on research findings
 
 ## Documentation
 

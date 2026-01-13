@@ -6,6 +6,8 @@ import { lyDistance } from "../../lib/distances";
 import { evaluateLegality } from "../../lib/legality";
 import { ppEligibleForSystemType, cpDivisors } from "../../lib/powerplay";
 import { loadCuratedLegality, getRaresWithCuratedData } from "../../lib/curatedLegality";
+import { loadCuratedPrices, getRaresWithCuratedPrices } from "../../lib/curatedPrices";
+import { getEDDNMarketData } from "../../lib/eddnMarketCache";
 import type { ScanRequest, ScanResult } from "../../types/api";
 
 /**
@@ -81,8 +83,11 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Load curated legality data and apply it
-    const curatedData = await loadCuratedLegality();
-    const raresWithCurated = getRaresWithCuratedData(rares, curatedData);
+    // Load curated data (legality and prices)
+    const curatedLegality = await loadCuratedLegality();
+    const curatedPrices = await loadCuratedPrices();
+    const raresWithLegality = getRaresWithCuratedData(rares, curatedLegality);
+    const raresWithCurated = getRaresWithCuratedPrices(raresWithLegality, curatedPrices);
 
     // Process each rare good
     const results: ScanResult[] = await Promise.all(
@@ -114,7 +119,7 @@ export const POST: APIRoute = async ({ request }) => {
         // Calculate CP divisors if eligible
         const cpDivisorInfo = eligible ? cpDivisors(hasFinanceEthos) : null;
 
-        return {
+        const result: ScanResult = {
           rare: rare.rare,
           originSystem: rare.system,
           originStation: rare.station,
@@ -131,6 +136,25 @@ export const POST: APIRoute = async ({ request }) => {
           ppEligible: eligible,
           cpDivisors: cpDivisorInfo,
         };
+
+        // Try to get real-time market data from EDDN cache
+        try {
+          const eddnMarketData = await getEDDNMarketData(rare.system, rare.station);
+          if (eddnMarketData?.latest) {
+            result.marketData = {
+              buyPrice: eddnMarketData.latest.buyPrice,
+              sellPrice: eddnMarketData.latest.sellPrice,
+              stock: eddnMarketData.latest.stock,
+              stockBracket: eddnMarketData.latest.stockBracket,
+              timestamp: eddnMarketData.latest.timestamp,
+            };
+          }
+        } catch (error) {
+          // Silently fail - market data is optional
+          console.debug(`[Scan] Could not load EDDN data for ${rare.system}/${rare.station}:`, error);
+        }
+
+        return result;
       })
     );
 

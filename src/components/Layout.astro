@@ -22,6 +22,24 @@ const { title = 'ED Rare Router' } = Astro.props;
     <div class="flex-grow">
       <slot />
     </div>
+    {import.meta.env.DEV && (
+      <div class="bg-gray-800 border-t border-gray-700 py-3 px-4">
+        <div class="max-w-7xl mx-auto flex gap-3 justify-center">
+          <a
+            href="/curate"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-medium transition-colors"
+          >
+            Curate Legality
+          </a>
+          <a
+            href="/curate-prices"
+            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm font-medium transition-colors"
+          >
+            Curate Prices
+          </a>
+        </div>
+      </div>
+    )}
     <footer class="bg-gray-800 border-t border-gray-700 py-4 mt-8">
       <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400">
         <p>© {new Date().getFullYear()} R.W. Harper - Easy Day Gamer. All rights reserved.</p>

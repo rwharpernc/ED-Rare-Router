@@ -335,8 +335,18 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
                   <div>
                     <span className="text-gray-500">Cost:</span>{" "}
                     <span className="text-gray-200">
-                      {formatCredits(result.cost)}
+                      {result.marketData?.buyPrice 
+                        ? formatCredits(result.marketData.buyPrice) + " (Live)"
+                        : result.cost 
+                        ? formatCredits(result.cost) + " (Est.)"
+                        : "N/A"}
                     </span>
+                    {result.marketData && (
+                      <div className="text-xs text-gray-400 mt-1">
+                        Stock: {result.marketData.stock} | 
+                        Sell: {formatCredits(result.marketData.sellPrice)}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <span className="text-gray-500">Permit:</span>{" "}

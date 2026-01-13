@@ -2,7 +2,7 @@
 
 **ED Rare Router**  
 Version: unstable v1.4 (Unreleased)  
-Last Updated: January 12, 2026
+Last Updated: January 13, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -26,7 +26,7 @@ The application provides:
 - Distance calculations from current system to rare goods origins
 - Enhanced legality evaluation with detailed restrictions and explanations
 - Comprehensive legality information showing which governments allow/disallow each item
-- Manual curation interface for legality data (development mode only)
+- Manual curation interfaces for legality and price data (development mode only)
 - PowerPlay 2.0 control point (CP) calculations for profit-based trading
 - Route planning is done manually by the user based on scan results
 
@@ -51,11 +51,13 @@ The application provides:
 │   ├── pages/
 │   │   ├── index.astro          # Main page
 │   │   ├── curate.astro         # Legality curation page (dev only)
+│   │   ├── curate-prices.astro  # Price curation page (dev only)
 │   │   └── api/                 # API endpoints
 │   │       ├── systems.ts       # System autocomplete
 │   │       ├── rares-scan.ts    # Scan mode
 │   │       ├── system-lookup.ts # System validation
-│   │       └── curated-legality.ts # Curation API (dev only)
+│   │       ├── curated-legality.ts # Legality curation API (dev only)
+│   │       └── curated-prices.ts   # Price curation API (dev only)
 │   ├── components/
 │   │   ├── Layout.astro         # Page layout
 │   │   ├── RaresPlannerIsland.tsx  # Main interactive component
@@ -63,7 +65,9 @@ The application provides:
 │   │   ├── PowerInput.tsx       # Power autocomplete input
 │   │   ├── ResultsList.tsx      # Results display with pagination
 │   │   ├── LegalityCurator.tsx  # Individual rare legality editor
-│   │   └── CuratorApp.tsx       # Curation interface app
+│   │   ├── CuratorApp.tsx       # Legality curation interface app
+│   │   ├── PriceCurator.tsx     # Individual rare price editor
+│   │   └── PriceCuratorApp.tsx  # Price curation interface app
 │   ├── lib/                     # Business logic
 │   │   ├── edsm.ts              # EDSM API client (user systems)
 │   │   ├── rareSystemsCache.ts  # Rare origin systems cache loader
@@ -71,7 +75,10 @@ The application provides:
 │   │   ├── legality.ts          # Legality evaluation with detailed restrictions
 │   │   ├── powerplay.ts         # PowerPlay CP calculations
 │   │   ├── fuzzySearch.ts      # Fuzzy search utilities
-│   │   └── curatedLegality.ts  # Curated legality data management
+│   │   ├── curatedLegality.ts  # Curated legality data management
+│   │   ├── curatedPrices.ts    # Curated price data management
+│   │   ├── eddnMarketCache.ts  # EDDN market data cache reader
+│   │   └── edsmMarketCache.ts  # EDSM market data cache reader
 │   ├── data/                    # Static data
 │   │   ├── rares.ts             # Rare goods dataset
 │   │   └── powers.ts             # PowerPlay powers list
@@ -85,7 +92,10 @@ The application provides:
 ├── data/                         # Runtime/cached data
 │   ├── rareSystemsCache.json    # Pre-fetched rare origin systems (generated)
 │   ├── systemCache.json         # EDSM system cache for user systems (generated)
-│   └── curatedLegality.json     # Manually curated legality overrides (generated, dev only)
+│   ├── curatedLegality.json     # Manually curated legality overrides (generated, dev only)
+│   ├── curatedPrices.json       # Manually curated price overrides (generated, dev only)
+│   ├── eddnMarketCache.json     # EDDN real-time market data cache (generated)
+│   └── edsmMarketData.json      # EDSM bulk-fetched market data cache (generated)
 ├── docs/                         # Project documentation
 └── public/                       # Static assets
 ```
@@ -270,6 +280,70 @@ interface CuratedLegalityData {
 }
 ```
 
+### 3.7 Curated Price Management (`src/lib/curatedPrices.ts`)
+
+**Purpose**: Manage manually curated baseline purchase prices that serve as fallback when EDDN market data is unavailable.
+
+**Features**:
+- Load/save curated price data from `data/curatedPrices.json`
+- Apply curated prices to rare goods (overrides base data when present)
+- Development-only functionality (restricted by environment check)
+- Used as fallback in price display priority system
+
+**Functions**:
+- `loadCuratedPrices()`: Load curated price data from disk
+- `saveCuratedPrices(data)`: Save curated price data to disk
+- `applyCuratedPrices(rare, curated)`: Apply curated price to a rare good
+- `getRaresWithCuratedPrices(rares, curated)`: Get all rares with curated prices applied
+- `getCuratedPrice(rareName, curated)`: Get curated price for a specific rare
+
+**Data Structure**:
+```typescript
+interface CuratedPriceData {
+  [rareName: string]: {
+    cost?: number; // Baseline purchase price in credits
+  };
+}
+```
+
+**Price Priority System**: When displaying costs, the system uses this priority:
+1. **EDDN live market data** (if available) - shows "(Live)"
+2. **Curated baseline price** (if set) - shows "(Est.)"
+3. **Static cost from rares.ts** (if exists) - shows "(Est.)"
+4. **"N/A"** if none of the above
+
+### 3.8 EDDN Market Data Cache (`src/lib/eddnMarketCache.ts`)
+
+**Purpose**: Read real-time market data from EDDN worker cache.
+
+**Features**:
+- Loads market data from `data/eddnMarketCache.json` (updated by EDDN worker)
+- Handles nested cache structures (from worker save format)
+- Provides market data lookup by system/station or rare name
+
+**Functions**:
+- `loadEDDNMarketCache()`: Load EDDN cache from disk
+- `getEDDNMarketData(system, station)`: Get market data for specific station
+- `getEDDNRareGoodData(rareName)`: Get market data by rare good name
+- `getAllEDDNMarketData()`: Get all cached market data
+
+**Data Structure**:
+```typescript
+interface EDDNCachedMarketEntry {
+  rare: string;
+  system: string;
+  station: string;
+  updates: EDDNMarketUpdate[];
+  latest?: {
+    timestamp: string;
+    stock: number;
+    stockBracket: number;
+    buyPrice: number;
+    sellPrice: number;
+  };
+}
+```
+
 ### 3.5 PowerPlay Calculations (`src/lib/powerplay.ts`)
 
 **Purpose**: PowerPlay 2.0 CP calculations.
@@ -415,28 +489,16 @@ The build process:
 1. Compiles TypeScript
 2. Bundles React components
 3. Generates server entry points
-4. Creates serverless function handlers (platform-dependent)
+4. Creates Node.js server entry point
 
-### 8.3 Supported Platforms
+### 8.3 Deployment
 
-#### Netlify (Recommended)
+The application is designed for **local deployment**:
 
-- **Adapter**: `@astrojs/netlify`
-- **Config**: `astro.config.netlify.mjs` (provided)
-- **Setup**: `netlify.toml` configured automatically
-- **Deployment**: Connect Git repo, auto-deploy on push
-
-#### Vercel
-
-- **Adapter**: `@astrojs/vercel`
-- **Setup**: Update `astro.config.mjs` to use Vercel adapter
-- **Deployment**: Connect Git repo, auto-deploy
-
-#### Cloudflare Pages
-
-- **Adapter**: `@astrojs/cloudflare`
-- **Setup**: Update `astro.config.mjs` to use Cloudflare adapter
-- **Deployment**: Connect Git repo, configure Workers
+- **Adapter**: `@astrojs/node` (configured in `astro.config.mjs`)
+- **Mode**: Standalone server
+- **Deployment**: Run on your local machine or server
+- **Process Management**: Use PM2 or systemd (see [Local Deployment Guide](./local-deployment.md))
 
 #### Node.js (Self-hosted)
 
