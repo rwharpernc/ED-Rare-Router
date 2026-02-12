@@ -8,14 +8,10 @@
  */
 
 import type { EDSMSystem } from "./edsm";
+import { getEdsmUserAgent } from "./config";
 
 const EDSM_API_BASE = "https://www.edsm.net/api-system-v1";
 const FETCH_TIMEOUT_MS = 10000; // 10 seconds timeout
-
-// User-Agent header for polite API usage
-const USER_AGENT =
-  process.env.EDSM_USER_AGENT ??
-  "ED-Rare-Router/1.0 (contact: easyday@rwharper.com)";
 
 /**
  * Market commodity data from EDSM
@@ -54,7 +50,7 @@ async function fetchWithTimeout(
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
-        "User-Agent": USER_AGENT,
+        "User-Agent": getEdsmUserAgent(),
       },
     });
     clearTimeout(timeoutId);

@@ -22,6 +22,23 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
 
+## [unstable v1.4] - 2026-02-12
+
+**Note: This version is not fully tested.**
+
+### Added
+- **Local config file** - Optional `.config.json` (gitignored) for paths and secrets
+  - Copy `config.sample.json` to `.config.json`; all API keys and personal settings in one place
+  - `edsmUserAgent` for EDSM API contact (no personal email in repo)
+  - `dataDir` optional override for cache/data directory
+  - `apiKeys` object for all API keys (e.g. `edsm`, `eddn`); env override via `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
+- **Config loaders** - `src/lib/config.ts` (app) and `scripts/load-config.js` (scripts/worker) with `getDataDir()`, `getEdsmUserAgent()`, `getApiKey(name)`
+
+### Changed
+- **Paths** - All data/cache paths now use config `getDataDir()` (default `data/` in project root)
+- **User-Agent** - EDSM and fetch script use config/env; removed hardcoded contact from codebase
+- **Documentation** - README and docs updated for config setup and API keys
+
 ## [unstable v1.4] - 2026-01-13
 
 ### Added

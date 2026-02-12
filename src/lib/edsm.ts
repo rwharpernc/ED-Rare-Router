@@ -2,17 +2,13 @@ import type { EDSMSystem } from "../types/edsm";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import { join } from "path";
+import { getDataDir, getEdsmUserAgent } from "./config";
 
 const EDSM_API_BASE = "https://www.edsm.net/api-v1";
-const CACHE_FILE_PATH = join(process.cwd(), "data", "systemCache.json");
+const CACHE_FILE_PATH = join(getDataDir(), "systemCache.json");
 const SEARCH_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes TTL for search results
 const DISK_WRITE_DEBOUNCE_MS = 5000; // 5 seconds debounce for disk writes
 const FETCH_TIMEOUT_MS = 10000; // 10 seconds timeout for fetch calls
-
-// User-Agent header for polite API usage
-const USER_AGENT =
-  process.env.EDSM_USER_AGENT ??
-  "ED-Rare-Router/1.0 (contact: https://github.com/your-org/ed-rare-router)";
 
 /**
  * Cache entry for search results with TTL
@@ -48,7 +44,7 @@ let diskWriteTimer: NodeJS.Timeout | null = null;
 async function loadDiskCache(): Promise<void> {
   try {
     // Ensure data directory exists
-    const dataDir = join(process.cwd(), "data");
+    const dataDir = getDataDir();
     if (!existsSync(dataDir)) {
       await mkdir(dataDir, { recursive: true });
     }
@@ -99,7 +95,7 @@ function scheduleDiskWrite(): void {
 async function writeDiskCache(): Promise<void> {
   try {
     // Ensure data directory exists
-    const dataDir = join(process.cwd(), "data");
+    const dataDir = getDataDir();
     if (!existsSync(dataDir)) {
       await mkdir(dataDir, { recursive: true });
     }
@@ -143,7 +139,7 @@ async function fetchWithTimeout(
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
-        "User-Agent": USER_AGENT,
+        "User-Agent": getEdsmUserAgent(),
       },
     });
     clearTimeout(timeoutId);

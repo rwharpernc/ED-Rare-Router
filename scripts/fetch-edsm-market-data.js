@@ -15,19 +15,13 @@
 
 import { writeFile, mkdir, readFile } from 'fs/promises';
 import { existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { join } from 'path';
+import { getDataDir, getEdsmUserAgent } from './load-config.js';
 
 const EDSM_API_BASE = 'https://www.edsm.net/api-system-v1';
-const OUTPUT_FILE = join(__dirname, '..', 'data', 'edsmMarketData.json');
+const OUTPUT_FILE = join(getDataDir(), 'edsmMarketData.json');
 const FETCH_TIMEOUT_MS = 15000; // 15 seconds timeout
 const DELAY_BETWEEN_REQUESTS_MS = 2000; // 2 seconds delay between requests to be polite to EDSM
-
-// User-Agent header
-const USER_AGENT = 'ED-Rare-Router/1.0 (contact: easyday@rwharper.com)';
 
 /**
  * Fetch with timeout
@@ -40,7 +34,7 @@ async function fetchWithTimeout(url, timeoutMs = FETCH_TIMEOUT_MS) {
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': USER_AGENT,
+        'User-Agent': getEdsmUserAgent(),
       },
     });
     clearTimeout(timeoutId);
@@ -271,7 +265,7 @@ async function fetchAllMarketData() {
   }
 
   // Ensure data directory exists
-  const dataDir = join(__dirname, '..', 'data');
+  const dataDir = getDataDir();
   if (!existsSync(dataDir)) {
     await mkdir(dataDir, { recursive: true });
   }

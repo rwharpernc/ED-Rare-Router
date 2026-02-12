@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import { join } from "path";
 import type { RareGood } from "../types/rares";
+import { getDataDir } from "./config";
 
 /**
  * Curated price data structure.
@@ -13,7 +14,7 @@ export interface CuratedPriceData {
   };
 }
 
-const CURATED_DATA_PATH = join(process.cwd(), "data", "curatedPrices.json");
+const CURATED_DATA_PATH = join(getDataDir(), "curatedPrices.json");
 
 /**
  * Load curated price data from disk.
@@ -38,7 +39,7 @@ export async function saveCuratedPrices(
   data: CuratedPriceData
 ): Promise<void> {
   try {
-    const dataDir = join(process.cwd(), "data");
+    const dataDir = getDataDir();
     if (!existsSync(dataDir)) {
       await mkdir(dataDir, { recursive: true });
     }

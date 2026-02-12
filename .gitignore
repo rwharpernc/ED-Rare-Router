@@ -20,6 +20,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# local config (copy config.sample.json to .config.json and edit)
+.config.json
+
 # macOS-specific files
 .DS_Store
 

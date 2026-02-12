@@ -4,6 +4,7 @@ import { getCacheMetadata as getMarketDataMetadata, isCacheFresh } from "../../l
 import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import { join } from "path";
+import { getDataDir } from "../../lib/config";
 
 /**
  * Cache status endpoint.
@@ -53,7 +54,7 @@ export const GET: APIRoute = async () => {
 
     // Get EDDN worker cache metadata (if file exists)
     try {
-      const eddnCachePath = join(process.cwd(), "data", "eddnMarketCache.json");
+      const eddnCachePath = join(getDataDir(), "eddnMarketCache.json");
       if (existsSync(eddnCachePath)) {
         const eddnContent = await readFile(eddnCachePath, "utf-8");
         const eddnCache = JSON.parse(eddnContent);

@@ -2,8 +2,9 @@ import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import { join } from "path";
 import type { EDSMSystem } from "../types/edsm";
+import { getDataDir } from "./config";
 
-const CACHE_FILE_PATH = join(process.cwd(), "data", "rareSystemsCache.json");
+const CACHE_FILE_PATH = join(getDataDir(), "rareSystemsCache.json");
 
 interface RareSystemCache {
   [systemName: string]: EDSMSystem;

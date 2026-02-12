@@ -8,11 +8,8 @@
 
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { join } from 'path';
+import { getDataDir } from './load-config.js';
 
 async function exportRares() {
   try {
@@ -27,7 +24,7 @@ async function exportRares() {
     }));
     
     // Ensure data directory exists
-    const dataDir = join(__dirname, '..', 'data');
+    const dataDir = getDataDir();
     if (!existsSync(dataDir)) {
       await mkdir(dataDir, { recursive: true });
     }
