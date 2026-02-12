@@ -7,7 +7,7 @@
  * Env vars override: EDSM_API_KEY, EDDN_API_KEY, etc. (uppercase key + _API_KEY).
  */
 
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 
 export interface AppConfig {
@@ -27,15 +27,31 @@ const DEFAULT_EDSM_USER_AGENT =
 
 let cachedConfig: AppConfig | null = null;
 
+const CONFIG_PATH = join(process.cwd(), ".config.json");
+
+/**
+ * Returns true if .config.json exists in the project root (for first-run setup).
+ */
+export function configFileExists(): boolean {
+  return existsSync(CONFIG_PATH);
+}
+
+/**
+ * Writes .config.json (for setup only). Clears in-memory cache so next read uses new file.
+ */
+export function writeConfig(config: AppConfig): void {
+  writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+  cachedConfig = null;
+}
+
 function loadConfigRaw(): AppConfig {
   if (cachedConfig !== null) return cachedConfig;
-  const configPath = join(process.cwd(), ".config.json");
-  if (!existsSync(configPath)) {
+  if (!existsSync(CONFIG_PATH)) {
     cachedConfig = {};
     return cachedConfig;
   }
   try {
-    const content = readFileSync(configPath, "utf-8");
+    const content = readFileSync(CONFIG_PATH, "utf-8");
     cachedConfig = JSON.parse(content) as AppConfig;
     return cachedConfig!;
   } catch (error) {

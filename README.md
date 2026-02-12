@@ -5,9 +5,7 @@ A standalone web application for Elite Dangerous players to plan rare goods trad
 
 ## Version
 
-**Current Version**: unstable v1.4 (February 12, 2026) - **Unreleased**
-
-**Note:** This version (config file, API keys, path sanitization) is not fully tested.
+**Current Version**: Alpha 1.05 (February 12, 2026)
 
 This version includes a comprehensive dataset of 140-142 rare commodities (still being verified), enhanced legality system with detailed restrictions, manual curation interface for development, and improved layout. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
 
@@ -125,15 +123,14 @@ See the [Technical Design Document](./docs/technical-design.md) for detailed arc
    ```
    This installs all required packages including Astro, React, and ZeroMQ (if available).
 
-3. **Optional: Create local config (kept out of the repo)**  
-   To set your own paths or contact info (e.g. for EDSM API User-Agent), copy the sample and edit:
-   ```bash
-   cp config.sample.json .config.json
-   ```
-   Edit `.config.json` with your values. This file is gitignored and will not be shared.  
-   - `edsmUserAgent` – string sent as User-Agent to EDSM (e.g. `"ED-Rare-Router/1.0 (contact: your@email.com)"`).  
-   - `dataDir` – optional absolute path to the data directory; omit or set to `null` to use the default `data/` in the project root.  
-   - `apiKeys` – object for all API keys (e.g. `"edsm": "your-key"`, `"eddn": "..."`). Env overrides: `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
+3. **Create local config (first run)**  
+   If you don't have a `.config.json` yet, either:
+   - **Web:** Run `npm run dev` and open the app — you'll be redirected to **Setup** to enter paths and keys; submitting the form creates `.config.json`.
+   - **CLI:** Run `npm run setup` and answer the prompts; this writes `.config.json` in the project root (gitignored).
+   You can also copy `config.sample.json` to `.config.json` and edit by hand.  
+   - `edsmUserAgent` – string sent as User-Agent to EDSM (e.g. contact email).  
+   - `dataDir` – optional absolute path to the data directory; blank = default `data/`.  
+   - `apiKeys` – optional keys (e.g. `edsm`, `eddn`). Env overrides: `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
 
 4. **Generate initial data files (optional but recommended):**
    ```bash
@@ -238,6 +235,20 @@ Local settings are read from **`.config.json`** in the project root. This file i
 - **`apiKeys`** – Single place for all API keys. Use lowercase names, e.g. `"edsm": "your-key"`, `"eddn": "..."`. The app reads them via `getApiKey("edsm")`, etc. Environment variables override: set `EDSM_API_KEY`, `EDDN_API_KEY` (uppercase name + `_API_KEY`) for CI or deployment.
 
 Without `.config.json`, the app uses defaults (generic User-Agent and `data/` under the project root).
+
+### First-run setup
+
+When there is no `.config.json`, the app redirects to **/setup** so you can enter EDSM User-Agent, optional data directory, and API keys; the form creates `.config.json` for you. You can instead run `npm run setup` in the terminal to create it via prompts.
+
+### Keeping the repo clean
+
+The repo is kept free of local machine data and logs. Do **not** commit:
+
+- **Data and caches** – Anything under `data/` except `data/.gitkeep` (e.g. `rares.json`, `edsmMarketData.json`, `*.json` caches) is generated locally and ignored.
+- **Config and secrets** – `.config.json`, `.env`, and any file with API keys or paths.
+- **Logs** – `*.log` and `logs/` are ignored.
+
+Generate data after clone with `npm run export:rares` and optionally `npm run fetch:market`. See `.gitignore` for the full list.
 
 ## Project Structure
 

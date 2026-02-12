@@ -1,7 +1,7 @@
 # Local Deployment Guide
 
 **ED Rare Router**  
-Version: unstable v1.4 (Unreleased)  
+Version: Alpha 1.05  
 Last Updated: February 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
