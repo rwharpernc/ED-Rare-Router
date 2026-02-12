@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project uses a three-tier versioning system: **unstable**, **beta**, and **release**.
+and this project uses a three-tier versioning system: **alpha/unstable**, **beta**, and **release**. Current release: **Alpha 1.05** (February 12, 2026).
 
 ## Versioning System
 
@@ -22,9 +22,7 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
 
-## [unstable v1.4] - 2026-02-12
-
-**Note: This version is not fully tested.**
+## [Alpha 1.05] - 2026-02-12
 
 ### Added
 - **Local config file** - Optional `.config.json` (gitignored) for paths and secrets
@@ -33,11 +31,13 @@ and this project uses a three-tier versioning system: **unstable**, **beta**, an
   - `dataDir` optional override for cache/data directory
   - `apiKeys` object for all API keys (e.g. `edsm`, `eddn`); env override via `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
 - **Config loaders** - `src/lib/config.ts` (app) and `scripts/load-config.js` (scripts/worker) with `getDataDir()`, `getEdsmUserAgent()`, `getApiKey(name)`
+- **First-run setup** - When no `.config.json` exists, app redirects to `/setup`; form and API create config. CLI: `npm run setup` for interactive prompts.
+- **Clean repo** - `.gitignore` expanded for data, logs, and local artifacts; data JSON files no longer committed.
 
 ### Changed
 - **Paths** - All data/cache paths now use config `getDataDir()` (default `data/` in project root)
 - **User-Agent** - EDSM and fetch script use config/env; removed hardcoded contact from codebase
-- **Documentation** - README and docs updated for config setup and API keys
+- **Documentation** - All docs updated to Alpha 1.05, February 12, 2026; README and guides for config, setup, and API keys
 
 ## [unstable v1.4] - 2026-01-13
 

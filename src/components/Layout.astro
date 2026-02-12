@@ -1,11 +1,18 @@
 ---
 import '../styles/global.css';
+import { configFileExists } from '../lib/config';
 
 interface Props {
   title?: string;
 }
 
 const { title = 'ED Rare Router' } = Astro.props;
+
+// First-run: if no config, redirect to setup (except for /setup and /api)
+const pathname = Astro.url.pathname;
+if (!configFileExists() && pathname !== '/setup' && !pathname.startsWith('/api')) {
+  return Astro.redirect('/setup');
+}
 ---
 
 <!doctype html>

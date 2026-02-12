@@ -1,7 +1,7 @@
 {
   "name": "ed-rare-router",
   "type": "module",
-  "version": "1.4.0-unstable",
+  "version": "1.05.0-alpha",
   "author": {
     "name": "R.W. Harper - Easy Day Gamer",
     "url": "https://linkedin.com/in/rwhwrites"
@@ -12,6 +12,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "setup": "node scripts/setup.js",
     "export:rares": "node scripts/export-rares-json.js",
     "fetch:market": "node scripts/fetch-edsm-market-data.js",
     "worker": "node workers/eddn-worker.js",

@@ -1,8 +1,8 @@
 # Bulk Market Data Fetch
 
 **ED Rare Router**  
-Version: unstable v1.4 (Unreleased)  
-Last Updated: January 13, 2026
+Version: Alpha 1.05  
+Last Updated: February 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
