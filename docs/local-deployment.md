@@ -2,7 +2,7 @@
 
 **ED Rare Router**  
 Version: unstable v1.4 (Unreleased)  
-Last Updated: January 13, 2026
+Last Updated: February 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -88,7 +88,18 @@ This installs:
 - ZeroMQ (if available)
 - All required packages
 
-### Step 3: Generate Initial Data Files
+### Step 3: Optional – Local config
+
+To use a custom data directory or set your EDSM contact (User-Agent), copy the sample config and edit (this file is not committed):
+
+```bash
+cp config.sample.json .config.json
+# Edit .config.json: edsmUserAgent, and optionally dataDir (absolute path)
+```
+
+See the main [README](../README.md#configuration) for config options.
+
+### Step 4: Generate Initial Data Files
 
 ```bash
 # Export rare goods to JSON (for EDDN worker)
@@ -295,7 +306,7 @@ NODE_ENV=production
 
 ## Data Files
 
-The application uses these data files (in `data/` directory):
+The application uses these data files in the data directory (default `data/` in the project root, or the path set in `.config.json` as `dataDir`):
 
 - `rareSystemsCache.json` - Pre-fetched rare origin system coordinates
 - `systemCache.json` - Cached EDSM system lookups (user-entered systems)

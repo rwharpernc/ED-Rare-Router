@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import { join } from "path";
 import type { RareGood } from "../types/rares";
+import { getDataDir } from "./config";
 
 /**
  * Curated legality data structure.
@@ -15,7 +16,7 @@ export interface CuratedLegalityData {
   };
 }
 
-const CURATED_DATA_PATH = join(process.cwd(), "data", "curatedLegality.json");
+const CURATED_DATA_PATH = join(getDataDir(), "curatedLegality.json");
 
 /**
  * Load curated legality data from disk.
@@ -40,7 +41,7 @@ export async function saveCuratedLegality(
   data: CuratedLegalityData
 ): Promise<void> {
   try {
-    const dataDir = join(process.cwd(), "data");
+    const dataDir = getDataDir();
     if (!existsSync(dataDir)) {
       await mkdir(dataDir, { recursive: true });
     }

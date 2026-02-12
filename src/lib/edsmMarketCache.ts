@@ -11,8 +11,9 @@
 import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import { join } from "path";
+import { getDataDir } from "./config";
 
-const CACHE_FILE = join(process.cwd(), "data", "edsmMarketData.json");
+const CACHE_FILE = join(getDataDir(), "edsmMarketData.json");
 
 /**
  * Commodity data from EDSM

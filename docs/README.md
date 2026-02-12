@@ -87,6 +87,8 @@ See the [LICENSE](../LICENSE) file for full terms under the GNU General Public L
    - Running as a service
    - Troubleshooting
 
+**Configuration**: Optional local settings (paths, EDSM User-Agent, API keys) are in one file. Copy `config.sample.json` to `.config.json` and edit; that file is gitignored. See the main [README](../README.md#configuration). Use `apiKeys` for any API keys; env vars like `EDSM_API_KEY` override for CI.
+
 ### Data Integration
 
 7. **[EDDN Integration](./eddn-integration-research.md)**

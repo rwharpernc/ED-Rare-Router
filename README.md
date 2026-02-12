@@ -5,7 +5,9 @@ A standalone web application for Elite Dangerous players to plan rare goods trad
 
 ## Version
 
-**Current Version**: unstable v1.4 (January 13, 2026) - **Unreleased**
+**Current Version**: unstable v1.4 (February 12, 2026) - **Unreleased**
+
+**Note:** This version (config file, API keys, path sanitization) is not fully tested.
 
 This version includes a comprehensive dataset of 140-142 rare commodities (still being verified), enhanced legality system with detailed restrictions, manual curation interface for development, and improved layout. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
 
@@ -123,7 +125,17 @@ See the [Technical Design Document](./docs/technical-design.md) for detailed arc
    ```
    This installs all required packages including Astro, React, and ZeroMQ (if available).
 
-3. **Generate initial data files (optional but recommended):**
+3. **Optional: Create local config (kept out of the repo)**  
+   To set your own paths or contact info (e.g. for EDSM API User-Agent), copy the sample and edit:
+   ```bash
+   cp config.sample.json .config.json
+   ```
+   Edit `.config.json` with your values. This file is gitignored and will not be shared.  
+   - `edsmUserAgent` – string sent as User-Agent to EDSM (e.g. `"ED-Rare-Router/1.0 (contact: your@email.com)"`).  
+   - `dataDir` – optional absolute path to the data directory; omit or set to `null` to use the default `data/` in the project root.  
+   - `apiKeys` – object for all API keys (e.g. `"edsm": "your-key"`, `"eddn": "..."`). Env overrides: `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
+
+4. **Generate initial data files (optional but recommended):**
    ```bash
    # Export rare goods to JSON (for EDDN worker)
    npm run export:rares
@@ -216,12 +228,24 @@ Complete project documentation is available in the following locations:
 
 **Note:** Only `README.md` and `CHANGELOG.md` are maintained in the repository root. All other documentation lives in the `/docs` directory.
 
+## Configuration
+
+Local settings are read from **`.config.json`** in the project root. This file is **not** committed to the repo.
+
+- Copy **`config.sample.json`** to **`.config.json`** and edit as needed.
+- **`edsmUserAgent`** – Used when calling the EDSM API (and in the market fetch script). Use a contact email or URL you are happy to share with EDSM; keep personal details only in your local `.config.json`.
+- **`dataDir`** – Optional. Set to an absolute path to store cache and data files elsewhere (e.g. to avoid committing paths or to share a data directory). Leave `null` to use the default `data/` folder.
+- **`apiKeys`** – Single place for all API keys. Use lowercase names, e.g. `"edsm": "your-key"`, `"eddn": "..."`. The app reads them via `getApiKey("edsm")`, etc. Environment variables override: set `EDSM_API_KEY`, `EDDN_API_KEY` (uppercase name + `_API_KEY`) for CI or deployment.
+
+Without `.config.json`, the app uses defaults (generic User-Agent and `data/` under the project root).
+
 ## Project Structure
 
 ```
 /
   README.md
   CHANGELOG.md
+  config.sample.json   (copy to .config.json — not committed)
   docs/
   src/
     pages/

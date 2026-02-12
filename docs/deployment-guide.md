@@ -2,7 +2,7 @@
 
 **ED Rare Router**  
 Version: unstable v1.4 (Unreleased)  
-Last Updated: January 13, 2026
+Last Updated: February 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -77,7 +77,7 @@ npm run preview
 
 ## Data Files
 
-The application uses these data files (in `data/` directory):
+The application uses these data files in the data directory (default `data/`; override with `dataDir` in `.config.json`):
 
 - `rareSystemsCache.json` - Pre-fetched rare origin system coordinates
 - `systemCache.json` - Cached EDSM system lookups
@@ -89,6 +89,16 @@ The application uses these data files (in `data/` directory):
 These files are generated automatically and can be committed to your repository.
 
 ## Configuration
+
+### Local config (paths and EDSM contact)
+
+Optional local settings are read from **`.config.json`** in the project root (not committed). Copy **`config.sample.json`** to **`.config.json`** and edit:
+
+- **`edsmUserAgent`** – User-Agent string for EDSM API and fetch script (e.g. include your contact email here so it is not stored in the repo).
+- **`dataDir`** – Optional absolute path for cache and data files. Omit or set to `null` to use the default `data/` directory.
+- **`apiKeys`** – Object for all API keys (e.g. `"edsm"`, `"eddn"`). Env overrides: `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
+
+See the main [README](../README.md#configuration) for details.
 
 ### Port Configuration
 

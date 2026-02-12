@@ -2,7 +2,7 @@
 
 **ED Rare Router**  
 Version: unstable v1.4 (Unreleased)  
-Last Updated: January 13, 2026
+Last Updated: February 12, 2026
 
 **Author:** R.W. Harper - Easy Day Gamer  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -47,7 +47,7 @@ Generate the JSON file that the worker uses:
 npm run export:rares
 ```
 
-This creates `data/rares.json` with all rare goods stations to monitor.
+This creates `rares.json` in the data directory (default `data/` in the project root). If you use a custom path via `.config.json` (see main [README](../README.md#configuration)), the worker uses that `dataDir` as well.
 
 ## Usage
 
@@ -71,7 +71,7 @@ npm run worker
 
 1. **Connection**: Connects to EDDN relay at `tcp://eddn.edcd.io:9500`
 2. **Filtering**: Monitors all market messages and filters for rare goods stations
-3. **Caching**: Stores market data in `data/eddnMarketCache.json`
+3. **Caching**: Stores market data in the data directory (default `data/eddnMarketCache.json`; path can be overridden in `.config.json`)
 4. **Updates**: Cache is saved:
    - After 30 seconds of inactivity (debounced)
    - Every 5 minutes (periodic)
