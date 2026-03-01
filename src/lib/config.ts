@@ -1,10 +1,12 @@
 /**
- * Local configuration loader.
- * Reads from .config.json in the project root (not committed to the repo).
- * Use config.sample.json as a template and copy to .config.json.
+ * Local configuration loader for ED Rare Router.
  *
- * All API keys and secrets belong in .config.json under "apiKeys".
- * Env vars override: EDSM_API_KEY, EDDN_API_KEY, etc. (uppercase key + _API_KEY).
+ * Reads from `.config.json` in the project root (gitignored). Use `config.sample.json`
+ * as a template. All API keys and secrets belong under `apiKeys`; environment variables
+ * override via EDSM_API_KEY, EDDN_API_KEY, etc. (uppercase name + _API_KEY).
+ *
+ * @module config
+ * @see docs/setup-guide.md for first-run setup
  */
 
 import { readFileSync, writeFileSync, existsSync } from "fs";
@@ -30,14 +32,18 @@ let cachedConfig: AppConfig | null = null;
 const CONFIG_PATH = join(process.cwd(), ".config.json");
 
 /**
- * Returns true if .config.json exists in the project root (for first-run setup).
+ * Returns whether `.config.json` exists in the project root.
+ * Used by middleware to redirect to /setup on first run.
+ * @returns true if the file exists, false otherwise
  */
 export function configFileExists(): boolean {
   return existsSync(CONFIG_PATH);
 }
 
 /**
- * Writes .config.json (for setup only). Clears in-memory cache so next read uses new file.
+ * Writes `.config.json` to the project root. Used only by the setup API.
+ * Clears the in-memory cache so the next read uses the new file.
+ * @param config - Valid AppConfig (edsmUserAgent, dataDir, apiKeys)
  */
 export function writeConfig(config: AppConfig): void {
   writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
@@ -62,7 +68,9 @@ function loadConfigRaw(): AppConfig {
 }
 
 /**
- * Returns the data directory path. Uses config.dataDir if set, otherwise &lt;cwd&gt;/data.
+ * Returns the data directory path for caches and generated files.
+ * Uses config.dataDir if set; otherwise returns <cwd>/data.
+ * @returns Absolute path to the data directory
  */
 export function getDataDir(): string {
   const config = loadConfigRaw();
@@ -73,7 +81,9 @@ export function getDataDir(): string {
 }
 
 /**
- * Returns the EDSM User-Agent string. Prefers config, then env EDSM_USER_AGENT, then default.
+ * Returns the User-Agent string sent to the EDSM API.
+ * Precedence: config.edsmUserAgent → EDSM_USER_AGENT env → default.
+ * @returns Non-empty string suitable for User-Agent header
  */
 export function getEdsmUserAgent(): string {
   const config = loadConfigRaw();
@@ -87,9 +97,10 @@ export function getEdsmUserAgent(): string {
 }
 
 /**
- * Returns an API key by name. Prefers config.apiKeys[name], then process.env[NAME_API_KEY].
- * Name is case-insensitive for config; env var is uppercase with _API_KEY suffix (e.g. edsm -> EDSM_API_KEY).
- * Returns undefined if not set.
+ * Returns an API key by name (e.g. "edsm", "eddn").
+ * Precedence: config.apiKeys[name] (lowercase) → process.env[NAME_API_KEY] (e.g. EDSM_API_KEY).
+ * @param name - Key name (case-insensitive); env var is uppercase + _API_KEY
+ * @returns The key string, or undefined if not set
  */
 export function getApiKey(name: string): string | undefined {
   const config = loadConfigRaw();

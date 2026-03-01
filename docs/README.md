@@ -1,6 +1,8 @@
 # ED Rare Router Documentation
 
-Welcome to the ED Rare Router documentation. This directory contains comprehensive technical documentation for the project.
+**Last updated:** March 1, 2026 · **Version:** 1.06.0-alpha
+
+Welcome to the ED Rare Router documentation. This directory contains setup guides, technical documentation, and deployment instructions.
 
 ## ⚠️ Important Disclaimer
 
@@ -19,12 +21,13 @@ See the [LICENSE](../LICENSE) file for full terms under the GNU General Public L
 - **[Data Appendix](./data-appendix.md)** - Data structures and static datasets
 - **[Architecture Overview](./architecture-overview.md)** - System architecture and data flow
 
-### Deployment & Setup
+### Setup & Deployment
 
-- **[Local Deployment Guide](./local-deployment.md)** - Complete guide for running the application locally
-- **[Deployment Guide](./deployment-guide.md)** - Quick deployment reference
-- **[EDDN Worker Setup Guide](./eddn-worker-setup.md)** - Setting up the EDDN worker service for real-time market data
-- **[Testing Market Data Fetch](./testing-market-data-fetch.md)** - Testing instructions for market data features
+- **[Setup Guide](./setup-guide.md)** — **Detailed first-run setup** (web, CLI, manual); config reference and troubleshooting
+- **[Local Deployment Guide](./local-deployment.md)** — Running the application locally, process management
+- **[Deployment Guide](./deployment-guide.md)** — Quick deployment reference
+- **[EDDN Worker Setup Guide](./eddn-worker-setup.md)** — EDDN worker service and ZeroMQ for real-time market data
+- **[Testing Market Data Fetch](./testing-market-data-fetch.md)** — Testing market data features
 
 ### Data & Integration
 
@@ -91,21 +94,20 @@ See the [LICENSE](../LICENSE) file for full terms under the GNU General Public L
 
 ### Data Integration
 
-7. **[EDDN Integration](./eddn-integration-research.md)**
-   - EDDN overview
-   - Implementation details
-   - Data structure
-   - Implementation details
+7. **[EDDN Integration](./eddn-integration-research.md)** — EDDN overview, implementation, data structure
 
-8. **[Bulk Market Data Fetch](./bulk-market-data-fetch.md)**
-   - Bulk fetch script usage
-   - Automation options
-   - Cache file structure
-   - API integration
+8. **[Bulk Market Data Fetch](./bulk-market-data-fetch.md)** — Bulk fetch script, automation, cache structure
+
+### Tools & Curation
+
+9. **[Rare Commodity Curation Guide](./tools/rare-commodity-curation-guide.md)** — Adding/editing rares, scripts (`generate:rare-coords`, `update:rare-inara-links`)
+
+10. **[Rare Commodity Route Finder](./tools/rare-commodity-route-finder.md)** — Route-ordering design notes
 
 ## Quick Links
 
 - **Getting Started**: See the main [README.md](../README.md)
+- **First-Run Setup**: See [Setup Guide](./setup-guide.md)
 - **Changelog**: See [CHANGELOG.md](../CHANGELOG.md)
 - **Project Structure**: See [Technical Design Document](./technical-design.md#21-project-structure)
 - **Local Deployment**: See [Local Deployment Guide](./local-deployment.md)

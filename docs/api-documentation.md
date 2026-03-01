@@ -1,10 +1,10 @@
 # API Documentation
 
 **ED Rare Router API**  
-Version: Alpha 1.05  
-Last Updated: February 12, 2026
+Version: Alpha 1.06  
+Last Updated: March 1, 2026
 
-**Author:** R.W. Harper - Easy Day Gamer  
+**Author:** R.W. Harper  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **Email:** easyday [at] rwharper [dot] com  
 **License:** GNU General Public License v3.0
@@ -38,6 +38,40 @@ All endpoints are relative to the application root:
 - Custom port: Configure in `astro.config.mjs` if using a different port
 
 ## Endpoints
+
+### 0. Setup (first-run config)
+
+**Endpoint**: `POST /api/setup`
+
+**Description**: Creates or overwrites `.config.json` in the project root. Used by the first-run setup page and when the user explicitly replaces existing config.
+
+**Request Headers**: `Content-Type: application/json`
+
+**Request Body**:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `edsmUserAgent` | string | Yes (recommended) | User-Agent/contact for EDSM API (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`) |
+| `dataDir` | string \| null | No | Absolute path to data directory; `null` or empty = default `data/` |
+| `apiKeys` | object | No | Keys: `edsm`, `eddn`, etc. (lowercase). Values: API key strings. |
+| `overwrite` | boolean | No | If `true`, replace existing `.config.json`. Required when config already exists. |
+
+**Response** (201 Created):
+```json
+{ "ok": true, "message": "Config saved." }
+```
+
+**Error Responses**:
+- **400** — Missing/invalid `Content-Type` or invalid JSON body.
+- **409 Conflict** — Config already exists and `overwrite` is not `true`.
+  ```json
+  { "error": "Config already exists. Edit .config.json manually or pass overwrite: true to replace." }
+  ```
+- **500** — Failed to write file (permissions or path).
+
+**Notes**: See [Setup Guide](./setup-guide.md) for full first-run instructions.
+
+---
 
 ### 1. System Autocomplete
 

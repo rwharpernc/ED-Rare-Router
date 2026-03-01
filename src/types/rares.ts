@@ -34,6 +34,8 @@ export interface RareGood {
   illegalInSuperpowerGovs?: SuperpowerGovRestriction[];
   /** Distance from arrival star to station in light seconds */
   distanceToStarLs?: number;
+  /** Inara.cz commodity page URL for reference (optional; run scripts/update-rare-inara-links.js to fill) */
+  inaraLink?: string;
   /** Typical market cost in credits (static baseline price) */
   cost?: number;
   /** Whether the system requires a permit */

@@ -1,3 +1,7 @@
+/**
+ * Distance utilities for ED Rare Router.
+ * Uses EDSM-style 3D coordinates (x, y, z in lightyears).
+ */
 import type { EDSMCoords } from "../types/edsm";
 
 /**

@@ -1,18 +1,12 @@
 ---
 import '../styles/global.css';
-import { configFileExists } from '../lib/config';
 
 interface Props {
   title?: string;
 }
 
 const { title = 'ED Rare Router' } = Astro.props;
-
-// First-run: if no config, redirect to setup (except for /setup and /api)
-const pathname = Astro.url.pathname;
-if (!configFileExists() && pathname !== '/setup' && !pathname.startsWith('/api')) {
-  return Astro.redirect('/setup');
-}
+// First-run redirect is handled in src/middleware.ts to avoid ResponseSentError.
 ---
 
 <!doctype html>
@@ -49,7 +43,7 @@ if (!configFileExists() && pathname !== '/setup' && !pathname.startsWith('/api')
     )}
     <footer class="bg-gray-800 border-t border-gray-700 py-4 mt-8">
       <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400">
-        <p>© {new Date().getFullYear()} R.W. Harper - Easy Day Gamer. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} R.W. Harper. All rights reserved.</p>
         <p class="mt-1 text-xs text-gray-500">Elite Dangerous is a trademark of Frontier Developments plc.</p>
       </div>
     </footer>

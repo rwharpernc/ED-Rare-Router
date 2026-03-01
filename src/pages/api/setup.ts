@@ -5,9 +5,16 @@ import type { AppConfig } from "../../lib/config";
 export const prerender = false;
 
 /**
- * POST /api/setup
- * Body: { edsmUserAgent?: string, dataDir?: string | null, apiKeys?: Record<string, string> }
- * Creates .config.json. Only allowed when config does not exist (first-run), unless body.overwrite is true.
+ * POST /api/setup — Create or replace .config.json (first-run setup).
+ *
+ * Request body (JSON):
+ * - edsmUserAgent?: string — User-Agent/contact for EDSM (recommended).
+ * - dataDir?: string | null — Absolute path to data dir; null/empty = default data/.
+ * - apiKeys?: Record<string, string> — e.g. { edsm: "...", eddn: "..." }.
+ * - overwrite?: boolean — If true, replace existing config; required when .config.json already exists.
+ *
+ * Returns 201 on success, 409 if config exists and overwrite is not true, 400/500 on error.
+ * @see docs/setup-guide.md
  */
 export const POST: APIRoute = async ({ request }) => {
   if (request.headers.get("Content-Type")?.includes("application/json") === false) {

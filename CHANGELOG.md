@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Author:** R.W. Harper - Easy Day Gamer  
+**Author:** R.W. Harper  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
 **Email:** easyday [at] rwharper [dot] com  
 **License:** GNU General Public License v3.0
@@ -14,13 +14,28 @@ All notable changes to this project will be documented in this file.
 This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project uses a three-tier versioning system: **alpha/unstable**, **beta**, and **release**. Current release: **Alpha 1.05** (February 12, 2026).
+and this project uses a three-tier versioning system: **alpha/unstable**, **beta**, and **release**. Current release: **Alpha 1.06** (March 1, 2026).
 
 ## Versioning System
 
 - **unstable**: Development versions with active changes and potential breaking changes
 - **beta**: Feature-complete versions undergoing testing and refinement
 - **release**: Stable production-ready versions
+
+## [Alpha 1.06] - 2026-03-01
+
+### Added
+- **Setup guide** - Detailed first-run setup instructions in `docs/setup-guide.md` (web and CLI, field-by-field)
+- **Documentation index** - Setup guide and tools docs linked from `docs/README.md`
+- **Rare data scripts** - `generate:rare-coords` and `update:rare-inara-links` from Waystation improvements; docs in `docs/tools/`
+
+### Changed
+- **Documentation** - All docs updated for March 1, 2026; version 1.06.0-alpha; expanded README setup section
+- **Code comments** - JSDoc and inline comments added to `src/lib/config.ts`, `src/middleware.ts`, setup API/page, and key modules
+- **Credits** - Easy Day Gamer removed; credit as R.W. Harper only
+
+### Fixed
+- **ResponseSentError** - First-run and dev-only redirects moved to middleware so redirects occur before any response is streamed
 
 ## [Alpha 1.05] - 2026-02-12
 

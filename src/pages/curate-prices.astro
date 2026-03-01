@@ -1,11 +1,7 @@
 ---
-// Price curation page - development only
+// Price curation page - development only (redirect in production is in src/middleware.ts)
 import Layout from "../components/Layout.astro";
 import PriceCuratorApp from "../components/PriceCuratorApp";
-
-if (!import.meta.env.DEV) {
-  return Astro.redirect("/");
-}
 ---
 
 <Layout title="Price Curation - Development Only">

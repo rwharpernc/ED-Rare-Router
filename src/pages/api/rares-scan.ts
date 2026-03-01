@@ -11,18 +11,17 @@ import { getEDDNMarketData } from "../../lib/eddnMarketCache";
 import type { ScanRequest, ScanResult } from "../../types/api";
 
 /**
- * Scan mode endpoint.
- * 
- * Analyzes all rare goods from the current system perspective:
- * - Computes distances from current system to each rare origin
- * - Evaluates legality at current system
- * - Determines PowerPlay eligibility
- * - Calculates CP divisors if eligible
- * 
- * Request body: ScanRequest
- * Returns: Array of ScanResult objects
+ * POST /api/rares-scan — Scan rare goods from a current system.
+ *
+ * Analyzes all rare goods from the current system: distances to each rare origin,
+ * legality at current system, PowerPlay eligibility, CP divisors when eligible.
+ * Merges curated legality, curated prices, and EDDN market data when available.
+ *
+ * Request body: ScanRequest { current, currentPpType?, power?, hasFinanceEthos? }
+ * Returns: Array of ScanResult objects (or error JSON).
+ * @see types/api.ts for ScanRequest and ScanResult
  */
-export const prerender = false; // Ensure this endpoint is server-rendered
+export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {

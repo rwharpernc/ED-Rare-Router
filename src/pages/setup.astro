@@ -97,6 +97,10 @@ import Layout from '../components/Layout.astro';
   </div>
 
   <script>
+    /**
+     * First-run setup form: POSTs to /api/setup with edsmUserAgent, dataDir, apiKeys, overwrite.
+     * On 201, redirects to /. On 409, shows message to check "Replace existing config".
+     */
     (function () {
       const form = document.getElementById('setup-form') as HTMLFormElement;
       const messageEl = document.getElementById('setup-message') as HTMLDivElement;

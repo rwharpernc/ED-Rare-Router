@@ -5,9 +5,9 @@ A standalone web application for Elite Dangerous players to plan rare goods trad
 
 ## Version
 
-**Current Version**: Alpha 1.05 (February 12, 2026)
+**Current Version**: Alpha 1.06 (March 1, 2026)
 
-This version includes a comprehensive dataset of 140-142 rare commodities (still being verified), enhanced legality system with detailed restrictions, manual curation interface for development, and improved layout. All rare commodity data is static - no updates needed. Route planning is done manually by the user based on scan results.
+This version includes a comprehensive dataset of 140–142 rare commodities (still being verified), enhanced legality system with detailed restrictions, manual curation interface for development, first-run setup via web or CLI, and improved documentation. All rare commodity data is static; route planning is done manually by the user based on scan results.
 
 ## ⚠️ Important Disclaimers
 
@@ -103,42 +103,41 @@ See the [Technical Design Document](./docs/technical-design.md) for detailed arc
 
 ## Prerequisites
 
-- **Node.js 18+** - [Download](https://nodejs.org/)
-- **npm** - Comes with Node.js
+- **Node.js 18+** — [Download](https://nodejs.org/)
+- **npm** — Comes with Node.js
 
-**Optional (for EDDN Worker - Real-time Market Data):**
-- **ZeroMQ** - Required for EDDN worker service
-  - **Windows**: Download from [zeromq.org](https://zeromq.org/download/) or use `vcpkg install zeromq`
-  - **macOS**: `brew install zeromq`
-  - **Linux (Debian/Ubuntu)**: `sudo apt-get install libzmq3-dev`
-  - **Linux (Fedora)**: `sudo dnf install zeromq-devel`
+**Optional (for EDDN Worker — real-time market data):**
 
-## Installation
+- **ZeroMQ** — Required for EDDN worker service  
+  - **Windows:** [zeromq.org](https://zeromq.org/download/) or `vcpkg install zeromq`  
+  - **macOS:** `brew install zeromq`  
+  - **Linux (Debian/Ubuntu):** `sudo apt-get install libzmq3-dev`  
+  - **Linux (Fedora):** `sudo dnf install zeromq-devel`  
 
-1. **Clone or download the repository**
+See [EDDN Worker Setup](./docs/eddn-worker-setup.md) for details.
+
+## Installation and first-run setup
+
+**Detailed step-by-step instructions:** See **[Setup Guide](./docs/setup-guide.md)**.
+
+### Quick start
+
+1. **Clone the repository** and go to the project root.
 
 2. **Install dependencies:**
    ```bash
    npm install
    ```
-   This installs all required packages including Astro, React, and ZeroMQ (if available).
 
-3. **Create local config (first run)**  
-   If you don't have a `.config.json` yet, either:
-   - **Web:** Run `npm run dev` and open the app — you'll be redirected to **Setup** to enter paths and keys; submitting the form creates `.config.json`.
-   - **CLI:** Run `npm run setup` and answer the prompts; this writes `.config.json` in the project root (gitignored).
-   You can also copy `config.sample.json` to `.config.json` and edit by hand.  
-   - `edsmUserAgent` – string sent as User-Agent to EDSM (e.g. contact email).  
-   - `dataDir` – optional absolute path to the data directory; blank = default `data/`.  
-   - `apiKeys` – optional keys (e.g. `edsm`, `eddn`). Env overrides: `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
+3. **Create local config (first run).** Choose one:
+   - **Web (recommended):** Run `npm run dev`, open http://localhost:4321 — you are redirected to **/setup**. Fill in at least **EDSM User-Agent** (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`), optionally data directory and API keys, then click **Save config**.
+   - **CLI:** Run `npm run setup` and follow the prompts to create `.config.json`.
+   - **Manual:** Copy `config.sample.json` to `.config.json` and edit (set `edsmUserAgent` and optionally `dataDir`, `apiKeys`).
 
-4. **Generate initial data files (optional but recommended):**
+4. **Optional — generate initial data:**
    ```bash
-   # Export rare goods to JSON (for EDDN worker)
    npm run export:rares
-   
-   # Fetch initial market data from EDSM (optional)
-   npm run fetch:market
+   npm run fetch:market   # optional
    ```
 
 ## Running the Application
@@ -210,20 +209,29 @@ For detailed local deployment instructions, see the [Local Deployment Guide](./d
 
 ## Documentation
 
-Complete project documentation is available in the following locations:
+**Last updated:** March 1, 2026 · **Version:** 1.06.0-alpha
 
-### Root Documentation
-- **[CHANGELOG.md](./CHANGELOG.md)** - Version history and change log
+### Root
 
-### Technical Documentation (`/docs`)
-- **[Documentation Index](./docs/README.md)** - Overview of all documentation
-- **[Technical Design Document](./docs/technical-design.md)** - Architecture, design decisions, and technical specifications
-- **[API Documentation](./docs/api-documentation.md)** - Complete API endpoint specifications
-- **[Architecture Overview](./docs/architecture-overview.md)** - System architecture and data flow diagrams
-- **[Data Appendix](./docs/data-appendix.md)** - Data structures and static datasets
-- **[Deployment Guide](./docs/deployment-guide.md)** - Step-by-step deployment instructions
+- **[CHANGELOG.md](./CHANGELOG.md)** — Version history and change log
 
-**Note:** Only `README.md` and `CHANGELOG.md` are maintained in the repository root. All other documentation lives in the `/docs` directory.
+### Setup and deployment
+
+- **[Setup Guide](./docs/setup-guide.md)** — **Detailed first-run setup** (web, CLI, manual); field-by-field config reference
+- **[Local Deployment Guide](./docs/local-deployment.md)** — Running the app locally, process management, EDDN worker
+- **[Deployment Guide](./docs/deployment-guide.md)** — Deployment reference
+- **[EDDN Worker Setup](./docs/eddn-worker-setup.md)** — ZeroMQ and EDDN worker configuration
+
+### Technical (`/docs`)
+
+- **[Documentation Index](./docs/README.md)** — Overview of all documentation
+- **[Technical Design](./docs/technical-design.md)** — Architecture and design decisions
+- **[API Documentation](./docs/api-documentation.md)** — API endpoint specifications
+- **[Architecture Overview](./docs/architecture-overview.md)** — System architecture and data flow
+- **[Data Appendix](./docs/data-appendix.md)** — Data structures and static datasets
+- **[Tools](./docs/tools/)** — Rare commodity curation and route-finder design ([curation guide](./docs/tools/rare-commodity-curation-guide.md), [route finder](./docs/tools/rare-commodity-route-finder.md))
+
+**Note:** Only `README.md` and `CHANGELOG.md` live in the repository root; all other docs are under `/docs`.
 
 ## Configuration
 
@@ -238,7 +246,7 @@ Without `.config.json`, the app uses defaults (generic User-Agent and `data/` un
 
 ### First-run setup
 
-When there is no `.config.json`, the app redirects to **/setup** so you can enter EDSM User-Agent, optional data directory, and API keys; the form creates `.config.json` for you. You can instead run `npm run setup` in the terminal to create it via prompts.
+When there is no `.config.json`, the app redirects to **/setup** so you can enter EDSM User-Agent, optional data directory, and API keys; the form creates `.config.json` for you. You can instead run `npm run setup` in the terminal or copy and edit `config.sample.json`. For full details, see the **[Setup Guide](./docs/setup-guide.md)**.
 
 ### Keeping the repo clean
 
@@ -343,7 +351,7 @@ Finance Ethos is automatically determined from your selected power - no checkbox
 
 ## Author
 
-**R.W. Harper - Easy Day Gamer**
+**R.W. Harper**
 
 - LinkedIn: [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)
 - Email: easyday [at] rwharper [dot] com
