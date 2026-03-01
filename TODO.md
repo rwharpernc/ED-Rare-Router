@@ -6,7 +6,6 @@ Last Updated: February 12, 2026
 
 **Author:** R.W. Harper  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
-**Email:** easyday [at] rwharper [dot] com  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer

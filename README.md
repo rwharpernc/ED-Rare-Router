@@ -354,7 +354,6 @@ Finance Ethos is automatically determined from your selected power - no checkbox
 **R.W. Harper**
 
 - LinkedIn: [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)
-- Email: easyday [at] rwharper [dot] com
 
 ## License
 
