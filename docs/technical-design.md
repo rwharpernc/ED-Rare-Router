@@ -253,7 +253,7 @@ User Input → React Component → API Endpoint → Business Logic
 - Returns detailed legality information including which governments allow/disallow the item
 - Provides human-readable explanations of all restrictions
 
-### 3.6 Curated Legality Management (`src/lib/curatedLegality.ts`)
+### 3.5 Curated Legality Management (`src/lib/curatedLegality.ts`)
 
 **Purpose**: Manage manually curated legality data that overrides base data.
 
@@ -279,7 +279,7 @@ interface CuratedLegalityData {
 }
 ```
 
-### 3.7 Curated Price Management (`src/lib/curatedPrices.ts`)
+### 3.6 Curated Price Management (`src/lib/curatedPrices.ts`)
 
 **Purpose**: Manage manually curated baseline purchase prices that serve as fallback when EDDN market data is unavailable.
 
@@ -311,7 +311,7 @@ interface CuratedPriceData {
 3. **Static cost from rares.ts** (if exists) - shows "(Est.)"
 4. **"N/A"** if none of the above
 
-### 3.8 EDDN Market Data Cache (`src/lib/eddnMarketCache.ts`)
+### 3.7 EDDN Market Data Cache (`src/lib/eddnMarketCache.ts`)
 
 **Purpose**: Read real-time market data from EDDN worker cache.
 
@@ -343,7 +343,7 @@ interface EDDNCachedMarketEntry {
 }
 ```
 
-### 3.5 PowerPlay Calculations (`src/lib/powerplay.ts`)
+### 3.8 PowerPlay Calculations (`src/lib/powerplay.ts`)
 
 **Purpose**: PowerPlay 2.0 CP calculations.
 
@@ -360,12 +360,17 @@ interface EDDNCachedMarketEntry {
 
 ### 4.1 Rare Goods
 
-See [Data Appendix](./data-appendix.md) for complete rare goods structure.
+See [Data Appendix](./data-appendix.md) for the complete rare goods structure.
 
-**Key Fields**:
-- `illegalInSuperpowers`: Array of superpowers where illegal (all government types)
-- `illegalInGovs`: Array of government types where illegal (all superpowers)
-- `illegalInSuperpowerGovs`: Array of combined restrictions (specific superpower + government combinations)
+**Key fields**:
+- `rare`: name of the rare good
+- `system` / `station`: origin system and station
+- `pad`: landing pad size (S/M/L)
+- `sellHintLy`: optimal selling distance
+- `illegalInSuperpowers`: superpowers where illegal (all government types)
+- `illegalInGovs`: government types where illegal (all superpowers)
+- `illegalInSuperpowerGovs`: combined restrictions (specific superpower + government pairs)
+- `pp.eligibleSystemTypes`: PowerPlay system types where the rare is eligible
 
 ### 4.2 Legality Details
 
@@ -382,17 +387,7 @@ interface LegalityDetails {
 }
 ```
 
-**Key Fields**:
-- `rare`: Name of the rare good
-- `system`: Origin system name
-- `station`: Origin station name
-- `pad`: Landing pad size (S/M/L)
-- `sellHintLy`: Optimal selling distance
-- `illegalInSuperpowers`: Array of superpowers where illegal
-- `illegalInGovs`: Array of government types where illegal
-- `pp.eligibleSystemTypes`: PP system types where eligible
-
-### 4.2 PowerPlay Powers
+### 4.3 PowerPlay Powers
 
 **Structure**:
 ```typescript
@@ -492,18 +487,7 @@ The build process:
 
 ### 8.3 Deployment
 
-The application is designed for **local deployment**:
-
-- **Adapter**: `@astrojs/node` (configured in `astro.config.mjs`)
-- **Mode**: Standalone server
-- **Deployment**: Run on your local machine or server
-- **Process Management**: Use PM2 or systemd (see [Local Deployment Guide](./local-deployment.md))
-
-#### Node.js (Self-hosted)
-
-- **Adapter**: `@astrojs/node` (default for local dev)
-- **Mode**: Standalone server
-- **Deployment**: Run `node dist/server/entry.mjs`
+The application targets **local deployment**, using the `@astrojs/node` adapter in standalone server mode. Run it directly with `node dist/server/entry.mjs`, or manage it with PM2 or systemd - see the [Local Deployment Guide](./local-deployment.md).
 
 See [Deployment Guide](./deployment-guide.md) for detailed instructions.
 

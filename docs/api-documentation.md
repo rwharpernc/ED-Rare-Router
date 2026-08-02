@@ -16,9 +16,9 @@ This API is provided "AS IS" without warranty of any kind, express or implied. N
 
 ## Overview
 
-The ED Rare Router API provides endpoints for system autocomplete and rare goods scanning. All endpoints return JSON and use standard HTTP status codes.
+The API covers system autocomplete and rare goods scanning. Every endpoint returns JSON and uses standard HTTP status codes.
 
-**Note**: This is a quick scan tool for finding rare goods near your current location. Route planning is done manually by the user based on scan results.
+This is a quick-scan tool for finding rare goods near your current location - route planning itself stays manual, based on the scan results.
 
 ### Finance Ethos
 
@@ -76,7 +76,7 @@ All endpoints are relative to the application root:
 
 **Endpoint**: `GET /api/systems`
 
-**Description**: Provides system name suggestions for autocomplete functionality using the EDSM API.
+**Description**: System name suggestions for autocomplete, backed by the EDSM API.
 
 **Query Parameters**:
 
@@ -135,7 +135,7 @@ GET /api/systems?q=Lave
 
 **Endpoint**: `GET /api/system-lookup`
 
-**Description**: Verifies if a system name exists in EDSM and returns system information. Useful for validating manually entered system names.
+**Description**: Checks whether a system name exists in EDSM and returns its info - useful for validating manually entered names.
 
 **Query Parameters**:
 
@@ -221,7 +221,7 @@ GET /api/system-lookup?name=Sol
 
 **Endpoint**: `POST /api/rares-scan`
 
-**Description**: Analyzes all rare goods from the current system perspective. Computes distances and evaluates legality.
+**Description**: Runs every rare good against the current system - computes distance and evaluates legality for each.
 
 **Request Body**:
 
@@ -430,7 +430,7 @@ All endpoints follow these error handling principles:
 **Endpoint**: `POST /api/curated-legality`  
 **Endpoint**: `DELETE /api/curated-legality`
 
-**Description**: Manages manually curated legality data that overrides base data. **Only available in development mode** (`import.meta.env.DEV === true`). Returns 403 Forbidden in production.
+**Description**: Reads and writes manually curated legality data that overrides the base dataset. Development mode only (`import.meta.env.DEV === true`) - returns 403 Forbidden in production.
 
 **GET Request**: Returns all curated legality data
 
@@ -478,7 +478,7 @@ All endpoints follow these error handling principles:
 
 **Endpoint**: `GET /api/market-data`
 
-**Description**: Returns market data for rare goods stations. Reads from cached EDDN or EDSM data, falling back to live EDSM API if cache is stale.
+**Description**: Market data for rare goods stations - reads from the cached EDDN or EDSM data, falling back to a live EDSM API call if the cache is stale.
 
 **Query Parameters**:
 
@@ -551,9 +551,9 @@ GET /api/market-data
 
 **Endpoints**: `GET /api/curated-prices`, `POST /api/curated-prices`, `DELETE /api/curated-prices`
 
-**Description**: Manage baseline purchase prices for rare goods. These prices are used as fallback when EDDN market data is not available. Only available in development mode.
+**Description**: Manage baseline purchase prices, used as a fallback when EDDN market data isn't available. Development mode only.
 
-**IMPORTANT**: These endpoints are only available when running in development mode (`npm run dev`). They return 403 Forbidden in production builds.
+These endpoints only work under `npm run dev` - they return 403 Forbidden in production builds.
 
 #### GET /api/curated-prices
 

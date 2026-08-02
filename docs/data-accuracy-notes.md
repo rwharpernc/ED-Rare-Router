@@ -8,15 +8,15 @@ This software and its data are provided "AS IS" without warranty of any kind, ex
 
 ## Legality Data Sources
 
-The legality information for rare goods in this application is manually curated from **Inara.cz**. 
+Legality information for rare goods is curated by hand from **Inara.cz**.
 
-### Why Manual Curation?
+### Why manual curation?
 
-Unfortunately, there are **no public APIs** available that provide rare goods legality data:
+None of the usual data sources expose rare goods legality through a public API:
 
-- **Inara.cz**: Does not provide a public API for commodity legality data
-- **EDSM**: Provides system coordinates and basic system info, but not commodity legality
-- **Spansh**: Focuses on route planning, not commodity legality data
+- **Inara.cz** doesn't provide one for commodity legality
+- **EDSM** covers system coordinates and basic system info, not commodity legality
+- **Spansh** focuses on route planning, not legality data
 
 ### How to Update Legality Data
 

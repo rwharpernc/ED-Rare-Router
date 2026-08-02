@@ -16,13 +16,7 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 
 ## Overview
 
-This guide covers running ED Rare Router as a **local application** on your own machine. This approach enables:
-
-- ✅ EDDN worker service for real-time market data
-- ✅ Persistent file storage
-- ✅ Long-running processes
-- ✅ Full control over the environment
-- ✅ All features available (no serverless limitations)
+This guide covers running ED Rare Router as a local application on your own machine. Running it this way gets you the EDDN worker for real-time market data, persistent file storage, long-running processes, full control over the environment, and every feature available (nothing held back by serverless limitations).
 
 ## Architecture
 
@@ -419,10 +413,7 @@ lsof -i :4321
 
 ### Local Deployment
 
-Since this runs locally:
-- ✅ No external exposure (unless you configure it)
-- ✅ No authentication needed (local access only)
-- ✅ Full control over data
+Since this runs locally, there's no external exposure unless you configure it, no authentication needed for local access, and you have full control over your data.
 
 ### If Exposing to Network
 

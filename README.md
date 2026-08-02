@@ -1,13 +1,12 @@
 # ED Rare Router
 
-A standalone web application for Elite Dangerous players to plan rare goods trading routes with PowerPlay integration.
-
+A standalone web app for Elite Dangerous players planning rare goods trading routes, with PowerPlay integration.
 
 ## Version
 
 **Current Version**: Alpha 1.06 (March 1, 2026)
 
-This version includes a comprehensive dataset of 140–142 rare commodities (still being verified), enhanced legality system with detailed restrictions, manual curation interface for development, first-run setup via web or CLI, and improved documentation. All rare commodity data is static; route planning is done manually by the user based on scan results.
+This version ships a dataset of roughly 140-142 rare commodities (the exact count is still being verified), a legality system with detailed restrictions, a manual curation interface for development, first-run setup via web or CLI, and updated documentation. Rare commodity data is static - route planning itself is manual, based on your scan results.
 
 ## ⚠️ Important Disclaimers
 
@@ -16,125 +15,120 @@ This version includes a comprehensive dataset of 140–142 rare commodities (sti
 **NO WARRANTIES OR GUARANTEES ARE PROVIDED**
 
 This project is:
-- **A personal hobby project** - Not a commercial product
-- **In active development** - Still in design and prototyping phase
-- **Not ready for production use** - Not ready for Alpha or Beta testing
-- **Subject to frequent changes** - Refactors and breaking changes may occur
+- A personal hobby project, not a commercial product
+- Actively in development - still in the design and prototyping phase
+- Not ready for production, Alpha, or Beta testing
+- Subject to frequent refactors and breaking changes
 
-**By using this software, you acknowledge that:**
-- The software is provided "AS IS" without warranty of any kind
-- No guarantees are made regarding accuracy, reliability, or fitness for any purpose
-- You assume all risks associated with using this software
-- The authors and contributors are not liable for any damages arising from use of this software
+By using this software, you acknowledge that:
+- It's provided "AS IS" without warranty of any kind
+- No guarantees are made about accuracy, reliability, or fitness for any purpose
+- You assume all risk associated with using it
+- The author and contributors aren't liable for damages arising from its use
 
-**Important Notes:**
-- Refactors are going to happen frequently
-- Documentation will be kept updated
-- Code is commented
-- Features may be incomplete, unstable, or subject to significant changes
+A few practical notes: refactors happen often, documentation is kept reasonably current, the code is commented, and features can be incomplete or change significantly without notice.
 
-This software is licensed under the **GNU General Public License v3.0**, which includes warranty disclaimers. See the [LICENSE](./LICENSE) file for full terms.
+This software is licensed under the GNU General Public License v3.0, which includes its own warranty disclaimers. See [LICENSE](./LICENSE) for the full text.
 
 ## Overview
 
 ED Rare Router helps commanders:
-- Quickly scan for rare goods near their current location
-- Find rare goods origins and calculate distances from current system
-- Evaluate legality of rare goods in different systems with detailed restrictions
-- View comprehensive legality information (which governments allow/disallow each item)
-- Build routes manually from scan results (all data is static - no updates needed)
+- Scan for rare goods near their current location
+- Find where rare goods originate and calculate distance from their current system
+- Check legality of rare goods across different systems, with restriction details
+- See which governments allow or disallow each item
+- Build routes manually from scan results (the data is static, so nothing needs updating)
 
 ## Features
 
-### Core Functionality
-- **Quick Scan** - Single button to scan for all rare goods near your current system
-- **140-142 Rare Commodities** - Complete dataset including all major rare goods from Elite Dangerous (count still being verified)
-- **System Autocomplete** - Search for systems using EDSM API with intelligent caching
-- **Distance Calculations** - Compute lightyear distances between systems
-- **Smart Sorting** - Results sorted closest first, with unknown systems at the end
+### Core
+- **Quick Scan** - one button scans for all rare goods near your current system
+- Roughly 140-142 rare commodities covering the major rare goods in Elite Dangerous (count still being verified)
+- System autocomplete backed by the EDSM API, with caching so repeat lookups are fast
+- Lightyear distance calculations between systems
+- Results sort closest-first, with unknown systems pushed to the end
 
-### Legality System
-- **Enhanced Legality Evaluation** - Comprehensive legality checking with detailed restrictions
-- **Three-State Legality Display** - Always Legal, Always Illegal, or Conditional
-- **Detailed Restrictions** - Shows which governments and superpowers allow/disallow each item
-- **Combined Restrictions** - Support for combined superpower + government restrictions (e.g., "Federal Democracy")
-- **Expandable Details** - Click to see full legality information for each rare good
+### Legality
+- Three-state legality display: Always Legal, Always Illegal, or Conditional
+- Shows which governments and superpowers allow or disallow each item
+- Handles combined restrictions, e.g. superpower + government pairs like "Federal Democracy"
+- Click to expand full legality details for any item
 
-### PowerPlay Integration
-- **Power Autocomplete** - Fuzzy search for PowerPlay powers with faction badges
-- **Finance Ethos Auto-Detection** - Automatically determines Finance Ethos from selected power
-- **CP Divisor Calculation** - Shows effective CP divisors with Finance Ethos applied
+### PowerPlay
+- Fuzzy search for PowerPlay powers, with faction badges
+- Finance Ethos is detected automatically from your selected power
+- Effective CP divisors are shown with Finance Ethos applied
 
-### User Interface
-- **Vertical Layout** - Selector panel above results on all screen sizes
-- **Distance-Based Pagination** - Optional pagination with 9 page size options (25-1000 ly)
-- **Comprehensive Display** - Shows pad size, cost, permit requirements, and legality
-- **Back to Top Navigation** - Button at end of results for easy navigation
-- **Real-Time Market Data** - Live buy/sell prices and stock information from EDDN (when worker is running)
-- **Price Display with Fallbacks** - Shows prices with source indicators:
+### Interface
+- Vertical layout - selector panel above results at any screen size
+- Optional pagination by distance, with nine page-size options (25-1000 ly)
+- Each result shows pad size, cost, permit requirements, and legality
+- "Back to top" button at the end of the results list
+- Live buy/sell prices and stock levels from EDDN, when the worker is running
+- Price display falls back gracefully:
   - "(Live)" for real-time EDDN market data
   - "(Est.)" for curated baseline prices or static costs
-  - Stock and sell price information when available
+  - Stock and sell price shown when available
 
-### Data & Performance
-- **Static Data** - All rare commodity data is static (locations never change - no updates needed)
-- **Intelligent Caching** - System coordinates and market data cached locally
-- **Manual Route Planning** - Users build routes manually from scan results
-- **EDDN Integration** - Optional real-time market data via EDDN worker service
+### Data & performance
+- All rare commodity data is static - locations don't change, so there's nothing to keep in sync
+- System coordinates and market data are cached locally
+- Route planning stays manual - you build routes from scan results yourself
+- EDDN integration is optional and adds real-time market data via a separate worker service
 
-### Development Tools
-- **Development Curation Tools** - Manual data curation interfaces (development mode only)
-  - **Legality Curation** - Manual legality data curation interface (`/curate`)
-  - **Price Curation** - Manual baseline price curation interface (`/curate-prices`)
-- **Cache Status Display** - Shows when data was last updated
-- **Comprehensive Logging** - Detailed console output for debugging
+### Development tools
+- Manual data curation interfaces, development mode only:
+  - Legality curation at `/curate`
+  - Price curation at `/curate-prices`
+- Cache status display shows when data was last updated
+- Console logging is fairly verbose to help with debugging
 
-For detailed feature documentation, see the [API Documentation](./docs/api-documentation.md) and [Technical Design Document](./docs/technical-design.md).
+See the [API Documentation](./docs/api-documentation.md) and [Technical Design Document](./docs/technical-design.md) for the full feature writeup.
 
 ## Tech Stack
 
-- **Astro** - Main framework for server-side rendering and API routes
-- **TypeScript** - Type-safe development throughout
-- **React** - Interactive UI components (islands)
-- **TailwindCSS** - Utility-first CSS framework for styling
-- **EDSM API** - External data source for system information
+- **Astro** for server-side rendering and API routes
+- **TypeScript** throughout
+- **React** for the interactive UI components (islands)
+- **TailwindCSS** for styling
+- **EDSM API** as the external data source for system information
 
-See the [Technical Design Document](./docs/technical-design.md) for detailed architecture information.
+See the [Technical Design Document](./docs/technical-design.md) for architecture details.
 
 ## Prerequisites
 
 - **Node.js 18+** — [Download](https://nodejs.org/)
-- **npm** — Comes with Node.js
+- **npm** — comes with Node.js
 
-**Optional (for EDDN Worker — real-time market data):**
+**Optional, for the EDDN worker (real-time market data):**
 
-- **ZeroMQ** — Required for EDDN worker service  
-  - **Windows:** [zeromq.org](https://zeromq.org/download/) or `vcpkg install zeromq`  
-  - **macOS:** `brew install zeromq`  
-  - **Linux (Debian/Ubuntu):** `sudo apt-get install libzmq3-dev`  
-  - **Linux (Fedora):** `sudo dnf install zeromq-devel`  
+- **ZeroMQ**
+  - **Windows:** [zeromq.org](https://zeromq.org/download/) or `vcpkg install zeromq`
+  - **macOS:** `brew install zeromq`
+  - **Linux (Debian/Ubuntu):** `sudo apt-get install libzmq3-dev`
+  - **Linux (Fedora):** `sudo dnf install zeromq-devel`
 
 See [EDDN Worker Setup](./docs/eddn-worker-setup.md) for details.
 
 ## Installation and first-run setup
 
-**Detailed step-by-step instructions:** See **[Setup Guide](./docs/setup-guide.md)**.
+For step-by-step instructions, see the **[Setup Guide](./docs/setup-guide.md)**.
 
 ### Quick start
 
-1. **Clone the repository** and go to the project root.
+1. Clone the repository and go to the project root.
 
-2. **Install dependencies:**
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. **Create local config (first run).** Choose one:
-   - **Web (recommended):** Run `npm run dev`, open http://localhost:4321 — you are redirected to **/setup**. Fill in at least **EDSM User-Agent** (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`), optionally data directory and API keys, then click **Save config**.
+3. Create your local config (first run only). Pick one:
+   - **Web (recommended):** Run `npm run dev`, open http://localhost:4321 - you'll be redirected to **/setup**. Fill in at least **EDSM User-Agent** (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`), optionally a data directory and API keys, then click **Save config**.
    - **CLI:** Run `npm run setup` and follow the prompts to create `.config.json`.
-   - **Manual:** Copy `config.sample.json` to `.config.json` and edit (set `edsmUserAgent` and optionally `dataDir`, `apiKeys`).
+   - **Manual:** Copy `config.sample.json` to `.config.json` and edit it directly (set `edsmUserAgent` and optionally `dataDir`, `apiKeys`).
 
-4. **Optional — generate initial data:**
+4. Optional - generate initial data:
    ```bash
    npm run export:rares
    npm run fetch:market   # optional
@@ -142,70 +136,65 @@ See [EDDN Worker Setup](./docs/eddn-worker-setup.md) for details.
 
 ## Running the Application
 
-### Basic Usage (Web Server Only)
-
-Start the development server:
+### Basic usage (web server only)
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:4321`
+The app runs at `http://localhost:4321`.
 
-### With EDDN Worker (Real-time Market Data)
+### With the EDDN worker (real-time market data)
 
-For real-time market data updates, run both services:
+Run both services, in separate terminals:
 
-**Terminal 1 - Web Server:**
+**Terminal 1 - web server:**
 ```bash
 npm run dev
 ```
 
-**Terminal 2 - EDDN Worker:**
+**Terminal 2 - EDDN worker:**
 ```bash
 npm run worker
 ```
 
-The worker connects to EDDN via ZeroMQ and caches market data to `data/eddnMarketCache.json`.
+The worker connects to EDDN over ZeroMQ and caches market data to `data/eddnMarketCache.json`.
 
-### Production Build
-
-Build the production version:
+### Production build
 
 ```bash
 npm run build
 ```
 
-Preview the production build:
+Preview it with:
 
 ```bash
 npm run preview
 ```
 
-For production deployment, see the [Local Deployment Guide](./docs/local-deployment.md) for process management (PM2, systemd) and running as a service.
+For production deployment - process management with PM2 or systemd, running as a service - see the [Local Deployment Guide](./docs/local-deployment.md).
 
 ## Deployment
 
-### Local Deployment (Recommended)
+### Local deployment (recommended)
 
-This application is designed to run **locally on your own machine**. This enables all features including:
-- EDDN worker service for real-time market data
+This app is meant to run locally on your own machine. That gets you:
+- The EDDN worker service for real-time market data
 - Persistent file storage
 - Full control over the environment
-- No serverless limitations
+- No serverless limitations to work around
 
-**Quick Start (Local):**
-1. Install dependencies: `npm install`
-2. Generate initial data: `npm run export:rares`
-3. Start the application: `npm run dev`
-4. Access at: `http://localhost:4321`
+**Quick start (local):**
+1. `npm install`
+2. `npm run export:rares` to generate initial data
+3. `npm run dev` to start the app
+4. Open `http://localhost:4321`
 
-**Optional - Start EDDN Worker:**
-- Install ZeroMQ (see [Local Deployment Guide](./docs/local-deployment.md))
-- Run in separate terminal: `npm run worker`
+**Optional - start the EDDN worker:**
+- Install ZeroMQ (see the [Local Deployment Guide](./docs/local-deployment.md))
+- Run `npm run worker` in a separate terminal
 
-For detailed local deployment instructions, see the [Local Deployment Guide](./docs/local-deployment.md).
-
+See the [Local Deployment Guide](./docs/local-deployment.md) for the full walkthrough.
 
 ## Documentation
 
@@ -213,50 +202,50 @@ For detailed local deployment instructions, see the [Local Deployment Guide](./d
 
 ### Root
 
-- **[CHANGELOG.md](./CHANGELOG.md)** — Version history and change log
+- **[CHANGELOG.md](./CHANGELOG.md)** — version history and changes
 
 ### Setup and deployment
 
-- **[Setup Guide](./docs/setup-guide.md)** — **Detailed first-run setup** (web, CLI, manual); field-by-field config reference
-- **[Local Deployment Guide](./docs/local-deployment.md)** — Running the app locally, process management, EDDN worker
-- **[Deployment Guide](./docs/deployment-guide.md)** — Deployment reference
+- **[Setup Guide](./docs/setup-guide.md)** — first-run setup (web, CLI, manual), field-by-field config reference
+- **[Local Deployment Guide](./docs/local-deployment.md)** — running locally, process management, EDDN worker
+- **[Deployment Guide](./docs/deployment-guide.md)** — deployment reference
 - **[EDDN Worker Setup](./docs/eddn-worker-setup.md)** — ZeroMQ and EDDN worker configuration
 
 ### Technical (`/docs`)
 
-- **[Documentation Index](./docs/README.md)** — Overview of all documentation
-- **[Technical Design](./docs/technical-design.md)** — Architecture and design decisions
+- **[Documentation Index](./docs/README.md)** — overview of all documentation
+- **[Technical Design](./docs/technical-design.md)** — architecture and design decisions
 - **[API Documentation](./docs/api-documentation.md)** — API endpoint specifications
-- **[Architecture Overview](./docs/architecture-overview.md)** — System architecture and data flow
-- **[Data Appendix](./docs/data-appendix.md)** — Data structures and static datasets
-- **[Tools](./docs/tools/)** — Rare commodity curation and route-finder design ([curation guide](./docs/tools/rare-commodity-curation-guide.md), [route finder](./docs/tools/rare-commodity-route-finder.md))
+- **[Architecture Overview](./docs/architecture-overview.md)** — system architecture and data flow
+- **[Data Appendix](./docs/data-appendix.md)** — data structures and static datasets
+- **[Tools](./docs/tools/)** — rare commodity curation and route-finder design ([curation guide](./docs/tools/rare-commodity-curation-guide.md), [route finder](./docs/tools/rare-commodity-route-finder.md))
 
-**Note:** Only `README.md` and `CHANGELOG.md` live in the repository root; all other docs are under `/docs`.
+Only `README.md` and `CHANGELOG.md` live at the repo root - everything else is under `/docs`.
 
 ## Configuration
 
-Local settings are read from **`.config.json`** in the project root. This file is **not** committed to the repo.
+Local settings come from **`.config.json`** in the project root. This file isn't committed to the repo.
 
 - Copy **`config.sample.json`** to **`.config.json`** and edit as needed.
-- **`edsmUserAgent`** – Used when calling the EDSM API (and in the market fetch script). Use a contact email or URL you are happy to share with EDSM; keep personal details only in your local `.config.json`.
-- **`dataDir`** – Optional. Set to an absolute path to store cache and data files elsewhere (e.g. to avoid committing paths or to share a data directory). Leave `null` to use the default `data/` folder.
-- **`apiKeys`** – Single place for all API keys. Use lowercase names, e.g. `"edsm": "your-key"`, `"eddn": "..."`. The app reads them via `getApiKey("edsm")`, etc. Environment variables override: set `EDSM_API_KEY`, `EDDN_API_KEY` (uppercase name + `_API_KEY`) for CI or deployment.
+- **`edsmUserAgent`** – used when calling the EDSM API (and in the market fetch script). Use a contact email or URL you're comfortable sharing with EDSM; keep personal details only in your local `.config.json`.
+- **`dataDir`** – optional. Set an absolute path to store cache and data files elsewhere - useful if you want to avoid committing paths or share a data directory. Leave `null` to use the default `data/` folder.
+- **`apiKeys`** – one place for all API keys. Use lowercase names, e.g. `"edsm": "your-key"`, `"eddn": "..."`. The app reads them via `getApiKey("edsm")`, etc. Environment variables override these: set `EDSM_API_KEY`, `EDDN_API_KEY` (uppercase name + `_API_KEY`) for CI or deployment.
 
-Without `.config.json`, the app uses defaults (generic User-Agent and `data/` under the project root).
+Without a `.config.json`, the app falls back to defaults - a generic User-Agent and the `data/` folder under the project root.
 
 ### First-run setup
 
-When there is no `.config.json`, the app redirects to **/setup** so you can enter EDSM User-Agent, optional data directory, and API keys; the form creates `.config.json` for you. You can instead run `npm run setup` in the terminal or copy and edit `config.sample.json`. For full details, see the **[Setup Guide](./docs/setup-guide.md)**.
+If there's no `.config.json`, the app redirects to **/setup** so you can enter your EDSM User-Agent, an optional data directory, and API keys - the form writes `.config.json` for you. You can also run `npm run setup` in the terminal, or copy and edit `config.sample.json` by hand. Full details are in the **[Setup Guide](./docs/setup-guide.md)**.
 
 ### Keeping the repo clean
 
-The repo is kept free of local machine data and logs. Do **not** commit:
+The repo stays free of local machine data and logs. Don't commit:
 
-- **Data and caches** – Anything under `data/` except `data/.gitkeep` (e.g. `rares.json`, `edsmMarketData.json`, `*.json` caches) is generated locally and ignored.
-- **Config and secrets** – `.config.json`, `.env`, and any file with API keys or paths.
+- **Data and caches** – anything under `data/` other than `data/.gitkeep` (e.g. `rares.json`, `edsmMarketData.json`, other JSON caches) is generated locally and ignored.
+- **Config and secrets** – `.config.json`, `.env`, and anything holding API keys or local paths.
 - **Logs** – `*.log` and `logs/` are ignored.
 
-Generate data after clone with `npm run export:rares` and optionally `npm run fetch:market`. See `.gitignore` for the full list.
+After cloning, generate data with `npm run export:rares` and, optionally, `npm run fetch:market`. See `.gitignore` for the full list.
 
 ## Project Structure
 
@@ -309,45 +298,37 @@ Generate data after clone with `npm run export:rares` and optionally `npm run fe
 
 ## How to Use
 
-### Basic Usage
+### Basic usage
 
-1. **Enter Your Current System**: Type the name of the system you're currently in. The system autocomplete will help you find the correct name.
+1. **Enter your current system** - the autocomplete helps you find the right name.
 
-2. **Select Your Pledged Power (Optional)**:
-   - Enter the name of the PowerPlay power you're pledged to
-   - Finance Ethos is automatically detected from your power selection
-   - If your power has Finance Ethos, a green message will appear showing the CP divisor reduction
-   - Powers with Finance Ethos: Denton Patreus, Jerome Archer, Li Yong-Rui, Zemina Torval
+2. **Select your pledged power (optional)** - Finance Ethos is detected automatically from your power selection. If it applies, you'll see a green message showing the CP divisor reduction. Powers with Finance Ethos: Denton Patreus, Jerome Archer, Li Yong-Rui, Zemina Torval.
 
-3. **Click "Scan Nearby Rares"**: The app will calculate distances and legality for all rare commodities (140-142, count still being verified).
+3. **Click "Scan Nearby Rares"** - the app calculates distance and legality for all rare commodities (140-142, count still being verified).
 
-### Understanding Results
+### Reading results
 
-- **Results are sorted by distance** (closest first)
-- Each rare shows:
-  - **Distance** from your current system to the rare's origin
-  - **Legality status** at your current system:
-    - **Green "Legal"** = Legal in all systems
-    - **Red "Illegal"** = Illegal in all systems
-    - **Yellow "Conditional"** = Legal in some systems, illegal in others (see details)
-  - **Expandable Legality Details** showing which governments/superpowers restrict the item
-  - **Pad size**, **cost**, **permit requirements**, and other details
-- **Back to Top button** appears at the end of results for easy navigation
+Results sort by distance, closest first. Each entry shows:
+- Distance from your current system to the rare's origin
+- Legality at your current system:
+  - **Green "Legal"** = legal everywhere
+  - **Red "Illegal"** = illegal everywhere
+  - **Yellow "Conditional"** = legal in some systems, illegal in others (click to see which)
+- Pad size, cost, permit requirements, and other details
+
+A "Back to top" button appears at the end of the list.
 
 ### Pagination
 
-- By default, all results are shown
-- Enable "Paginate by Distance" to view results in distance ranges
-- Choose from 9 page size options: 25, 50, 75, 100, 150, 200, 250, 500, or 1000 light years
-- Useful for large result sets or focusing on specific distance ranges
+All results show by default. Turn on "Paginate by Distance" to break results into distance ranges - pick from nine page sizes: 25, 50, 75, 100, 150, 200, 250, 500, or 1000 light years. Useful when a scan returns a lot of results and you want to focus on a specific range.
 
 ### Finance Ethos
 
-Finance Ethos is automatically determined from your selected power - no checkbox needed! When you select a power with Finance Ethos, a green message appears confirming it's active. Powers with Finance Ethos:
-- **Denton Patreus** (Empire)
-- **Jerome Archer** (Federation)
-- **Li Yong-Rui** (Independent)
-- **Zemina Torval** (Empire)
+Finance Ethos is detected automatically from your selected power - there's no checkbox to toggle. Pick a power that has it, and a green confirmation message appears. Powers with Finance Ethos:
+- Denton Patreus (Empire)
+- Jerome Archer (Federation)
+- Li Yong-Rui (Independent)
+- Zemina Torval (Empire)
 
 ## Author
 
@@ -357,10 +338,8 @@ Finance Ethos is automatically determined from your selected power - no checkbox
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0**.
+Licensed under the GNU General Public License v3.0.
 
-**Important**: This license includes warranty disclaimers. The software is provided "AS IS" without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
+This license includes warranty disclaimers - the software is provided "AS IS" without warranty of any kind, express or implied, including the implied warranties of merchantability, fitness for a particular purpose, and noninfringement.
 
-See the [LICENSE](./LICENSE) file for the full license text.
-
-For more information about GPL v3.0, visit: [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
+See [LICENSE](./LICENSE) for the full text, or visit [gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html) for more on GPL v3.0.

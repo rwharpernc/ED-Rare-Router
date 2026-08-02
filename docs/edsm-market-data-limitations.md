@@ -20,20 +20,16 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 
 **EDSM's public API does not return market commodity data** for stations, even when using the `showMarket=1` parameter.
 
-### What the API Returns
+### What the API returns
 
-The EDSM stations endpoint (`/api-system-v1/stations`) returns:
-- ✅ Station information (name, type, services)
-- ✅ Market existence indicator (`haveMarket: true/false`)
-- ✅ Market update timestamp (`updateTime.market`)
-- ❌ **Market commodity data is NOT included**
+The EDSM stations endpoint (`/api-system-v1/stations`) gives you station info (name, type, services), a market existence flag (`haveMarket: true/false`), and a market update timestamp (`updateTime.market`) - but no actual commodity data.
 
-### Why This Happens
+### Why
 
-1. **API Design**: EDSM's public API is designed for system/station information, not detailed market data
-2. **Data Privacy**: Market commodity data may be considered more sensitive
-3. **Rate Limiting**: Full market data would require separate endpoints or higher API limits
-4. **Data Availability**: Market data depends on player uploads via EDMC, which may be incomplete
+- EDSM's public API is built for system/station info, not detailed market data
+- Market commodity data may be treated as more sensitive
+- Full market data would need separate endpoints or higher rate limits
+- It depends on player uploads via EDMC anyway, which are inherently incomplete
 
 ### What You'll See
 
@@ -54,14 +50,9 @@ When running the bulk fetch script (`npm run fetch:market`), you'll likely see:
 
 ## Solutions
 
-### Option 1: Use EDDN Worker (Recommended)
+### Option 1: Use the EDDN worker (recommended)
 
-The **EDDN worker service** provides real-time market data as players upload it:
-
-- ✅ Real-time updates as players visit stations
-- ✅ Includes commodity data (buyPrice, sellPrice, stock, etc.)
-- ✅ More reliable than EDSM API for market data
-- ⚠️ Requires ZeroMQ and separate worker process
+The EDDN worker gives you real-time market data as players upload it - commodity data (buy price, sell price, stock, etc.) included, and more reliable than the EDSM API for this. It does need ZeroMQ and a separate worker process running.
 
 See [EDDN Worker Setup Guide](./eddn-worker-setup.md) for details.
 
@@ -77,19 +68,9 @@ See [EDDN Worker Setup Guide](./eddn-worker-setup.md) for details.
 - Update as needed from Inara or other sources
 - Most reliable but requires manual maintenance
 
-## Why EDDN is Better for Market Data
+## Why EDDN is better for market data
 
-**EDDN (Elite Dangerous Data Network)** is specifically designed for market data:
-- Receives data directly from players via EDMC
-- Includes full commodity information
-- Real-time updates
-- Designed for market data distribution
-
-**EDSM API** is designed for:
-- System and station information
-- Exploration data
-- General station services
-- Not optimized for market commodity data
+EDDN (Elite Dangerous Data Network) is built specifically for this - it gets data directly from players via EDMC, with full commodity info and real-time updates. The EDSM API is built for system and station info and exploration data; market commodities are outside its focus.
 
 ## Recommendations
 

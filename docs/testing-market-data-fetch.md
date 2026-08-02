@@ -16,7 +16,7 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 
 ## Quick Test
 
-Yes, you can absolutely test the bulk fetch script on your local system! Here's how:
+You can run the bulk fetch script locally to see it in action:
 
 ### Step 1: Install Dependencies
 

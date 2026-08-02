@@ -16,12 +16,7 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 
 ## Overview
 
-This document describes the bulk market data fetch system that queries EDSM API for all rare goods stations and saves the data to a local file. This approach:
-
-- ✅ File can be committed to repository
-- ✅ Avoids API calls on every request
-- ✅ Can be run every 12 hours (or on schedule)
-- ✅ Falls back to live API if cache is stale
+This describes the bulk market data fetch system, which queries the EDSM API for all rare goods stations and saves the results to a local file. The resulting file can be committed to the repo, avoids hitting the API on every request, can run on a schedule (every 12 hours, say), and the live API is still there as a fallback if the cache goes stale.
 
 ## How It Works
 
@@ -190,22 +185,9 @@ The `/api/market-data` endpoint:
 
 ### EDSM API Does Not Return Market Commodity Data
 
-**Critical**: EDSM's public API does not return market commodity data, even with `showMarket=1`. The API only indicates that a market exists (`haveMarket: true`) but does not include the actual commodities.
+EDSM's public API doesn't return market commodity data, even with `showMarket=1` - it only tells you a market exists (`haveMarket: true`), not what's in it. That's an API limitation, not a bug in the script, so expect a low success rate from the bulk fetch (typically 0-10%), with most stations coming back "No market data available." Even data players have uploaded isn't exposed through the public API.
 
-**What this means**:
-- The bulk fetch script will have **very low success rates** (typically 0-10%)
-- Most stations will return "No market data available"
-- This is an EDSM API limitation, not a bug in the script
-
-**Why this happens**:
-- EDSM's public API is designed for system/station info, not market data
-- Market commodity data is not exposed via the public API
-- Even if players have uploaded market data, it's not accessible via API
-
-**Solutions**:
-- Use **EDDN worker** for real-time market data (recommended)
-- Add static purchase prices to `rares.ts` manually
-- Accept that EDSM bulk fetch will have limited results
+Your options: run the EDDN worker for real-time data (recommended), add static purchase prices to `rares.ts` by hand, or just accept the bulk fetch's limited results.
 
 See [EDSM Market Data Limitations](./edsm-market-data-limitations.md) for detailed explanation.
 

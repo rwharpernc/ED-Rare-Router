@@ -2,140 +2,80 @@
 
 **Last updated:** March 1, 2026 · **Version:** 1.06.0-alpha
 
-Welcome to the ED Rare Router documentation. This directory contains setup guides, technical documentation, and deployment instructions.
+This directory holds setup guides, technical documentation, and deployment instructions for ED Rare Router.
 
 ## ⚠️ Important Disclaimer
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding accuracy, reliability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this software.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees are given regarding accuracy, reliability, or fitness for any purpose, and the author and contributors aren't liable for damages arising from its use.
 
-See the [LICENSE](../LICENSE) file for full terms under the GNU General Public License v3.0.
-
-## Available Documentation
-
-### Core Documentation
-
-- **[Technical Design Document](./technical-design.md)** - Comprehensive technical architecture and design decisions
-- **[API Documentation](./api-documentation.md)** - Complete API endpoint specifications
-- **[Data Appendix](./data-appendix.md)** - Data structures and static datasets
-- **[Architecture Overview](./architecture-overview.md)** - System architecture and data flow
-
-### Setup & Deployment
-
-- **[Setup Guide](./setup-guide.md)** — **Detailed first-run setup** (web, CLI, manual); config reference and troubleshooting
-- **[Local Deployment Guide](./local-deployment.md)** — Running the application locally, process management
-- **[Deployment Guide](./deployment-guide.md)** — Quick deployment reference
-- **[EDDN Worker Setup Guide](./eddn-worker-setup.md)** — EDDN worker service and ZeroMQ for real-time market data
-- **[Testing Market Data Fetch](./testing-market-data-fetch.md)** — Testing market data features
-
-### Data & Integration
-
-- **[EDDN Integration](./eddn-integration-research.md)** - EDDN integration overview and implementation
-- **[Bulk Market Data Fetch](./bulk-market-data-fetch.md)** - Guide for bulk fetching and caching EDSM market data
-- **[EDSM Market Data Limitations](./edsm-market-data-limitations.md)** - Important limitations of EDSM API for market data
-- **[Data Accuracy Notes](./data-accuracy-notes.md)** - Guide for maintaining legality data accuracy
-- **[Legality Categories](./legality-categories.md)** - Reference guide for legality patterns by category
-- **[Troubleshooting Notes](./troubleshooting-notes.md)** - Troubleshooting notes and explanations for design decisions
-
-**User Guide**: See the [How to Use](../README.md#how-to-use) section in the main README for usage instructions.
+See [LICENSE](../LICENSE) for the full GPL v3.0 terms.
 
 ## Documentation Index
 
-### Core Documentation
+### Core
 
-1. **[Technical Design Document](./technical-design.md)**
-   - Complete technical overview
-   - Architecture and design decisions
-   - Core modules and data models
-   - Performance considerations
-   - Security information
+1. **[Technical Design Document](./technical-design.md)** - architecture and design decisions, core modules and data models, performance and security notes
+2. **[API Documentation](./api-documentation.md)** - endpoint specs, request/response formats, type definitions, error handling, rate limiting and caching
+3. **[Data Appendix](./data-appendix.md)** - data structures and schemas for the rare goods dataset, PowerPlay powers, the rare-systems cache, and other runtime data
+4. **[Architecture Overview](./architecture-overview.md)** - system diagrams, component architecture, data flow, the multi-layer caching setup, state management
 
-2. **[API Documentation](./api-documentation.md)**
-   - Complete API endpoint specifications
-   - Request/response formats
-   - Type definitions
-   - Error handling
-   - Rate limiting and caching
+### Deployment
 
-3. **[Data Appendix](./data-appendix.md)**
-   - Data structures and schemas
-   - Rare goods dataset documentation
-   - PowerPlay powers dataset
-   - Rare systems cache (pre-fetched)
-   - Runtime data (cache files)
-   - Data sources and maintenance
+5. **[Local Deployment Guide](./local-deployment.md)** - full setup, running the web server and EDDN worker together, process management (PM2, systemd), scheduled tasks, network access, troubleshooting
+6. **[Deployment Guide](./deployment-guide.md)** - quick deployment reference
+7. **[EDDN Worker Setup Guide](./eddn-worker-setup.md)** - ZeroMQ install, worker configuration, running as a service, troubleshooting
+8. **[Setup Guide](./setup-guide.md)** - detailed first-run setup (web, CLI, manual), config reference and troubleshooting
+9. **[Testing Market Data Fetch](./testing-market-data-fetch.md)** - testing the market data features
 
-4. **[Architecture Overview](./architecture-overview.md)**
-   - System architecture diagrams
-   - Component architecture
-   - Data flow diagrams
-   - Multi-layer caching architecture
-   - State management
-   - Performance optimizations
+**Configuration:** local settings (paths, EDSM User-Agent, API keys) live in one gitignored file - copy `config.sample.json` to `.config.json` and edit. See the main [README](../README.md#configuration). Use `apiKeys` for API keys; env vars like `EDSM_API_KEY` override them for CI.
 
-### Deployment Documentation
+### Data & integration
 
-5. **[Local Deployment Guide](./local-deployment.md)**
-   - Complete setup instructions
-   - Running web server and EDDN worker
-   - Process management (PM2, systemd)
-   - Scheduled tasks
-   - Network access configuration
-   - Troubleshooting
+10. **[EDDN Integration](./eddn-integration-research.md)** - EDDN overview, implementation, data structure
+11. **[Bulk Market Data Fetch](./bulk-market-data-fetch.md)** - bulk fetch script, automation, cache structure
+12. **[EDSM Market Data Limitations](./edsm-market-data-limitations.md)** - what the EDSM API can't tell you about market data
+13. **[Data Accuracy Notes](./data-accuracy-notes.md)** - maintaining legality data accuracy
+14. **[Legality Categories](./legality-categories.md)** - legality patterns by category
+15. **[Troubleshooting Notes](./troubleshooting-notes.md)** - notes on design decisions and known issues
 
-6. **[EDDN Worker Setup Guide](./eddn-worker-setup.md)**
-   - ZeroMQ installation
-   - Worker service configuration
-   - Running as a service
-   - Troubleshooting
+### Tools & curation
 
-**Configuration**: Optional local settings (paths, EDSM User-Agent, API keys) are in one file. Copy `config.sample.json` to `.config.json` and edit; that file is gitignored. See the main [README](../README.md#configuration). Use `apiKeys` for any API keys; env vars like `EDSM_API_KEY` override for CI.
+16. **[Rare Commodity Curation Guide](./tools/rare-commodity-curation-guide.md)** - adding/editing rares, the `generate:rare-coords` and `update:rare-inara-links` scripts
+17. **[Rare Commodity Route Finder](./tools/rare-commodity-route-finder.md)** - route-ordering design notes
 
-### Data Integration
-
-7. **[EDDN Integration](./eddn-integration-research.md)** — EDDN overview, implementation, data structure
-
-8. **[Bulk Market Data Fetch](./bulk-market-data-fetch.md)** — Bulk fetch script, automation, cache structure
-
-### Tools & Curation
-
-9. **[Rare Commodity Curation Guide](./tools/rare-commodity-curation-guide.md)** — Adding/editing rares, scripts (`generate:rare-coords`, `update:rare-inara-links`)
-
-10. **[Rare Commodity Route Finder](./tools/rare-commodity-route-finder.md)** — Route-ordering design notes
+**User guide:** see [How to Use](../README.md#how-to-use) in the main README.
 
 ## Quick Links
 
-- **Getting Started**: See the main [README.md](../README.md)
-- **First-Run Setup**: See [Setup Guide](./setup-guide.md)
-- **Changelog**: See [CHANGELOG.md](../CHANGELOG.md)
-- **Project Structure**: See [Technical Design Document](./technical-design.md#21-project-structure)
-- **Local Deployment**: See [Local Deployment Guide](./local-deployment.md)
+- **Getting started:** [README.md](../README.md)
+- **First-run setup:** [Setup Guide](./setup-guide.md)
+- **Changelog:** [CHANGELOG.md](../CHANGELOG.md)
+- **Project structure:** [Technical Design Document](./technical-design.md#21-project-structure)
+- **Local deployment:** [Local Deployment Guide](./local-deployment.md)
 
 ## Documentation Standards
 
-All documentation in this directory follows these principles:
-
-- **Markdown format** for easy reading and version control
-- **Code examples** with syntax highlighting
-- **Type definitions** for clarity
-- **Diagrams** using ASCII art where appropriate
-- **Version numbers** and last updated dates
+- Markdown, for easy reading and version control
+- Code examples with syntax highlighting
+- Type definitions where they help clarity
+- ASCII diagrams where a picture helps
+- Version numbers and "last updated" dates on each doc
 
 ## Contributing to Documentation
 
-When updating documentation:
+When you update a doc:
 
-1. Update the "Last Updated" date at the top of the document
-2. Update version numbers if applicable
-3. Keep code examples current with the codebase
-4. Add new sections as the project evolves
-5. Maintain consistency with existing documentation style
+1. Update its "Last Updated" date
+2. Update version numbers if they've changed
+3. Keep code examples in sync with the codebase
+4. Add sections as the project grows
+5. Try to match the style of the surrounding docs
 
 ## Questions?
 
-If you have questions about the documentation or find errors, please:
-- Check the main [README.md](../README.md) for project overview
-- Review the [Technical Design Document](./technical-design.md) for architecture questions
-- Consult the [API Documentation](./api-documentation.md) for API-related questions
-- See the [Local Deployment Guide](./local-deployment.md) for setup questions
+- Project overview: the main [README.md](../README.md)
+- Architecture questions: the [Technical Design Document](./technical-design.md)
+- API questions: the [API Documentation](./api-documentation.md)
+- Setup questions: the [Local Deployment Guide](./local-deployment.md)

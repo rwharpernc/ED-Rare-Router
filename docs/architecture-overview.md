@@ -150,36 +150,6 @@ User Input
     ▼
 RaresPlannerIsland
     │
-    ├─► SystemInput → GET /api/systems?q=<query>
-    │                    │
-    │                    ▼
-    │                EDSM API (cached)
-    │
-    └─► Form Submit → POST /api/rares-scan
-                        │
-                        ├─► getSystem(current) → EDSM API (cached)
-                        │
-                        ├─► For each rare:
-                        │     ├─► getSystem(rare.system) → EDSM API (cached)
-                        │     ├─► lyDistance() → Calculate distance
-                        │     ├─► evaluateLegality() → Check legality
-                        │     └─► ppEligibleForSystemType() → Check PP eligibility
-                        │
-                        ▼
-                    ScanResult[]
-                        │
-                        ▼
-                    ResultsList Component
-```
-
-### Scan Mode Flow
-
-```
-User Input
-    │
-    ▼
-RaresPlannerIsland
-    │
     ├─► SystemInput (current) → GET /api/systems
     │
     └─► Form Submit → POST /api/rares-scan
