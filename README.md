@@ -4,7 +4,7 @@ A standalone web app for Elite Dangerous players planning rare goods trading rou
 
 ## Version
 
-**Current Version**: Alpha 1.06 (March 1, 2026)
+**Current Version**: Beta 1 (August 3, 2026)
 
 This version ships a dataset of roughly 140-142 rare commodities (the exact count is still being verified), a legality system with detailed restrictions, first-run setup via web or CLI, and a packaged double-click build for non-developers. Rare commodity data is static - route planning itself is manual, based on your scan results.
 
@@ -16,8 +16,8 @@ This version ships a dataset of roughly 140-142 rare commodities (the exact coun
 
 This project is:
 - A personal hobby project, not a commercial product
-- Actively in development - still in the design and prototyping phase
-- Not ready for production, Alpha, or Beta testing
+- Actively in development and in public beta testing
+- Not ready for production use
 - Subject to frequent refactors and breaking changes
 
 By using this software, you acknowledge that:

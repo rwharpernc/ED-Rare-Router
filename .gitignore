@@ -59,3 +59,12 @@ Desktop.ini
 # User-specific VS Code (optional: remove if you want to share .vscode)
 .vscode/settings.json
 .vscode/*.local
+
+# -----------------------------------------------------------------------------
+# Local AI assistant tooling (local machine only, never commit)
+# -----------------------------------------------------------------------------
+.claude/
+CLAUDE.md
+.cursor/
+.github/copilot-instructions.md
+.aider*

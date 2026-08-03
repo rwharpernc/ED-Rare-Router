@@ -1,7 +1,7 @@
 # ED Rare Router — Setup Guide
 
 **Last updated:** August 3, 2026  
-**Version:** 1.06.0-alpha
+**Version:** Beta 1
 
 This guide walks you through first-run setup and configuration for ED Rare Router.
 

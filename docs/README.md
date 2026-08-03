@@ -1,6 +1,6 @@
 # ED Rare Router Documentation
 
-**Last updated:** August 3, 2026 · **Version:** 1.06.0-alpha
+**Last updated:** August 3, 2026 · **Version:** Beta 1
 
 This directory holds setup guides, technical documentation, and deployment instructions for ED Rare Router.
 

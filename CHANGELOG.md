@@ -10,15 +10,36 @@ All notable changes to this project are documented here.
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees are given, and the author and contributors aren't liable for damages arising from its use. See [LICENSE](../LICENSE) for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees are given, and the author and contributors aren't liable for damages arising from its use. See [LICENSE](./LICENSE) for full terms.
 
-Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning uses three tiers - alpha/unstable, beta, and release. Current release: **Alpha 1.06** (March 1, 2026).
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning uses three tiers - alpha/unstable, beta, and release. Current release: **Beta 1** (August 3, 2026).
 
 ## Versioning System
 
 - **unstable** – development versions, active changes, possible breaking changes
 - **beta** – feature-complete, undergoing testing and refinement
 - **release** – stable, production-ready
+
+## [Beta 1] - 2026-08-03
+
+First public beta release.
+
+### Added
+- Packaged double-click executable build (Windows and Linux) for non-developers - bundles a portable Node.js runtime with the built app; no Node install or terminal required. New `package:win`, `package:linux`, `package:all` scripts (`scripts/package/build.mjs`, `scripts/package/launcher.cjs`).
+- `docs/development.md` - a dedicated developer guide (tech stack, npm scripts, project structure, dev-only interfaces), split out of the README.
+
+### Changed
+- `README.md` rewritten to be end-user-first: download/run instructions and how-to-use up front, developer setup moved to `docs/development.md`.
+- `TODO.md` moved to `docs/TODO.md`, so only `README.md` and `CHANGELOG.md` live at the repo root.
+- Version scheme moved from Alpha to **Beta 1** ahead of the public repo going live.
+
+### Removed
+- The EDDN real-time market data worker (`workers/`), its `zeromq` dependency, and the "(Live)" price tier in the UI - the native-module dependency and separate background process weren't worth it for a hobby project; pricing now shows curated/static "(Est.)" values, same as it already fell back to.
+- `scripts/export-rares-json.js` and the `export:rares` script - only ever existed to feed the EDDN worker; nothing else reads the file it generated.
+
+### Fixed
+- A repo-wide broken relative `LICENSE` link in several docs' disclaimer blocks (pointed one directory too high).
+- Stale `npm run export:rares` references and a stale, drifted project-structure tree in `docs/technical-design.md`.
 
 ## [Alpha 1.06] - 2026-03-01
 

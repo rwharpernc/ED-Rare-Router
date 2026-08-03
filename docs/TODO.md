@@ -1,8 +1,8 @@
 # TODO
 
 **ED Rare Router**
-Version: Alpha 1.05
-Last Updated: February 12, 2026
+Version: Beta 1
+Last Updated: August 3, 2026
 
 **Author:** R.W. Harper
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)

@@ -1,8 +1,8 @@
 # Bulk Market Data Fetch
 
 **ED Rare Router**  
-Version: Alpha 1.06
-Last Updated: March 1, 2026
+Version: Beta 1
+Last Updated: August 3, 2026
 
 **Author:** R.W. Harper  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
