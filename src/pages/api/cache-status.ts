@@ -1,10 +1,6 @@
 import type { APIRoute } from "astro";
 import { getCacheMetadata as getRareSystemsMetadata } from "../../lib/rareSystemsCache";
 import { getCacheMetadata as getMarketDataMetadata, isCacheFresh } from "../../lib/edsmMarketCache";
-import { readFile } from "fs/promises";
-import { existsSync } from "fs";
-import { join } from "path";
-import { getDataDir } from "../../lib/config";
 
 /**
  * Cache status endpoint.
@@ -25,7 +21,6 @@ export const GET: APIRoute = async () => {
         successCount?: number;
         cacheFresh?: boolean;
       };
-      eddnWorker?: { lastUpdated?: string; totalEntries?: number };
     } = {};
 
     // Get rare systems cache metadata
@@ -50,24 +45,6 @@ export const GET: APIRoute = async () => {
       }
     } catch (error) {
       console.error("[Cache Status] Error getting market data metadata:", error);
-    }
-
-    // Get EDDN worker cache metadata (if file exists)
-    try {
-      const eddnCachePath = join(getDataDir(), "eddnMarketCache.json");
-      if (existsSync(eddnCachePath)) {
-        const eddnContent = await readFile(eddnCachePath, "utf-8");
-        const eddnCache = JSON.parse(eddnContent);
-        if (eddnCache._metadata) {
-          status.eddnWorker = {
-            lastUpdated: eddnCache._metadata.lastUpdated,
-            totalEntries: eddnCache._metadata.totalEntries,
-          };
-        }
-      }
-    } catch (error) {
-      // EDDN cache may not exist, that's okay
-      console.debug("[Cache Status] EDDN cache not available:", error);
     }
 
     return new Response(JSON.stringify(status), {

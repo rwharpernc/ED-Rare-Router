@@ -13,13 +13,13 @@
     "preview": "astro preview",
     "astro": "astro",
     "setup": "node scripts/setup.js",
-    "export:rares": "node scripts/export-rares-json.js",
     "generate:rare-coords": "node scripts/generate-rare-coords.js",
     "update:rare-inara-links": "node scripts/update-rare-inara-links.js",
     "fetch:market": "node scripts/fetch-edsm-market-data.js",
-    "worker": "node workers/eddn-worker.js",
-    "worker:dev": "node --watch workers/eddn-worker.js",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "package:win": "node scripts/package/build.mjs --win",
+    "package:linux": "node scripts/package/build.mjs --linux",
+    "package:all": "node scripts/package/build.mjs --all"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.1",
@@ -30,8 +30,10 @@
     "astro": "^5.16.4",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "tailwindcss": "^4.1.17",
-    "zeromq": "^6.0.0-beta.20"
+    "tailwindcss": "^4.1.17"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@yao-pkg/pkg": "^6.22.0",
+    "archiver": "^7.0.1"
+  }
 }

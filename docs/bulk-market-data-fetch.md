@@ -12,7 +12,7 @@ Last Updated: March 1, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 ## Overview
 
@@ -187,7 +187,7 @@ The `/api/market-data` endpoint:
 
 EDSM's public API doesn't return market commodity data, even with `showMarket=1` - it only tells you a market exists (`haveMarket: true`), not what's in it. That's an API limitation, not a bug in the script, so expect a low success rate from the bulk fetch (typically 0-10%), with most stations coming back "No market data available." Even data players have uploaded isn't exposed through the public API.
 
-Your options: run the EDDN worker for real-time data (recommended), add static purchase prices to `rares.ts` by hand, or just accept the bulk fetch's limited results.
+Your options: add static purchase prices to `rares.ts` by hand (or via `/curate-prices` in development mode), or just accept the bulk fetch's limited results.
 
 See [EDSM Market Data Limitations](./edsm-market-data-limitations.md) for detailed explanation.
 
@@ -254,6 +254,4 @@ The script includes a 2-second delay between requests to be polite to EDSM API:
 ## See Also
 
 - [EDSM Market Data Limitations](./edsm-market-data-limitations.md) - Detailed explanation of EDSM API limitations
-- [EDDN Integration](./eddn-integration-research.md) - EDDN integration overview
-- [EDDN Worker Setup Guide](./eddn-worker-setup.md) - Real-time market data via EDDN (recommended)
 - [EDSM API Documentation](https://www.edsm.net/en/api-system-v1) - EDSM API reference

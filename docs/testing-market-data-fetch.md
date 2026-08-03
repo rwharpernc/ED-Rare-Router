@@ -12,7 +12,7 @@ Last Updated: March 1, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 ## Quick Test
 

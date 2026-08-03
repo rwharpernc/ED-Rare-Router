@@ -12,7 +12,7 @@ Last Updated: March 1, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 ## Important: EDSM API Limitations
 
@@ -50,36 +50,23 @@ When running the bulk fetch script (`npm run fetch:market`), you'll likely see:
 
 ## Solutions
 
-### Option 1: Use the EDDN worker (recommended)
-
-The EDDN worker gives you real-time market data as players upload it - commodity data (buy price, sell price, stock, etc.) included, and more reliable than the EDSM API for this. It does need ZeroMQ and a separate worker process running.
-
-See [EDDN Worker Setup Guide](./eddn-worker-setup.md) for details.
-
-### Option 2: Accept Limited Data
+### Option 1: Accept Limited Data
 
 - Accept that EDSM bulk fetch will have low success rates
 - Use the data that is available
 - Supplement with manual data entry if needed
 
-### Option 3: Manual Data Entry
+### Option 2: Manual Data Entry
 
-- Add static purchase prices to `rares.ts` manually
+- Add static purchase prices to `rares.ts` manually, or via the `/curate-prices` interface (development mode)
 - Update as needed from Inara or other sources
 - Most reliable but requires manual maintenance
 
-## Why EDDN is better for market data
-
-EDDN (Elite Dangerous Data Network) is built specifically for this - it gets data directly from players via EDMC, with full commodity info and real-time updates. The EDSM API is built for system and station info and exploration data; market commodities are outside its focus.
-
 ## Recommendations
 
-1. **For Real-time Market Data**: Use the EDDN worker service
-2. **For Static Purchase Prices**: Add to `rares.ts` manually
-3. **For Bulk Fetching**: Accept low success rates, use as supplementary data
+1. **For Purchase Prices**: Add to `rares.ts` manually or curate via `/curate-prices`
+2. **For Bulk Fetching**: Accept low success rates, use as supplementary data
 
 ## See Also
 
-- [EDDN Worker Setup Guide](./eddn-worker-setup.md) - Real-time market data
 - [Bulk Market Data Fetch](./bulk-market-data-fetch.md) - EDSM bulk fetch guide
-- [EDDN Integration](./eddn-integration-research.md) - EDDN overview

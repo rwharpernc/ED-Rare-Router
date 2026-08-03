@@ -11,10 +11,6 @@ interface CacheStatusData {
     successCount?: number;
     cacheFresh?: boolean;
   };
-  eddnWorker?: {
-    lastUpdated?: string;
-    totalEntries?: number;
-  };
 }
 
 /**
@@ -86,7 +82,7 @@ export default function CacheStatus() {
     return null;
   }
 
-  if (!status || (!status.rareSystems && !status.marketData && !status.eddnWorker)) {
+  if (!status || (!status.rareSystems && !status.marketData)) {
     return null;
   }
 
@@ -123,19 +119,6 @@ export default function CacheStatus() {
             )}
           </div>
         )}
-        {status.eddnWorker?.lastUpdated && (
-          <div>
-            <span className="text-gray-500">EDDN Worker:</span>{" "}
-            <span className="text-blue-400">
-              {formatRelativeTime(status.eddnWorker.lastUpdated)}
-            </span>
-            {status.eddnWorker.totalEntries !== undefined && (
-              <span className="text-gray-500 ml-2">
-                ({status.eddnWorker.totalEntries} entries)
-              </span>
-            )}
-          </div>
-        )}
       </div>
       <details className="mt-2">
         <summary className="cursor-pointer text-gray-500 hover:text-gray-400">
@@ -150,11 +133,6 @@ export default function CacheStatus() {
           {status.marketData?.fetchedAt && (
             <div>
               Market Data: {formatDate(status.marketData.fetchedAt)}
-            </div>
-          )}
-          {status.eddnWorker?.lastUpdated && (
-            <div>
-              EDDN Worker: {formatDate(status.eddnWorker.lastUpdated)}
             </div>
           )}
         </div>

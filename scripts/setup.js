@@ -50,13 +50,11 @@ async function main() {
 
   console.log('\nAPI keys (leave blank to skip):');
   const edsmKey = await ask(rl, '  EDSM API key', (existing.apiKeys && existing.apiKeys.edsm) || '');
-  const eddnKey = await ask(rl, '  EDDN API key', (existing.apiKeys && existing.apiKeys.eddn) || '');
 
   rl.close();
 
   const apiKeys = {};
   if (edsmKey) apiKeys.edsm = edsmKey;
-  if (eddnKey) apiKeys.eddn = eddnKey;
   if (Object.keys(existing.apiKeys || {}).length > 0 && Object.keys(apiKeys).length === 0) {
     Object.assign(apiKeys, existing.apiKeys);
   }

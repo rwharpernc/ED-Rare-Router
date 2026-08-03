@@ -1,7 +1,7 @@
 /**
  * Load local config for Node scripts and workers.
  * Reads .config.json from project root (not committed). Copy config.sample.json to .config.json.
- * All API keys go in config.apiKeys; env override: EDSM_API_KEY, EDDN_API_KEY, etc.
+ * All API keys go in config.apiKeys; env override: EDSM_API_KEY, etc.
  */
 
 import { readFileSync, existsSync } from 'fs';
@@ -10,7 +10,7 @@ import { join } from 'path';
 const DEFAULT_EDSM_USER_AGENT = 'ED-Rare-Router/1.0 (contact: https://github.com/your-org/ed-rare-router)';
 
 function getProjectRoot() {
-  // When run as node scripts/load-config.js or node workers/eddn-worker.js, cwd is usually project root
+  // When run as node scripts/load-config.js (or any script that imports it), cwd is usually project root
   return process.cwd();
 }
 

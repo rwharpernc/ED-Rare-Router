@@ -31,14 +31,6 @@ export interface ScanResult {
   legalityDetails?: LegalityDetails;
   ppEligible: boolean;
   cpDivisors: CpDivisors | null;
-  // Real-time market data from EDDN
-  marketData?: {
-    buyPrice: number;
-    sellPrice: number;
-    stock: number;
-    stockBracket: number;
-    timestamp: string;
-  };
 }
 
 export interface CpDivisors {

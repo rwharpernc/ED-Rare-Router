@@ -12,7 +12,7 @@ Last Updated: February 12, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees are given, and the author and contributors aren't liable for damages arising from its use. See [LICENSE](./LICENSE) for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees are given, and the author and contributors aren't liable for damages arising from its use. See [LICENSE](../LICENSE) for full terms.
 
 ---
 
@@ -54,7 +54,7 @@ This file tracks planned improvements, features, and technical debt for ED Rare 
 
 - [ ] More data sources - Inara API for additional data, station services, system security levels, faction influence.
 
-- [ ] **Real-time stock/allocation data** - continue the EDDN research (`docs/eddn-integration-research.md`), check whether EDSM exposes market data for rare-goods stations, weigh the infrastructure cost (worker service, database) against simpler options (static allocation data, cached EDSM calls), then implement whichever approach wins out.
+- [ ] **Real-time stock/allocation data** - the EDDN worker approach was tried and removed (infrastructure cost - native ZeroMQ dependency, separate process - wasn't worth it for a hobby project). If this comes back, prefer simpler options first: check whether EDSM exposes market data for rare-goods stations, or lean further into cached EDSM calls / curated static prices.
 
 ## Documentation
 

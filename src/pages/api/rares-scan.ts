@@ -7,7 +7,6 @@ import { evaluateLegality } from "../../lib/legality";
 import { ppEligibleForSystemType, cpDivisors } from "../../lib/powerplay";
 import { loadCuratedLegality, getRaresWithCuratedData } from "../../lib/curatedLegality";
 import { loadCuratedPrices, getRaresWithCuratedPrices } from "../../lib/curatedPrices";
-import { getEDDNMarketData } from "../../lib/eddnMarketCache";
 import type { ScanRequest, ScanResult } from "../../types/api";
 
 /**
@@ -15,7 +14,7 @@ import type { ScanRequest, ScanResult } from "../../types/api";
  *
  * Analyzes all rare goods from the current system: distances to each rare origin,
  * legality at current system, PowerPlay eligibility, CP divisors when eligible.
- * Merges curated legality, curated prices, and EDDN market data when available.
+ * Merges curated legality and curated prices when available.
  *
  * Request body: ScanRequest { current, currentPpType?, power?, hasFinanceEthos? }
  * Returns: Array of ScanResult objects (or error JSON).
@@ -135,23 +134,6 @@ export const POST: APIRoute = async ({ request }) => {
           ppEligible: eligible,
           cpDivisors: cpDivisorInfo,
         };
-
-        // Try to get real-time market data from EDDN cache
-        try {
-          const eddnMarketData = await getEDDNMarketData(rare.system, rare.station);
-          if (eddnMarketData?.latest) {
-            result.marketData = {
-              buyPrice: eddnMarketData.latest.buyPrice,
-              sellPrice: eddnMarketData.latest.sellPrice,
-              stock: eddnMarketData.latest.stock,
-              stockBracket: eddnMarketData.latest.stockBracket,
-              timestamp: eddnMarketData.latest.timestamp,
-            };
-          }
-        } catch (error) {
-          // Silently fail - market data is optional
-          console.debug(`[Scan] Could not load EDDN data for ${rare.system}/${rare.station}:`, error);
-        }
 
         return result;
       })

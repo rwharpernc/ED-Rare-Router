@@ -12,7 +12,7 @@ Last Updated: March 1, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This API is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding accuracy, reliability, availability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this API. See the [LICENSE](../../LICENSE) file for full terms.
+This API is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding accuracy, reliability, availability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this API. See the [LICENSE](../LICENSE) file for full terms.
 
 ## Overview
 
@@ -52,7 +52,7 @@ All endpoints are relative to the application root:
 |-------|------|----------|-------------|
 | `edsmUserAgent` | string | Yes (recommended) | User-Agent/contact for EDSM API (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`) |
 | `dataDir` | string \| null | No | Absolute path to data directory; `null` or empty = default `data/` |
-| `apiKeys` | object | No | Keys: `edsm`, `eddn`, etc. (lowercase). Values: API key strings. |
+| `apiKeys` | object | No | Keys: `edsm`, etc. (lowercase). Values: API key strings. |
 | `overwrite` | boolean | No | If `true`, replace existing `.config.json`. Required when config already exists. |
 
 **Response** (201 Created):
@@ -478,7 +478,7 @@ All endpoints follow these error handling principles:
 
 **Endpoint**: `GET /api/market-data`
 
-**Description**: Market data for rare goods stations - reads from the cached EDDN or EDSM data, falling back to a live EDSM API call if the cache is stale.
+**Description**: Market data for rare goods stations - reads from the cached EDSM data, falling back to a live EDSM API call if the cache is stale.
 
 **Query Parameters**:
 
@@ -551,7 +551,7 @@ GET /api/market-data
 
 **Endpoints**: `GET /api/curated-prices`, `POST /api/curated-prices`, `DELETE /api/curated-prices`
 
-**Description**: Manage baseline purchase prices, used as a fallback when EDDN market data isn't available. Development mode only.
+**Description**: Manage baseline purchase prices, shown as the estimated cost for each rare good. Development mode only.
 
 These endpoints only work under `npm run dev` - they return 403 Forbidden in production builds.
 
@@ -621,10 +621,9 @@ Removes curated price data for a rare good.
 ```
 
 **Price Priority**: When displaying costs, the system uses this priority:
-1. **EDDN live market data** (if available) - shows "(Live)"
-2. **Curated baseline price** (if set) - shows "(Est.)"
-3. **Static cost from rares.ts** (if exists) - shows "(Est.)"
-4. **"N/A"** if none of the above
+1. **Curated baseline price** (if set) - shows "(Est.)"
+2. **Static cost from rares.ts** (if exists) - shows "(Est.)"
+3. **"N/A"** if none of the above
 
 **Data Storage**: Curated prices are saved to `data/curatedPrices.json`.
 

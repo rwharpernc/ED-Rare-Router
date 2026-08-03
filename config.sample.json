@@ -2,7 +2,6 @@
   "edsmUserAgent": "ED-Rare-Router/1.0 (contact: your-email@example.com)",
   "dataDir": null,
   "apiKeys": {
-    "edsm": "",
-    "eddn": ""
+    "edsm": ""
   }
 }

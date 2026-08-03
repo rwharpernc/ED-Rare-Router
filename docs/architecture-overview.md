@@ -12,7 +12,7 @@ Last Updated: March 1, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 ## System Architecture
 
@@ -58,7 +58,6 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - fuzzySearch.ts    (Fuzzy search utilities)         │  │
 │  │  - curatedLegality.ts (Curated legality management) │  │
 │  │  - curatedPrices.ts (Curated price management)      │  │
-│  │  - eddnMarketCache.ts (EDDN market data cache)      │  │
 │  │  - edsmMarketCache.ts (EDSM market data cache)       │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
@@ -74,7 +73,6 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - systemCache.json      (Runtime user system cache)  │  │
 │  │  - curatedLegality.json  (Manual legality overrides)  │  │
 │  │  - curatedPrices.json    (Manual price overrides)     │  │
-│  │  - eddnMarketCache.json  (EDDN real-time market data) │  │
 │  │  - edsmMarketData.json   (EDSM bulk market data)      │  │
 │  └──────────────────────────────────────────────────────┘  │
 └───────────────────────┬─────────────────────────────────────┘
@@ -87,18 +85,6 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  EDSM API (www.edsm.net/api-v1)                      │  │
 │  │  - /systems?systemName=<query>                        │  │
 │  │  - /system?systemName=<name>                         │  │
-│  └──────────────────────────────────────────────────────┘  │
-└───────────────────────┬─────────────────────────────────────┘
-                        │
-                        │ ZeroMQ (EDDN)
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│              EDDN Worker (Background Service)                 │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  - Connects to EDDN via ZeroMQ                       │  │
-│  │  - Receives real-time market data                    │  │
-│  │  - Caches to eddnMarketCache.json                    │  │
-│  │  - Updates as market data is received                │  │
 │  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```

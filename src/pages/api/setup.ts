@@ -10,7 +10,7 @@ export const prerender = false;
  * Request body (JSON):
  * - edsmUserAgent?: string — User-Agent/contact for EDSM (recommended).
  * - dataDir?: string | null — Absolute path to data dir; null/empty = default data/.
- * - apiKeys?: Record<string, string> — e.g. { edsm: "...", eddn: "..." }.
+ * - apiKeys?: Record<string, string> — e.g. { edsm: "..." }.
  * - overwrite?: boolean — If true, replace existing config; required when .config.json already exists.
  *
  * Returns 201 on success, 409 if config exists and overwrite is not true, 400/500 on error.

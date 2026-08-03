@@ -12,7 +12,7 @@ Last Updated: March 1, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding deployment, availability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given regarding deployment, availability, or fitness for any purpose. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 ## Overview
 
@@ -29,32 +29,13 @@ For detailed local deployment instructions, see the [Local Deployment Guide](./l
    npm install
    ```
 
-2. **Generate initial data**:
-   ```bash
-   npm run export:rares
-   ```
-
-3. **Start the application**:
+2. **Start the application**:
    ```bash
    npm run dev
    ```
 
-4. **Access the application**:
+3. **Access the application**:
    Open `http://localhost:4321` in your browser
-
-### With EDDN Worker (Real-time Market Data)
-
-1. **Install ZeroMQ** (see [EDDN Worker Setup Guide](./eddn-worker-setup.md))
-
-2. **Start web server** (Terminal 1):
-   ```bash
-   npm run dev
-   ```
-
-3. **Start EDDN worker** (Terminal 2):
-   ```bash
-   npm run worker
-   ```
 
 ## Production Deployment
 
@@ -81,8 +62,6 @@ The application uses these data files in the data directory (default `data/`; ov
 - `rareSystemsCache.json` - Pre-fetched rare origin system coordinates
 - `systemCache.json` - Cached EDSM system lookups
 - `edsmMarketData.json` - Bulk-fetched EDSM market data
-- `eddnMarketCache.json` - Real-time EDDN market data (if worker running)
-- `rares.json` - Rare goods data export (for worker)
 - `curatedLegality.json` - Manually curated legality overrides (dev only)
 
 These files are generated automatically and can be committed to your repository.
@@ -95,7 +74,7 @@ Optional local settings are read from **`.config.json`** in the project root (no
 
 - **`edsmUserAgent`** – User-Agent string for EDSM API and fetch script (e.g. include your contact email here so it is not stored in the repo).
 - **`dataDir`** – Optional absolute path for cache and data files. Omit or set to `null` to use the default `data/` directory.
-- **`apiKeys`** – Object for all API keys (e.g. `"edsm"`, `"eddn"`). Env overrides: `EDSM_API_KEY`, `EDDN_API_KEY`, etc.
+- **`apiKeys`** – Object for all API keys (e.g. `"edsm"`). Env overrides: `EDSM_API_KEY`, etc.
 
 See the main [README](../README.md#configuration) for details.
 
@@ -154,6 +133,5 @@ lsof -i :4321
 ## See Also
 
 - [Local Deployment Guide](./local-deployment.md) - Complete local deployment guide
-- [EDDN Worker Setup Guide](./eddn-worker-setup.md) - EDDN worker configuration
 - [Bulk Market Data Fetch](./bulk-market-data-fetch.md) - Market data fetching
 - [Testing Market Data Fetch](./testing-market-data-fetch.md) - Testing instructions

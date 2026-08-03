@@ -50,17 +50,6 @@ import Layout from '../components/Layout.astro';
               class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
-          <div>
-            <label for="apiKey_eddn" class="sr-only">EDDN API key</label>
-            <input
-              type="password"
-              id="apiKey_eddn"
-              name="apiKey_eddn"
-              placeholder="EDDN API key"
-              autocomplete="off"
-              class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
         </div>
       </div>
 
@@ -122,12 +111,10 @@ import Layout from '../components/Layout.astro';
         const dataDirRaw = (form.querySelector('#dataDir') as HTMLInputElement)?.value?.trim();
         const dataDir = dataDirRaw === '' ? null : dataDirRaw;
         const apiKeyEdsm = (form.querySelector('#apiKey_edsm') as HTMLInputElement)?.value?.trim();
-        const apiKeyEddn = (form.querySelector('#apiKey_eddn') as HTMLInputElement)?.value?.trim();
         const overwrite = (form.querySelector('#overwrite') as HTMLInputElement)?.checked ?? false;
 
         const apiKeys: Record<string, string> = {};
         if (apiKeyEdsm) apiKeys.edsm = apiKeyEdsm;
-        if (apiKeyEddn) apiKeys.eddn = apiKeyEddn;
 
         const body: Record<string, unknown> = {
           edsmUserAgent: edsmUserAgent || undefined,

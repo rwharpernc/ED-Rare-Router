@@ -1,6 +1,6 @@
 # ED Rare Router — Setup Guide
 
-**Last updated:** March 1, 2026  
+**Last updated:** August 3, 2026  
 **Version:** 1.06.0-alpha
 
 This guide walks you through first-run setup and configuration for ED Rare Router.
@@ -11,16 +11,14 @@ This guide walks you through first-run setup and configuration for ED Rare Route
 
 On first run, the app requires a **config file** (`.config.json`) in the project root. Until it exists, visiting any page (except `/setup` and `/api/*`) redirects you to the **Setup** page. You can complete setup either in the browser or via the command line.
 
+**Not a developer?** You don't need any of this. Download the packaged build instead - see [Download & Run (no install)](../README.md#download--run-no-install) in the main README. It bundles its own Node.js runtime and still walks you through the same in-browser setup form described below; you just skip `npm install` and the terminal entirely. The methods below (web, CLI, manual) are for running from source.
+
 ---
 
 ## Prerequisites
 
 - **Node.js 18+** — [Download](https://nodejs.org/)
 - **npm** — Included with Node.js
-
-Optional (for EDDN real-time market data):
-
-- **ZeroMQ** — See [EDDN Worker Setup](./eddn-worker-setup.md)
 
 ---
 
@@ -49,22 +47,9 @@ Open **http://localhost:4321** in your browser. You will be redirected to **/set
 | **EDSM User-Agent** | Yes | A string that identifies your app and contact. Example: `ED-Rare-Router/1.0 (contact: your@email.com)` or `ED-Rare-Router/1.0 (contact: https://github.com/yourusername)`. EDSM uses this for API requests; no account needed. |
 | **Data directory** | No | Leave blank to use the default `data/` folder in the project root. Or enter an absolute path (e.g. `C:\Users\You\data\ed-rare-router` or `/home/you/data/ed-rare-router`) to store caches and generated files elsewhere. |
 | **EDSM API key** | No | Optional. Get from [EDSM](https://www.edsm.net/) (account → API). Improves rate limits; app works without it. |
-| **EDDN API key** | No | Optional. Get from [EDDN](https://eddn.edcd.io/) (developers/API). Used for live market data; app works without it. |
 | **Replace existing config** | — | Leave **unchecked** for first run. Check only when you already have `.config.json` and want to overwrite it. |
 
-Click **Save config**. On success you are redirected to the home page. The file `.config.json` is created in the project root (gitignored).
-
-### Step 4: Optional — generate initial data
-
-After config is saved:
-
-```bash
-# Export rare goods to JSON (used by EDDN worker)
-npm run export:rares
-
-# Optional: fetch initial EDSM market data
-npm run fetch:market
-```
+Click **Save config**. On success you are redirected to the home page. The file `.config.json` is created in the project root (gitignored). No further setup is needed - caches build themselves from live EDSM lookups the first time they're needed.
 
 ---
 
@@ -94,15 +79,6 @@ npm run dev
 
 Open **http://localhost:4321**. You should see the main app (no redirect to setup).
 
-### Step 4: Optional — generate initial data
-
-Same as Method 1, Step 4:
-
-```bash
-npm run export:rares
-npm run fetch:market   # optional
-```
-
 ---
 
 ## Method 3: Manual config file
@@ -117,7 +93,7 @@ npm run fetch:market   # optional
 
    - **edsmUserAgent** — Set to your contact string (required for EDSM).
    - **dataDir** — Set to `null` or omit for default `data/`; or set to an absolute path string.
-   - **apiKeys** — Optional. e.g. `"edsm": "your-key", "eddn": "your-key"`.
+   - **apiKeys** — Optional. e.g. `"edsm": "your-key"`.
 
 3. Save the file and run `npm run dev`.
 
@@ -129,18 +105,18 @@ npm run fetch:market   # optional
 |-----|------|-------------|
 | `edsmUserAgent` | string | Sent as `User-Agent` to EDSM API. Include a contact (email or URL). |
 | `dataDir` | string \| null | Absolute path to data directory. `null` or omit = `./data`. |
-| `apiKeys` | object | Optional. Keys: `edsm`, `eddn`, etc. (lowercase). Values: API key strings. |
+| `apiKeys` | object | Optional. Keys: `edsm`, etc. (lowercase). Values: API key strings. |
 
 **Environment overrides:** You can override without editing `.config.json`:
 
 - `EDSM_USER_AGENT` — Overrides `edsmUserAgent`.
-- `EDSM_API_KEY`, `EDDN_API_KEY` — Override `apiKeys.edsm` and `apiKeys.eddn`.
+- `EDSM_API_KEY` — Overrides `apiKeys.edsm`.
 
 ---
 
 ## After setup
 
-- **Data directory** — Cache files (system cache, rare systems cache, EDDN market cache, etc.) are stored under the configured data directory (default: `data/` in project root). The app creates the directory if it does not exist.
+- **Data directory** — Cache files (system cache, rare systems cache, etc.) are stored under the configured data directory (default: `data/` in project root). The app creates the directory if it does not exist.
 - **Changing config** — Edit `.config.json` by hand, or run the web setup again and check **Replace existing config** before saving.
 - **First-run redirect** — Middleware in `src/middleware.ts` checks for `.config.json`. Once it exists, the redirect to `/setup` no longer occurs.
 

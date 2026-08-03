@@ -12,27 +12,20 @@ Last Updated: March 1, 2026
 
 **THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
 
-This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../../LICENSE) file for full terms.
+This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees or warranties are given. The authors and contributors are not liable for any damages arising from use of this software. See the [LICENSE](../LICENSE) file for full terms.
 
 ## Overview
 
-This guide covers running ED Rare Router as a local application on your own machine. Running it this way gets you the EDDN worker for real-time market data, persistent file storage, long-running processes, full control over the environment, and every feature available (nothing held back by serverless limitations).
+This guide covers running ED Rare Router as a local application on your own machine. Running it this way gets you persistent file storage, long-running processes, full control over the environment, and every feature available (nothing held back by serverless limitations).
 
 ## Architecture
 
-For local deployment, you can run:
+For local deployment, you run:
 
 1. **Astro Web Server** - Main application (port 4321)
-2. **EDDN Worker Service** (optional) - Real-time market data via ZeroMQ
-3. **Bulk Fetch Script** (optional) - Periodic EDSM market data updates
+2. **Bulk Fetch Script** (optional) - Periodic EDSM market data updates
 
 ```
-┌─────────────────┐
-│  EDDN Worker    │ → data/eddnMarketCache.json
-│  (ZeroMQ)       │
-└─────────────────┘
-         │
-         ↓
 ┌─────────────────┐
 │  Astro Server   │ → Reads from cache files
 │  (Port 4321)    │
@@ -46,17 +39,8 @@ For local deployment, you can run:
 
 ## Prerequisites
 
-### Required
-
 - **Node.js 18+** - [Download](https://nodejs.org/)
 - **npm** - Comes with Node.js
-
-### Optional (for EDDN Worker)
-
-- **ZeroMQ** - Required for EDDN worker service
-  - **Windows**: Download from [zeromq.org](https://zeromq.org/download/) or use `vcpkg install zeromq`
-  - **macOS**: `brew install zeromq`
-  - **Linux**: `sudo apt-get install libzmq3-dev` (Debian/Ubuntu)
 
 ## Installation
 
@@ -78,7 +62,6 @@ npm install
 
 This installs:
 - Astro and React dependencies
-- ZeroMQ (if available)
 - All required packages
 
 ### Step 3: Optional – Local config
@@ -92,13 +75,9 @@ cp config.sample.json .config.json
 
 See the main [README](../README.md#configuration) for config options.
 
-### Step 4: Generate Initial Data Files
+### Step 4: Optional - Fetch Initial Market Data
 
 ```bash
-# Export rare goods to JSON (for EDDN worker)
-npm run export:rares
-
-# Fetch initial market data from EDSM (optional)
 npm run fetch:market
 ```
 
@@ -133,42 +112,6 @@ npm run preview
 
 Production build will be available at: `http://localhost:4321`
 
-## Running EDDN Worker (Optional)
-
-For real-time market data, run the EDDN worker service:
-
-### Start Worker
-
-```bash
-npm run worker
-```
-
-Or with auto-restart on file changes:
-
-```bash
-npm run worker:dev
-```
-
-The worker will:
-- Connect to EDDN via ZeroMQ
-- Filter market messages for rare goods stations
-- Cache data to `data/eddnMarketCache.json`
-- Update automatically as players upload data
-
-### Running Both Services
-
-You'll need two terminal windows:
-
-**Terminal 1 - Web Server:**
-```bash
-npm run dev
-```
-
-**Terminal 2 - EDDN Worker:**
-```bash
-npm run worker
-```
-
 ## Process Management
 
 ### Using PM2 (Recommended)
@@ -182,9 +125,6 @@ npm install -g pm2
 # Start web server
 pm2 start npm --name "edrr-web" -- run dev
 
-# Start EDDN worker
-pm2 start npm --name "edrr-worker" -- run worker
-
 # Save configuration
 pm2 save
 
@@ -194,7 +134,7 @@ pm2 status
 # View logs
 pm2 logs
 
-# Stop services
+# Stop the server
 pm2 stop all
 
 # Set to start on system boot
@@ -224,28 +164,10 @@ Environment=NODE_ENV=production
 WantedBy=multi-user.target
 ```
 
-**`/etc/systemd/system/edrr-worker.service`:**
-```ini
-[Unit]
-Description=ED Rare Router EDDN Worker
-After=network.target
-
-[Service]
-Type=simple
-User=your-username
-WorkingDirectory=/path/to/ED-Rare-Router
-ExecStart=/usr/bin/npm run worker
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-```
-
 Then:
 ```bash
-sudo systemctl enable edrr-web edrr-worker
-sudo systemctl start edrr-web edrr-worker
+sudo systemctl enable edrr-web
+sudo systemctl start edrr-web
 ```
 
 ## Scheduled Tasks
@@ -304,7 +226,6 @@ The application uses these data files in the data directory (default `data/` in 
 - `rareSystemsCache.json` - Pre-fetched rare origin system coordinates
 - `systemCache.json` - Cached EDSM system lookups (user-entered systems)
 - `edsmMarketData.json` - Bulk-fetched EDSM market data (optional)
-- `eddnMarketCache.json` - Real-time EDDN market data (if worker running)
 - `curatedLegality.json` - Manually curated legality overrides (dev only)
 
 **Note**: These files are generated automatically. You can commit them to git or regenerate as needed.
@@ -377,21 +298,9 @@ lsof -i :4321
 # Kill the process or change port in config
 ```
 
-### EDDN Worker Won't Start
-
-**Error: "Cannot find module 'zeromq'"**
-- Install ZeroMQ system library (see Prerequisites)
-- Rebuild: `npm rebuild zeromq`
-
-**Error: "ECONNREFUSED"**
-- Check EDDN relay server status
-- Verify network connectivity
-- Check firewall settings
-
 ### Data Files Not Updating
 
 - Check file permissions
-- Verify worker is running (if using EDDN)
 - Check logs for errors
 - Ensure data directory exists and is writable
 
@@ -400,7 +309,6 @@ lsof -i :4321
 ### Resource Usage
 
 - **Web Server**: ~50-100 MB RAM, minimal CPU
-- **EDDN Worker**: ~30-50 MB RAM, low CPU (mostly idle)
 - **Disk Space**: ~1-5 MB for data files
 
 ### Optimization
@@ -455,15 +363,14 @@ npm install
 # Rebuild if needed
 npm run build
 
-# Restart services
+# Restart the server
 pm2 restart all
 # or
-systemctl restart edrr-web edrr-worker
+systemctl restart edrr-web
 ```
 
 ## See Also
 
-- [EDDN Worker Setup Guide](./eddn-worker-setup.md) - EDDN worker details
 - [Bulk Market Data Fetch](./bulk-market-data-fetch.md) - Market data fetching
 - [Testing Market Data Fetch](./testing-market-data-fetch.md) - Local testing
 - [Deployment Guide](./deployment-guide.md) - General deployment info

@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Start Script for ED Rare Router (Local Deployment)
-# 
-# This script starts both the web server and EDDN worker service
-# for local deployment.
+#
+# This script starts the web server for local deployment.
 #
 # Usage: ./scripts/start-local.sh
 # Or: bash scripts/start-local.sh
@@ -44,67 +43,33 @@ else
     echo "  Install PM2 for better process management: npm install -g pm2"
 fi
 
-# Export rares data if needed
-if [ ! -f "data/rares.json" ]; then
-    echo "📝 Generating rares.json..."
-    npm run export:rares
-fi
-
-# Start services
+# Start the web server
 if [ "$USE_PM2" = true ]; then
     echo ""
-    echo "🚀 Starting services with PM2..."
+    echo "🚀 Starting web server with PM2..."
     echo ""
-    
-    # Start web server
+
     pm2 start npm --name "edrr-web" -- run dev
-    
-    # Start EDDN worker (if ZeroMQ is available)
-    if npm list zeromq &> /dev/null 2>&1; then
-        pm2 start npm --name "edrr-worker" -- run worker
-        echo "✓ EDDN worker started"
-    else
-        echo "⚠ EDDN worker skipped (ZeroMQ not available)"
-        echo "  Install ZeroMQ to enable real-time market data"
-    fi
-    
+
     echo ""
-    echo "✅ Services started!"
+    echo "✅ Server started!"
     echo ""
     echo "Web Server: http://localhost:4321"
     echo ""
     echo "PM2 Commands:"
     echo "  pm2 status    - View service status"
     echo "  pm2 logs      - View logs"
-    echo "  pm2 stop all  - Stop all services"
-    echo "  pm2 restart all - Restart all services"
+    echo "  pm2 stop all  - Stop the server"
+    echo "  pm2 restart all - Restart the server"
     echo ""
 else
     echo ""
-    echo "🚀 Starting services in foreground..."
+    echo "🚀 Starting web server in foreground..."
     echo ""
     echo "Web Server: http://localhost:4321"
     echo ""
-    echo "Press Ctrl+C to stop all services"
+    echo "Press Ctrl+C to stop"
     echo ""
-    
-    # Start web server in background
-    npm run dev &
-    WEB_PID=$!
-    
-    # Start EDDN worker if available
-    if npm list zeromq &> /dev/null 2>&1; then
-        npm run worker &
-        WORKER_PID=$!
-        echo "✓ EDDN worker started (PID: $WORKER_PID)"
-    else
-        echo "⚠ EDDN worker skipped (ZeroMQ not available)"
-    fi
-    
-    echo "✓ Web server started (PID: $WEB_PID)"
-    echo ""
-    
-    # Wait for interrupt
-    trap "kill $WEB_PID $WORKER_PID 2>/dev/null; exit" INT TERM
-    wait
+
+    npm run dev
 fi

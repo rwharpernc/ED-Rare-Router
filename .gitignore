@@ -9,11 +9,15 @@ node_modules/.vite/
 # dependencies
 node_modules/
 
+# packaging build (see scripts/package/build.mjs) - downloaded runtimes and
+# release archives, regenerate locally, don't commit
+.cache/
+package-out/
+
 # -----------------------------------------------------------------------------
 # Data and caches (generated at runtime or by scripts - do not commit)
 # -----------------------------------------------------------------------------
 data/systemCache.json
-data/eddnMarketCache.json
 data/edsmMarketData.json
 data/rares.json
 data/rareSystemsCache.json

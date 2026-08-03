@@ -3,7 +3,7 @@
  *
  * Reads from `.config.json` in the project root (gitignored). Use `config.sample.json`
  * as a template. All API keys and secrets belong under `apiKeys`; environment variables
- * override via EDSM_API_KEY, EDDN_API_KEY, etc. (uppercase name + _API_KEY).
+ * override via EDSM_API_KEY, etc. (uppercase name + _API_KEY).
  *
  * @module config
  * @see docs/setup-guide.md for first-run setup
@@ -18,8 +18,8 @@ export interface AppConfig {
   /** Optional absolute path to data directory. If not set, uses <project>/data. */
   dataDir?: string | null;
   /**
-   * All API keys in one place. Keys are lowercase names (e.g. "edsm", "eddn").
-   * Env override: EDSM_API_KEY, EDDN_API_KEY (uppercase name + _API_KEY).
+   * All API keys in one place. Keys are lowercase names (e.g. "edsm").
+   * Env override: EDSM_API_KEY (uppercase name + _API_KEY).
    */
   apiKeys?: Record<string, string>;
 }
@@ -97,7 +97,7 @@ export function getEdsmUserAgent(): string {
 }
 
 /**
- * Returns an API key by name (e.g. "edsm", "eddn").
+ * Returns an API key by name (e.g. "edsm").
  * Precedence: config.apiKeys[name] (lowercase) → process.env[NAME_API_KEY] (e.g. EDSM_API_KEY).
  * @param name - Key name (case-insensitive); env var is uppercase + _API_KEY
  * @returns The key string, or undefined if not set
