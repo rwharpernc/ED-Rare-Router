@@ -1,34 +1,14 @@
 # ED Rare Router
 
+[![Release](https://img.shields.io/github/v/release/rwharpernc/ED-Rare-Router?label=release)](https://github.com/rwharpernc/ED-Rare-Router/releases/latest)
+[![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](./LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-informational)](#download--run-no-install)
+
 A standalone web app for Elite Dangerous players planning rare goods trading routes, with PowerPlay integration.
 
-## Version
+**Beta 1** is out - functional and used regularly by the author, but still a solo hobby project. Expect occasional rough edges. Found a bug or have a feature request? [Open an issue](https://github.com/rwharpernc/ED-Rare-Router/issues) - feedback from beta testers is exactly what this release is for. See [CHANGELOG.md](./CHANGELOG.md) for what's new.
 
-**Current Version**: Beta 1 (August 3, 2026)
-
-This version ships a dataset of roughly 140-142 rare commodities (the exact count is still being verified), a legality system with detailed restrictions, first-run setup via web or CLI, and a packaged double-click build for non-developers. Rare commodity data is static - route planning itself is manual, based on your scan results.
-
-## ⚠️ Important Disclaimers
-
-**THIS IS A DEVELOPMENT/HOBBY PROJECT - USE AT YOUR OWN RISK**
-
-**NO WARRANTIES OR GUARANTEES ARE PROVIDED**
-
-This project is:
-- A personal hobby project, not a commercial product
-- Actively in development and in public beta testing
-- Not ready for production use
-- Subject to frequent refactors and breaking changes
-
-By using this software, you acknowledge that:
-- It's provided "AS IS" without warranty of any kind
-- No guarantees are made about accuracy, reliability, or fitness for any purpose
-- You assume all risk associated with using it
-- The author and contributors aren't liable for damages arising from its use
-
-A few practical notes: refactors happen often, documentation is kept reasonably current, the code is commented, and features can be incomplete or change significantly without notice.
-
-This software is licensed under the GNU General Public License v3.0, which includes its own warranty disclaimers. See [LICENSE](./LICENSE) for the full text.
+This is a personal hobby project, provided as-is with no warranty of any kind - see [License](#license) below for the full terms.
 
 ## Overview
 
@@ -43,7 +23,7 @@ ED Rare Router helps commanders:
 
 ### Core
 - **Quick Scan** - one button scans for all rare goods near your current system
-- Roughly 140-142 rare commodities covering the major rare goods in Elite Dangerous (count still being verified)
+- 142 rare commodities covering the major rare goods in Elite Dangerous
 - System autocomplete backed by the EDSM API, with caching so repeat lookups are fast
 - Lightyear distance calculations between systems
 - Results sort closest-first, with unknown systems pushed to the end
@@ -94,7 +74,7 @@ Building this yourself, contributing, or want more control? See the **[Developer
 
 2. **Select your pledged power (optional)** - Finance Ethos is detected automatically from your power selection. If it applies, you'll see a green message showing the CP divisor reduction. Powers with Finance Ethos: Denton Patreus, Jerome Archer, Li Yong-Rui, Zemina Torval.
 
-3. **Click "Scan Nearby Rares"** - the app calculates distance and legality for all rare commodities (140-142, count still being verified).
+3. **Click "Scan Nearby Rares"** - the app calculates distance and legality for all 142 rare commodities.
 
 ### Reading results
 
@@ -120,6 +100,13 @@ Finance Ethos is detected automatically from your selected power - there's no ch
 - Li Yong-Rui (Independent)
 - Zemina Torval (Empire)
 
+## Feedback & Known Limitations
+
+This is a beta - a few things worth knowing:
+- A couple of dataset entries are still being cross-checked against community references (external sources cite ~140 rare commodities, this dataset ships 142). See [Data Accuracy Notes](./docs/data-accuracy-notes.md).
+- Route planning is manual by design - the app calculates distance and legality, you build the route yourself from scan results.
+- Bugs, rough edges, and missing features are expected. [Open an issue](https://github.com/rwharpernc/ED-Rare-Router/issues) if you hit one, or check [TODO.md](./docs/TODO.md) for what's already planned.
+
 ## Documentation
 
 - **[Developer Guide](./docs/development.md)** — building and running from source, npm scripts, project structure
@@ -138,6 +125,6 @@ Only `README.md` and `CHANGELOG.md` live at the repo root - everything else is u
 
 Licensed under the GNU General Public License v3.0.
 
-This license includes warranty disclaimers - the software is provided "AS IS" without warranty of any kind, express or implied, including the implied warranties of merchantability, fitness for a particular purpose, and noninfringement.
+This is a personal hobby project, not a commercial product, provided "AS IS" without warranty of any kind, express or implied - including the implied warranties of merchantability, fitness for a particular purpose, and noninfringement. No guarantees are made about accuracy, reliability, or fitness for any purpose; you assume all risk associated with using it, and the author and contributors aren't liable for damages arising from its use.
 
 See [LICENSE](./LICENSE) for the full text, or visit [gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html) for more on GPL v3.0.

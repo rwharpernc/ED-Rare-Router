@@ -76,7 +76,7 @@ Optional local settings are read from **`.config.json`** in the project root (no
 - **`dataDir`** – Optional absolute path for cache and data files. Omit or set to `null` to use the default `data/` directory.
 - **`apiKeys`** – Object for all API keys (e.g. `"edsm"`). Env overrides: `EDSM_API_KEY`, etc.
 
-See the main [README](../README.md#configuration) for details.
+See the [Setup Guide](./setup-guide.md#config-file-reference) for the full field reference.
 
 ### Port Configuration
 

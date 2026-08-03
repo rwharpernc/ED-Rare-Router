@@ -73,7 +73,7 @@ cp config.sample.json .config.json
 # Edit .config.json: edsmUserAgent, and optionally dataDir (absolute path)
 ```
 
-See the main [README](../README.md#configuration) for config options.
+See the [Setup Guide](./setup-guide.md#config-file-reference) for the full field reference.
 
 ### Step 4: Optional - Fetch Initial Market Data
 
