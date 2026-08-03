@@ -12,7 +12,7 @@
  * Not part of the app itself and not run by end users.
  */
 
-import { existsSync, mkdirSync, rmSync, cpSync, writeFileSync, createWriteStream, chmodSync } from 'fs';
+import { existsSync, mkdirSync, rmSync, cpSync, writeFileSync, readFileSync, createWriteStream, chmodSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execFileSync, execSync } from 'child_process';
@@ -25,6 +25,7 @@ const CACHE_DIR = join(ROOT, '.cache');
 const OUT_DIR = join(ROOT, 'package-out');
 const STAGE_DIR = join(CACHE_DIR, 'node_modules-stage');
 const RUNTIME_CACHE = join(CACHE_DIR, 'node-runtimes');
+const APP_VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf-8')).version;
 
 const NPM_BIN = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const NPX_BIN = process.platform === 'win32' ? 'npx.cmd' : 'npx';
@@ -269,7 +270,7 @@ async function main() {
     const pkgDir = assemblePackage(target, prodNodeModules, nodeRuntimeDir, launcherExe);
 
     const ext = target.archiveFormat === 'zip' ? 'zip' : 'tar.gz';
-    const archivePath = join(OUT_DIR, `ED-Rare-Router-${target.os}-${target.arch}.${ext}`);
+    const archivePath = join(OUT_DIR, `ED-Rare-Router-v${APP_VERSION}-${target.os}-${target.arch}.${ext}`);
     const execRelPaths =
       target.platform === 'win32' ? [] : [target.exeName, 'node-runtime/bin/node'];
     await archiveDirectory(pkgDir, archivePath, target.archiveFormat, execRelPaths);
