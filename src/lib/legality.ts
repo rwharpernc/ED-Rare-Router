@@ -2,6 +2,16 @@ import type { RareGood } from "../types/rares";
 import type { EDSMSystem } from "../types/edsm";
 
 /**
+ * Legality evaluation for rare goods against a system's allegiance/government.
+ *
+ * A rare can be restricted three ways (see RareGood in ../types/rares): a
+ * combined superpower+government pair, a government type (any superpower), or
+ * a superpower (any government type). Any one matching restriction makes the
+ * item illegal there - see evaluateLegality() below for how the checks are
+ * ordered and what that ordering does (and doesn't) affect.
+ */
+
+/**
  * Standard Elite Dangerous government types.
  * Based on Inara and game data.
  * 
@@ -95,12 +105,18 @@ export function getLegalityDetails(rare: RareGood): LegalityDetails {
 
 /**
  * Evaluates whether a rare good is legal in a given system.
- * 
- * Checks three conditions (in order of specificity):
+ *
+ * Checks three restriction types, in this order:
  * 1. Combined superpower + government restrictions (most specific)
  * 2. Government type restrictions (applies to all superpowers)
  * 3. Superpower restrictions (applies to all government types in that superpower)
- * 
+ *
+ * This order only determines which `reason` string comes back when a rare
+ * happens to match more than one restriction type (the most specific match
+ * wins the message) - it does NOT affect the legal/illegal outcome itself,
+ * since the three checks are independent (any single match is sufficient),
+ * not layered by precedence.
+ *
  * @param rare - The rare good to evaluate
  * @param system - The system to check legality in
  * @returns LegalityResult with legal status and human-readable reason

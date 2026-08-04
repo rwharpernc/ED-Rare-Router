@@ -1,10 +1,9 @@
 # Troubleshooting Notes & Explanations
 
 **ED Rare Router**  
-Last Updated: August 3, 2026
+Last Updated: August 4, 2026
 
-**Author:** R.W. Harper  
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Author:** R.W. Harper (CMDR Mactavious)  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -89,27 +88,7 @@ The following items should be cross-referenced with authoritative sources to con
 
 ## EDSM Market Data Limitations
 
-### Issue
-EDSM API does not return market commodity data via public API endpoints.
-
-### Explanation
-Even when using `showMarket=1` parameter, the EDSM API only returns:
-- `haveMarket: true` (indicates market exists)
-- `updateTime.market` (last update timestamp)
-- **No `market.commodities` array** (commodity data is not included)
-
-### Why This Happens
-- EDSM's public API is designed for system/station information, not market data
-- Market commodity data is not exposed via the public API
-- Even if players have uploaded market data, it's not accessible via API
-
-### Solutions
-1. **Manual Price Curation** - Add baseline prices via `/curate-prices` interface
-2. **Accept Limited Results** - Static/curated costs only
-
-### Related Files
-- `docs/edsm-market-data-limitations.md` - Detailed explanation
-- `docs/bulk-market-data-fetch.md` - Bulk fetch documentation
+EDSM's public API doesn't expose market commodity data (only a `haveMarket` flag and an update timestamp), so the bulk fetch script's low success rate is expected behavior, not a bug. See [EDSM Market Data Limitations](./edsm-market-data-limitations.md) for the full explanation and options.
 
 ---
 

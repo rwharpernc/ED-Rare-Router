@@ -9,6 +9,11 @@ interface PriceCuratorProps {
   onDelete: (rareName: string) => Promise<void>;
 }
 
+/**
+ * Edit form for one rare's curated baseline price, used by PriceCuratorApp.
+ * Pre-fills from curatedData if present, else the base rares.ts cost;
+ * save/delete are handled by the parent via onSave/onDelete.
+ */
 export default function PriceCurator({
   rare,
   curatedData,

@@ -4,8 +4,7 @@
 Version: Beta 2
 Last Updated: August 4, 2026
 
-**Author:** R.W. Harper  
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Author:** R.W. Harper (CMDR Mactavious)  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -209,7 +208,7 @@ RaresPlannerIsland
    - TTL: None - the app never writes to this file, only reads it
    - Scope: All rare origin systems
    - Usage: Loaded once and used for rare origin lookups if the file exists
-   - No script currently generates this file in the shape it expects - `npm run generate:rare-coords` produces a different file (`data/rare-system-coords.json`, a flat `{name: {x,y,z}}` map with un-normalized keys). Without `rareSystemsCache.json` present, rare origin lookups fall back to live EDSM API calls every scan (logged as a warning on startup)
+   - Generation: no script currently produces this file; see [Data Appendix - Cache Management](./data-appendix.md#cache-management) for why, and what falls back to a live EDSM lookup instead
 
 2. **In-Memory Cache** (System Lookups - User Systems)
    - Type: `Map<string, EDSMSystem>`

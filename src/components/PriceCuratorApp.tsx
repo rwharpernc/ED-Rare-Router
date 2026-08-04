@@ -3,6 +3,13 @@ import { rares } from "../data/rares";
 import PriceCurator from "./PriceCurator";
 import type { CuratedPriceData } from "../lib/curatedPrices";
 
+/**
+ * Dev-only price curation UI (mounted on /curate-prices, see
+ * src/pages/curate-prices.astro). Lists all rares with search/filter,
+ * delegating each row's edit form to PriceCurator; reads/writes overrides via
+ * /api/curated-prices, which are the same overrides src/lib/curatedPrices.ts
+ * applies at scan time.
+ */
 export default function PriceCuratorApp() {
   const [curatedData, setCuratedData] = useState<CuratedPriceData>({});
   const [loading, setLoading] = useState(true);

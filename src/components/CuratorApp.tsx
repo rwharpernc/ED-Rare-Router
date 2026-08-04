@@ -3,6 +3,12 @@ import { rares } from "../data/rares";
 import LegalityCurator from "./LegalityCurator";
 import type { CuratedLegalityData } from "../lib/curatedLegality";
 
+/**
+ * Dev-only legality curation UI (mounted on /curate, see src/pages/curate.astro).
+ * Lists all rares with search/filter, delegating each row's edit form to
+ * LegalityCurator; reads/writes overrides via /api/curated-legality, which are
+ * the same overrides src/lib/curatedLegality.ts applies at scan time.
+ */
 export default function CuratorApp() {
   const [curatedData, setCuratedData] = useState<CuratedLegalityData>({});
   const [loading, setLoading] = useState(true);

@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 
+/**
+ * Shows when the rare-systems and market-data caches were last updated, via
+ * GET /api/cache-status. Renders nothing until data loads, and nothing at all
+ * if neither cache has metadata yet (e.g. a fresh install).
+ */
+
 interface CacheStatusData {
   rareSystems?: {
     lastUpdated?: string;

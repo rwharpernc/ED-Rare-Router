@@ -4,8 +4,7 @@
 Version: Beta 2  
 Last Updated: August 4, 2026
 
-**Author:** R.W. Harper  
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Author:** R.W. Harper (CMDR Mactavious)  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -159,10 +158,7 @@ User Input → React Component → API Endpoint → Business Logic
 - `getRareOriginSystem(name: string)`: Get rare origin system from cache
 - `getCacheMetadata()`: Get cache metadata (last updated, total systems)
 
-**Cache Generation**:
-- No script in the repo currently generates `data/rareSystemsCache.json` in the shape this module expects (an object keyed by normalized system name, each value an `EDSMSystem`, plus `_metadata`)
-- `npm run generate:rare-coords` produces a related but different file, `data/rare-system-coords.json` - a flat `{ "SystemName": {x, y, z} }` map with un-normalized keys and no allegiance/government/`_metadata` - it isn't a drop-in replacement
-- Without `rareSystemsCache.json`, the app still works correctly, just slower (a live EDSM lookup per rare on every scan instead of an in-memory hit)
+**Cache Generation**: no script currently produces `data/rareSystemsCache.json` in the shape this module expects; the app falls back to live EDSM lookups without it. See [Data Appendix - Cache Management](./data-appendix.md#cache-management) for the full explanation.
 
 ### 3.2 EDSM Client (`src/lib/edsm.ts`)
 
@@ -339,16 +335,7 @@ interface PowerPlayPower {
 
 ### 5.1 Caching Strategy
 
-- **Rare Origin Systems**: Optional cache file, loaded on startup if present
-  - When present, eliminates EDSM API calls for rare origins (142 rares across ~138 unique systems)
-  - Faster response times for scan endpoint
-  - See section 3.1 above - no script currently generates this file
-- **User-Entered Systems**: Permanent in-memory + disk cache
-  - Current system cached after first lookup
-  - Debounced disk writes (5 seconds) to reduce I/O
-- **System Searches**: 15-minute TTL in memory
-- **Disk Cache**: Debounced writes (5 seconds) to reduce I/O
-- **API Responses**: Cache-Control headers on autocomplete endpoint
+Rare origins use an optional read-only cache file (eliminating EDSM calls for all 142 rares across ~138 systems when present); user-entered systems get a permanent in-memory + debounced disk cache; system searches get a 15-minute in-memory TTL; the autocomplete endpoint sets `Cache-Control` for the browser. See [Architecture Overview - Cache Layers](./architecture-overview.md#cache-layers) for the full breakdown of each layer (file, format, TTL, scope).
 
 ### 5.2 API Rate Limiting
 
@@ -419,9 +406,7 @@ The build process:
 
 ### 8.3 Deployment
 
-The application targets **local deployment**, using the `@astrojs/node` adapter in standalone server mode. Run it directly with `node dist/server/entry.mjs`, or manage it with PM2 or systemd - see the [Local Deployment Guide](./local-deployment.md).
-
-See [Deployment Guide](./deployment-guide.md) for detailed instructions.
+The application targets **local deployment**, using the `@astrojs/node` adapter in standalone server mode. Run it directly with `node dist/server/entry.mjs`, or manage it with PM2 or systemd - see the [Local Deployment Guide](./local-deployment.md) for detailed instructions.
 
 ### 8.4 Configuration
 

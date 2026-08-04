@@ -5,6 +5,13 @@ import type { RareGood } from "../types/rares";
 import { getDataDir } from "./config";
 
 /**
+ * Manual legality-override storage, read/written by the dev-only `/curate` UI
+ * (src/pages/curate.astro) via the curated-legality API. Overlays onto the base
+ * data in src/data/rares.ts at scan time (see applyCuratedLegality below) -
+ * never mutates rares.ts itself.
+ */
+
+/**
  * Curated legality data structure.
  * This data overrides the base data in rares.ts when present.
  */

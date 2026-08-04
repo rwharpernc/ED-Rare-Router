@@ -4,8 +4,7 @@
 Version: Beta 2
 Last Updated: August 4, 2026
 
-**Author:** R.W. Harper  
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Author:** R.W. Harper (CMDR Mactavious)  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -42,6 +41,7 @@ interface RareGood {
   distanceToStarLs?: number;            // Distance from arrival star to station (light seconds)
   cost?: number;                         // Typical market cost in credits (static baseline)
   permitRequired?: boolean;              // Whether system requires a permit
+  inaraLink?: string;                    // Link to the commodity's Inara page, filled by update:rare-inara-links
   pp: {
     eligibleSystemTypes: Array<"acquisition" | "exploit">;
     notes?: string;                      // Optional notes
@@ -92,6 +92,7 @@ interface RareGood {
 - **`pp.eligibleSystemTypes`**: PowerPlay system types where the rare can generate CP
   - `"acquisition"`: Acquisition systems
   - `"exploit"`: Exploit systems
+- **`inaraLink`**: Optional link to the commodity's Inara page, filled in by `npm run update:rare-inara-links` (see the [Curation Guide](./tools/rare-commodity-curation-guide.md))
 
 #### Dataset Statistics
 

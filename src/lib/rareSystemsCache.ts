@@ -4,6 +4,16 @@ import { join } from "path";
 import type { EDSMSystem } from "../types/edsm";
 import { getDataDir } from "./config";
 
+/**
+ * Read-only cache for rare-good origin system coordinates - distinct from
+ * edsm.ts, which handles user-entered systems. Loads `data/rareSystemsCache.json`
+ * once, if present, and never writes to it. No script in this repo currently
+ * generates the file in the shape this module expects (see
+ * docs/data-appendix.md#cache-management for why); without it, callers should
+ * fall back to a live EDSM lookup per rare (see getRareOriginSystem() returning
+ * null).
+ */
+
 const CACHE_FILE_PATH = join(getDataDir(), "rareSystemsCache.json");
 
 interface RareSystemCache {

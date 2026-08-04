@@ -4,8 +4,7 @@
 Version: Beta 2
 Last Updated: August 4, 2026
 
-**Author:** R.W. Harper  
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Author:** R.W. Harper (CMDR Mactavious)  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -183,13 +182,7 @@ The `/api/market-data` endpoint:
 
 ## Important Limitations
 
-### EDSM API Does Not Return Market Commodity Data
-
-EDSM's public API doesn't return market commodity data, even with `showMarket=1` - it only tells you a market exists (`haveMarket: true`), not what's in it. That's an API limitation, not a bug in the script, so expect a low success rate from the bulk fetch (typically 0-10%), with most stations coming back "No market data available." Even data players have uploaded isn't exposed through the public API.
-
-Your options: add static purchase prices to `rares.ts` by hand (or via `/curate-prices` in development mode), or just accept the bulk fetch's limited results.
-
-See [EDSM Market Data Limitations](./edsm-market-data-limitations.md) for detailed explanation.
+EDSM's public API doesn't return market commodity data, so expect a low success rate from the bulk fetch - that's an API limitation, not a bug in the script. See [EDSM Market Data Limitations](./edsm-market-data-limitations.md) (the canonical explanation) for why, and your options for filling the gap.
 
 ## Performance Considerations
 

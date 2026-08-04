@@ -10,6 +10,11 @@ interface LegalityCuratorProps {
   onDelete: (rareName: string) => Promise<void>;
 }
 
+/**
+ * Edit form for one rare's legality overrides, used by CuratorApp. Pre-fills
+ * from curatedData if present, else falls back to the base rares.ts values;
+ * save/delete are handled by the parent via onSave/onDelete.
+ */
 export default function LegalityCurator({
   rare,
   curatedData,

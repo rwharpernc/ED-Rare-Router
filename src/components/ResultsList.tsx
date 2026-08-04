@@ -75,23 +75,17 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
     return 'conditional';
   };
 
-  // Sort results by distance (closest first)
-  // Put systems with distance 0 (not found) at the end
+  // Sort results by distance (closest first); push unresolved origins to the end.
+  // distanceFromCurrentLy is 0 both when you're genuinely at the rare's origin
+  // system (the best possible result) AND when the origin's coordinates
+  // couldn't be resolved (the worst) - systemNotFound is what disambiguates
+  // the two, so sort on that instead of treating 0 itself as "not found".
   const sortedResults = useMemo(() => {
     return [...results].sort((a, b) => {
-      const aDist = a.distanceFromCurrentLy;
-      const bDist = b.distanceFromCurrentLy;
-      
-      // If both are 0 or both are > 0, sort normally (closest first)
-      if ((aDist === 0 && bDist === 0) || (aDist > 0 && bDist > 0)) {
-        return aDist - bDist;
-      }
-      
-      // Put distance 0 (system not found) at the end
-      if (aDist === 0) return 1;
-      if (bDist === 0) return -1;
-      
-      return aDist - bDist;
+      if (a.systemNotFound && b.systemNotFound) return 0;
+      if (a.systemNotFound) return 1;
+      if (b.systemNotFound) return -1;
+      return a.distanceFromCurrentLy - b.distanceFromCurrentLy;
     });
   }, [results]);
   
@@ -99,8 +93,9 @@ export default function ResultsList({ results, mode }: ResultsListProps) {
     return result.distanceFromCurrentLy;
   };
   
-  // Count how many results have zero/unknown distance (likely missing coords)
-  const invalidResults = sortedResults.filter((r) => distanceFromCurrent(r) <= 0).length;
+  // Count results whose origin system coordinates couldn't be resolved (not
+  // genuine 0 ly "you are here" results - see the sort comment above)
+  const invalidResults = sortedResults.filter((r) => r.systemNotFound).length;
 
   const maxDistance =
     sortedResults.length > 0

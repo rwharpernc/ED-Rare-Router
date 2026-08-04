@@ -4,8 +4,7 @@
 Version: Beta 2
 Last Updated: August 4, 2026
 
-**Author:** R.W. Harper  
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Author:** R.W. Harper (CMDR Mactavious)  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -16,69 +15,23 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 
 ## Quick Test
 
-You can run the bulk fetch script locally to see it in action:
+This doc covers verifying the bulk fetch and market-data API once you've run them - see [Bulk Market Data Fetch](./bulk-market-data-fetch.md) for how the script and cache actually work, what its output looks like, and its own troubleshooting/performance notes.
 
-### Step 1: Install Dependencies
-
-Make sure you have all dependencies installed:
+### Run it once
 
 ```bash
 npm install
-```
-
-### Step 2: Run the Fetch Script
-
-```bash
 npm run fetch:market
 ```
 
-This will:
-- Load all rare goods from `src/data/rares.ts`
-- Query EDSM API for each station
-- Save results to `data/edsmMarketData.json`
-- Show progress and summary
-
-### Step 3: Check the Output
-
-The script will display progress like:
-
-```
-[EDSM Market Fetcher] Starting bulk fetch...
-[EDSM Market Fetcher] Found 142 rare goods to fetch
-[1/142] Fetching Lavian Brandy from Lave/Lave Station...
-  ✓ Found market data for Lavian Brandy (stock: 0, bracket: 0)
-[2/142] Fetching Altairian Skin from Altair/Solo Orbiter...
-  ✗ No market data available for Altair/Solo Orbiter
-...
-```
-
-At the end, you'll see a summary:
-
-```
-[EDSM Market Fetcher] Summary:
-  Total rares: 142
-  Fetched: 50
-  Success: 35
-  Errors: 10
-  Skipped (recent): 97
-  Data saved to: data/edsmMarketData.json
-```
-
-### Step 4: Verify the Output File
-
-Check that the file was created:
+Then confirm the cache file exists and has the expected shape:
 
 ```bash
 ls -lh data/edsmMarketData.json
+cat data/edsmMarketData.json | jq '._metadata'
 ```
 
-Or open it to see the structure:
-
-```bash
-cat data/edsmMarketData.json | head -50
-```
-
-### Step 5: Test the API Endpoint
+### Test the API Endpoint
 
 Start your development server:
 
@@ -96,29 +49,7 @@ curl "http://localhost:4321/api/market-data?system=Lave&station=Lave Station&rar
 curl "http://localhost:4321/api/market-data"
 ```
 
-## Expected Results
-
-### Successful Fetch
-
-- File `data/edsmMarketData.json` is created
-- Contains `_metadata` with fetch statistics
-- Contains `data` object with market entries
-- Some entries may have data, others may not (depends on EDSM)
-
-### Partial Success
-
-It's normal to see:
-- **Some successes**: Stations with recent player visits will have data
-- **Some errors**: Stations without market data (not visited recently)
-- **Skipped entries**: If you run it again within 12 hours, recent data is skipped
-
-### No Data Retrieved
-
-If you get 0 successes:
-- Check your internet connection
-- Verify EDSM API is accessible: `curl https://www.edsm.net/api-system-v1/stations?systemName=Sol`
-- Check if EDSM is rate limiting (wait a few minutes and retry)
-- Some rare goods stations may genuinely not have data
+A 0-success first run is normal - see [EDSM Market Data Limitations](./edsm-market-data-limitations.md) for why.
 
 ## Testing Scenarios
 
@@ -191,31 +122,7 @@ Should return:
 
 ## Troubleshooting
 
-### Script Won't Run
-
-**Error: "Cannot find module '../src/data/rares.ts'"**
-- Make sure you're in the project root directory
-- TypeScript files should work with Node.js ES modules
-- If issues persist, check that `tsconfig.json` is configured correctly
-
-**Error: "SyntaxError: Unexpected token"**
-- Ensure you're using Node.js 18+ with ES modules support
-- Check `package.json` has `"type": "module"`
-
-### No Data Retrieved
-
-**All requests return errors:**
-- Check EDSM API status
-- Verify network connectivity
-- Check firewall/proxy settings
-- Try a single request manually: `curl "https://www.edsm.net/api-system-v1/stations?systemName=Lave&stationName=Lave Station&showMarket=1"`
-
-**Some stations have no data:**
-- This is normal - depends on player contributions
-- Not all stations are visited frequently
-- Rare goods stations may have less data than common stations
-
-### API Endpoint Issues
+For script-side issues (won't start, no data retrieved), see [Bulk Market Data Fetch - Troubleshooting](./bulk-market-data-fetch.md#troubleshooting). API-endpoint-specific issues:
 
 **404 or 500 errors:**
 - Make sure dev server is running
@@ -227,12 +134,7 @@ Should return:
 - Verify the API can read the file (check file permissions)
 - Check server logs for errors
 
-## Performance Notes
-
-- **First run**: Takes ~5-7 minutes (142 requests × 2s delay, plus API response time)
-- **Subsequent runs**: Faster if many entries are skipped (<12 hours old)
-- **File size**: ~200-300 KB for 142 entries
-- **API response time**: Depends on EDSM API speed (usually <1 second per request)
+Performance figures (run time, file size) are in [Bulk Market Data Fetch - Performance Considerations](./bulk-market-data-fetch.md#performance-considerations).
 
 ## Next Steps
 

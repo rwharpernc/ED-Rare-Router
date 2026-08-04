@@ -62,7 +62,7 @@ Not a developer and don't want to install Node.js or use a terminal? There's a p
 3. First run only: you'll see a short setup form. Everything is optional, but filling in an EDSM "contact" string (your email or a URL) is recommended.
 4. Close the status window to stop the app.
 
-This build bundles its own Node.js runtime, so nothing needs to be installed.
+This build bundles its own Node.js runtime, so nothing needs to be installed. For changing the port, updating to a new release, uninstalling, or troubleshooting, see the **[Packaged Build Guide](./docs/packaged-build-guide.md)**.
 
 Building this yourself, contributing, or want more control? See the **[Developer Guide](./docs/development.md)**.
 
@@ -117,9 +117,7 @@ Only `README.md` and `CHANGELOG.md` live at the repo root - everything else is u
 
 ## Author
 
-**R.W. Harper**
-
-- LinkedIn: [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)
+**R.W. Harper (CMDR Mactavious)**
 
 ## License
 

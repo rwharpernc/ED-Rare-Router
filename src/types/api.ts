@@ -7,6 +7,7 @@ export interface ScanRequest {
   hasFinanceEthos: boolean;
 }
 
+/** See src/lib/legality.ts getLegalityDetails() for how each field is derived. */
 export interface LegalityDetails {
   superpowerRestrictions: string[];
   illegalGovernments: string[];
@@ -15,6 +16,14 @@ export interface LegalityDetails {
   explanation: string;
 }
 
+/**
+ * One rare good's result for a scan, as returned by POST /api/rares-scan.
+ *
+ * `distanceFromCurrentLy` is `0` both when the current system genuinely IS the
+ * rare's origin (closest possible result) and when the origin's coordinates
+ * couldn't be resolved (worst case) - `systemNotFound` is what disambiguates
+ * the two; don't infer "not found" from the distance being `0` alone.
+ */
 export interface ScanResult {
   rare: string;
   originSystem: string;
@@ -33,6 +42,7 @@ export interface ScanResult {
   cpDivisors: CpDivisors | null;
 }
 
+/** See src/lib/powerplay.ts cpDivisors() for how these are calculated. */
 export interface CpDivisors {
   divisor: number;
   divisorWithFinanceEthos: number;

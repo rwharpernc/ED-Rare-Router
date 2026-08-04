@@ -4,8 +4,7 @@
 Version: Beta 2
 Last Updated: August 4, 2026
 
-**Author:** R.W. Harper  
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
+**Author:** R.W. Harper (CMDR Mactavious)  
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -380,4 +379,3 @@ systemctl restart edrr-web
 
 - [Bulk Market Data Fetch](./bulk-market-data-fetch.md) - Market data fetching
 - [Testing Market Data Fetch](./testing-market-data-fetch.md) - Local testing
-- [Deployment Guide](./deployment-guide.md) - General deployment info

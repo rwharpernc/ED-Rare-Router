@@ -4,6 +4,19 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { getDataDir, getEdsmUserAgent } from "./config";
 
+/**
+ * EDSM API client for user-entered systems (autocomplete + exact lookup), with
+ * a three-tier fallback in front of every `getSystem()` call:
+ *   1. In-memory exact-match cache (`systemCache`) - no TTL, lives for the process
+ *   2. Disk-backed cache (`data/systemCache.json`) - loaded once at module init,
+ *      written back with a 5s debounce so bursts of lookups don't thrash disk
+ *   3. Live EDSM API call - only reached on a miss in both caches above
+ * `searchSystems()` (autocomplete) uses a separate in-memory cache with a
+ * 15-minute TTL instead, since it's keyed by partial query, not exact name.
+ *
+ * Rare origin systems do NOT go through this module - see rareSystemsCache.ts.
+ */
+
 const EDSM_API_BASE = "https://www.edsm.net/api-v1";
 const CACHE_FILE_PATH = join(getDataDir(), "systemCache.json");
 const SEARCH_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes TTL for search results

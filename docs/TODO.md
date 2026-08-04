@@ -4,8 +4,7 @@
 Version: Beta 2
 Last Updated: August 4, 2026
 
-**Author:** R.W. Harper
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)
+**Author:** R.W. Harper (CMDR Mactavious)
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer

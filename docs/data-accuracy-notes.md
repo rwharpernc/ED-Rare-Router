@@ -41,27 +41,9 @@ None of the usual data sources expose rare goods legality through a public API:
    - Use when Inara mentions a specific combination like "Federal Democracy" or "Imperial Theocracy"
    - Example: `illegalInSuperpowerGovs: [{ superpower: "Federation", government: "Democracy" }]`
 
-### Examples
+### Worked examples
 
-**Example 1: Kamitra Cigars**
-- Inara note: "This rare good is legal in all systems except for Prison Colony, Theocracy and Corporate systems and Federal Democracy systems."
-- Translation:
-  ```typescript
-  illegalInGovs: ['Prison Colony', 'Theocracy', 'Corporate'],
-  illegalInSuperpowerGovs: [
-    { superpower: 'Federation', government: 'Democracy' },
-  ],
-  ```
-
-**Example 2: Centauri Mega Gin**
-- Translation (matches the current `src/data/rares.ts` entry - illegal in Prison Colony systems, plus Federal and Alliance Theocracy specifically):
-  ```typescript
-  illegalInGovs: ['Prison Colony'],
-  illegalInSuperpowerGovs: [
-    { superpower: 'Federation', government: 'Theocracy' },
-    { superpower: 'Alliance', government: 'Theocracy' },
-  ],
-  ```
+See [Legality Categories](./legality-categories.md) for worked Inara-note-to-data-field translations (Kamitra Cigars, Centauri Mega Gin, and others), organized by commodity category.
 
 ### Verification
 

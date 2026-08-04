@@ -2,8 +2,7 @@
 
 All notable changes to this project are documented here.
 
-**Author:** R.W. Harper
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)
+**Author:** R.W. Harper (CMDR Mactavious)
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer

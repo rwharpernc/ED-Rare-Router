@@ -2,6 +2,15 @@ import type { RareGood } from "../types/rares";
 import type { PpSystemType, CpDivisors } from "../types/api";
 
 /**
+ * PowerPlay 2.0 control-point (CP) eligibility and divisor calculations.
+ *
+ * The divisor constants and the acquisition/exploit-only eligibility rule below
+ * reflect the PowerPlay 2.0 ruleset (see docs/technical-design.md for sourcing).
+ * If Frontier changes CP mechanics in a future game update, these will need
+ * re-verifying against the current rules.
+ */
+
+/**
  * Returns true if a rare can generate CP in the given PP system type.
  * 
  * According to PowerPlay 2.0 rules, rare goods count as profit-based trade

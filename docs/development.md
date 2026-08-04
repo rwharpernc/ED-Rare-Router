@@ -3,8 +3,7 @@
 **ED Rare Router**
 Last Updated: August 3, 2026
 
-**Author:** R.W. Harper
-**LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)
+**Author:** R.W. Harper (CMDR Mactavious)
 **License:** GNU General Public License v3.0
 
 ## ⚠️ Disclaimer
@@ -63,7 +62,7 @@ npm run build
 npm run preview   # serves the production build locally
 ```
 
-For running as a long-lived local service - process management with PM2 or systemd - see the **[Local Deployment Guide](./local-deployment.md)**. For a general deployment reference, see the **[Deployment Guide](./deployment-guide.md)**.
+For running as a long-lived local service - process management with PM2 or systemd - see the **[Local Deployment Guide](./local-deployment.md)**.
 
 ## npm Scripts
 
@@ -176,7 +175,6 @@ See `.gitignore` for the full list.
 
 - **[Setup Guide](./setup-guide.md)** — first-run setup (web, CLI, manual), field-by-field config reference
 - **[Local Deployment Guide](./local-deployment.md)** — running locally, process management
-- **[Deployment Guide](./deployment-guide.md)** — deployment reference
 - **[Technical Design](./technical-design.md)** — architecture and design decisions
 - **[Architecture Overview](./architecture-overview.md)** — system architecture and data flow
 - **[API Documentation](./api-documentation.md)** — API endpoint specifications

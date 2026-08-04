@@ -5,6 +5,14 @@ import type { RareGood } from "../types/rares";
 import { getDataDir } from "./config";
 
 /**
+ * Manual price-override storage, read/written by the dev-only `/curate-prices`
+ * UI (src/pages/curate-prices.astro) via the curated-prices API. Overlays onto
+ * the base `cost` field in src/data/rares.ts at scan time (see
+ * applyCuratedPrices below) - this is the highest-priority source in the price
+ * display fallback chain (curated price -> static rares.ts cost -> "N/A").
+ */
+
+/**
  * Curated price data structure.
  * This data overrides the base data in rares.ts when present.
  */
