@@ -12,13 +12,18 @@ All notable changes to this project are documented here.
 
 This software is provided "AS IS" without warranty of any kind, express or implied. No guarantees are given, and the author and contributors aren't liable for damages arising from its use. See [LICENSE](./LICENSE) for full terms.
 
-Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning uses three tiers - alpha/unstable, beta, and release. Current release: **Beta 1** (August 3, 2026).
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning uses three tiers - alpha/unstable, beta, and release. Current release: **Beta 2** (August 4, 2026).
 
 ## Versioning System
 
 - **unstable** – development versions, active changes, possible breaking changes
 - **beta** – feature-complete, undergoing testing and refinement
 - **release** – stable, production-ready
+
+## [Beta 2] - 2026-08-04
+
+### Fixed
+- Middleware redirects (first-run `/setup` redirect, dev-only `/curate` and `/curate-prices` redirects) now build the response with an explicit `Location` header instead of `Response.redirect(new URL(path, context.url.origin))`, removing a dependency on `context.url.origin` being correct.
 
 ## [Beta 1] - 2026-08-03
 

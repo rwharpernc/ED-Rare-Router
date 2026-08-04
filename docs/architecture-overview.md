@@ -1,8 +1,8 @@
 # Architecture Overview
 
 **ED Rare Router**  
-Version: Beta 1
-Last Updated: August 3, 2026
+Version: Beta 2
+Last Updated: August 4, 2026
 
 **Author:** R.W. Harper  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  

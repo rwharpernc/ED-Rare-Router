@@ -6,7 +6,7 @@
 
 A standalone web app for Elite Dangerous players planning rare goods trading routes, with PowerPlay integration.
 
-**Beta 1** is out - functional and used regularly by the author, but still a solo hobby project. Expect occasional rough edges. Found a bug or have a feature request? [Open an issue](https://github.com/rwharpernc/ED-Rare-Router/issues) - feedback from beta testers is exactly what this release is for. See [CHANGELOG.md](./CHANGELOG.md) for what's new.
+**Beta 2** is out - functional and used regularly by the author, but still a solo hobby project. Expect occasional rough edges. Found a bug or have a feature request? [Open an issue](https://github.com/rwharpernc/ED-Rare-Router/issues) - feedback from beta testers is exactly what this release is for. See [CHANGELOG.md](./CHANGELOG.md) for what's new.
 
 This is a personal hobby project, provided as-is with no warranty of any kind - see [License](#license) below for the full terms.
 

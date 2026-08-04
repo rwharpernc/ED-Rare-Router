@@ -14,11 +14,11 @@ export const onRequest = defineMiddleware((context, next) => {
   const pathname = context.url.pathname;
 
   if (!configFileExists() && pathname !== "/setup" && !pathname.startsWith("/api")) {
-    return Response.redirect(new URL("/setup", context.url.origin), 302);
+    return new Response(null, { status: 302, headers: { Location: "/setup" } });
   }
 
   if (!import.meta.env.DEV && (pathname === "/curate-prices" || pathname === "/curate")) {
-    return Response.redirect(new URL("/", context.url.origin), 302);
+    return new Response(null, { status: 302, headers: { Location: "/" } });
   }
 
   return next();
