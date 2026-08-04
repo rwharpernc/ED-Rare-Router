@@ -44,7 +44,7 @@ Open **http://localhost:4321** in your browser. You will be redirected to **/set
 
 | Field | Required | What to enter |
 |-------|----------|----------------|
-| **EDSM User-Agent** | Yes | A string that identifies your app and contact. Example: `ED-Rare-Router/1.0 (contact: your@email.com)` or `ED-Rare-Router/1.0 (contact: https://github.com/yourusername)`. EDSM uses this for API requests; no account needed. |
+| **EDSM User-Agent** | No (recommended) | A string that identifies your app and contact. Example: `ED-Rare-Router/1.0 (contact: your@email.com)` or `ED-Rare-Router/1.0 (contact: https://github.com/yourusername)`. EDSM uses this for API requests; no account needed. Leave blank and a generic default is used instead. |
 | **Data directory** | No | Leave blank to use the default `data/` folder in the project root. Or enter an absolute path (e.g. `C:\Users\You\data\ed-rare-router` or `/home/you/data/ed-rare-router`) to store caches and generated files elsewhere. |
 | **EDSM API key** | No | Optional. Get from [EDSM](https://www.edsm.net/) (account → API). Improves rate limits; app works without it. |
 | **Replace existing config** | — | Leave **unchecked** for first run. Check only when you already have `.config.json` and want to overwrite it. |

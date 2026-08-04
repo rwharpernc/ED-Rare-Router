@@ -54,12 +54,12 @@ None of the usual data sources expose rare goods legality through a public API:
   ```
 
 **Example 2: Centauri Mega Gin**
-- Inara note: "This rare good is legal in all systems except for Prison Colony systems and Federal Theocracy systems."
-- Translation:
+- Translation (matches the current `src/data/rares.ts` entry - illegal in Prison Colony systems, plus Federal and Alliance Theocracy specifically):
   ```typescript
   illegalInGovs: ['Prison Colony'],
   illegalInSuperpowerGovs: [
     { superpower: 'Federation', government: 'Theocracy' },
+    { superpower: 'Alliance', government: 'Theocracy' },
   ],
   ```
 

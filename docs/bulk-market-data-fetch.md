@@ -16,7 +16,7 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 
 ## Overview
 
-This describes the bulk market data fetch system, which queries the EDSM API for all rare goods stations and saves the results to a local file. The resulting file can be committed to the repo, avoids hitting the API on every request, can run on a schedule (every 12 hours, say), and the live API is still there as a fallback if the cache goes stale.
+This describes the bulk market data fetch system, which queries the EDSM API for all rare goods stations and saves the results to a local file. It avoids hitting the API on every request, can run on a schedule (every 12 hours, say), and the live API is still there as a fallback if the cache goes stale. The generated file is gitignored by default - see "Automated Runs" below for options if you want to persist it somewhere.
 
 ## How It Works
 
@@ -32,7 +32,7 @@ Bulk Fetch Script → EDSM API → data/edsmMarketData.json → API Endpoint →
 
 2. **Cache File** (`data/edsmMarketData.json`):
    - JSON file with all market data
-   - Can be committed to repository
+   - Gitignored by default (matches `data/*.json`); committing it requires an explicit `.gitignore` exception
    - Updated by the fetch script
 
 3. **API Endpoint** (`/api/market-data`):
@@ -52,7 +52,7 @@ npm run fetch:market
 
 The script will:
 - Load all rare goods from `src/data/rares.ts`
-- Query EDSM API for each station (with 500ms delay between requests)
+- Query EDSM API for each station (with a 2-second delay between requests)
 - Skip stations with data less than 12 hours old
 - Save results to `data/edsmMarketData.json`
 
@@ -60,16 +60,18 @@ The script will:
 
 #### Option 1: Commit to Repository
 
+`data/edsmMarketData.json` is gitignored by default (it matches the `data/*.json` pattern). To use this option, first add an exception in `.gitignore` (e.g. `!data/edsmMarketData.json`), then:
+
 1. Run the script locally: `npm run fetch:market`
 2. Commit `data/edsmMarketData.json` to the repository
 3. Re-run and commit every 12 hours (or as needed)
 
 **Pros**: Simple, version controlled  
-**Cons**: Manual process, file in git history
+**Cons**: Manual process, file in git history, requires opting out of the default gitignore rule
 
-#### Option 3: GitHub Actions / CI/CD
+#### Option 2: GitHub Actions / CI/CD
 
-Create a GitHub Actions workflow that runs every 12 hours:
+Create a GitHub Actions workflow that runs every 12 hours. This also needs the `.gitignore` exception from Option 1 above, since `git-auto-commit-action` won't add a gitignored file:
 
 ```yaml
 name: Fetch Market Data
@@ -98,7 +100,7 @@ jobs:
 **Pros**: Fully automated, runs on schedule  
 **Cons**: Requires GitHub Actions setup
 
-#### Option 4: External Cron Service
+#### Option 3: External Cron Service
 
 Use a service like:
 - **cron-job.org** - Free web-based cron
@@ -111,13 +113,11 @@ Set up to call a webhook or trigger a build that runs the script.
 
 The generated `data/edsmMarketData.json` file has this structure:
 
-**Note**: The `totalRares` count is still being verified (140-142 range).
-
 ```json
 {
   "_metadata": {
     "fetchedAt": "2026-01-12T12:00:00.000Z",
-    "totalRares": 140-142,
+    "totalRares": 142,
     "fetchedCount": 50,
     "successCount": 35,
     "errorCount": 10,
@@ -196,15 +196,15 @@ See [EDSM Market Data Limitations](./edsm-market-data-limitations.md) for detail
 ### Request Rate Limiting
 
 The script includes a 2-second delay between requests to be polite to EDSM API:
-- 140-142 rare goods × 2 seconds = ~280-284 seconds minimum (~4.7 minutes) (count still being verified)
+- 142 rare goods × 2 seconds = 284 seconds minimum (~4.7 minutes)
 - Plus API response time = ~5-7 minutes total
 - Progress messages show remaining requests and estimated time
 
 ### Cache Size
 
 - Each entry: ~1-2 KB
-- 140-142 entries: ~200-300 KB total (count still being verified)
-- Small enough to commit to repository
+- 142 entries: ~200-300 KB total
+- Small enough to commit to the repository, if you've opted out of the default gitignore rule (see "Automated Runs" above)
 
 ### Update Frequency
 
@@ -247,7 +247,7 @@ The script includes a 2-second delay between requests to be polite to EDSM API:
 
 1. **Run regularly**: Set up automation to run every 12 hours
 2. **Monitor success rate**: Check `_metadata.successCount` in output
-3. **Commit updates**: Keep the cache file in version control
+3. **Commit updates** (optional): If you've opted out of the default gitignore rule, keep the cache file in version control
 4. **Handle errors gracefully**: Script continues even if some requests fail
 5. **Respect API limits**: Don't run more frequently than needed
 

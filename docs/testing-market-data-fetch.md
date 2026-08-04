@@ -44,10 +44,10 @@ The script will display progress like:
 
 ```
 [EDSM Market Fetcher] Starting bulk fetch...
-[EDSM Market Fetcher] Found 140-142 rare goods to fetch (count still being verified)
-[1/140-142] Fetching Lavian Brandy from Lave/Lave Station...
+[EDSM Market Fetcher] Found 142 rare goods to fetch
+[1/142] Fetching Lavian Brandy from Lave/Lave Station...
   ✓ Found market data for Lavian Brandy (stock: 0, bracket: 0)
-[2/140-142] Fetching Altairian Skin from Altair/Solo Orbiter...
+[2/142] Fetching Altairian Skin from Altair/Solo Orbiter...
   ✗ No market data available for Altair/Solo Orbiter
 ...
 ```
@@ -56,7 +56,7 @@ At the end, you'll see a summary:
 
 ```
 [EDSM Market Fetcher] Summary:
-  Total rares: 140-142 (still being verified)
+  Total rares: 142
   Fetched: 50
   Success: 35
   Errors: 10
@@ -229,9 +229,9 @@ Should return:
 
 ## Performance Notes
 
-- **First run**: Takes ~2-3 minutes (140-142 requests × 0.5s delay, count still being verified)
+- **First run**: Takes ~5-7 minutes (142 requests × 2s delay, plus API response time)
 - **Subsequent runs**: Faster if many entries are skipped (<12 hours old)
-- **File size**: ~200-300 KB for 140-142 entries (count still being verified)
+- **File size**: ~200-300 KB for 142 entries
 - **API response time**: Depends on EDSM API speed (usually <1 second per request)
 
 ## Next Steps

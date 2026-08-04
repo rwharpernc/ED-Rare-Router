@@ -95,11 +95,11 @@ interface RareGood {
 
 #### Dataset Statistics
 
-- **Total Rare Goods**: 140-142 (still being verified, as of Alpha 1.05)
+- **Total Rare Goods**: 142
   - All entries use verified system names that exist in EDSM
   - No placeholder entries
   - All data is static - locations never change
-  - Comprehensive dataset includes all major rare commodities from Elite Dangerous
+  - A couple of entries are still being cross-checked against external community references (~140 cited elsewhere) - see [Data Accuracy Notes](./data-accuracy-notes.md) and [Troubleshooting Notes](./troubleshooting-notes.md)
 
 The following systems were corrected to match EDSM database:
 - `Aepyornis Egg`: System changed from `Aepyornis` → `47 Ceti` (station: `Glushko Station`)
@@ -119,6 +119,7 @@ Contains PowerPlay 2.0 powers with faction information.
 interface PowerPlayPower {
   name: string;
   faction: "Federation" | "Alliance" | "Empire" | "Independent";
+  hasFinanceEthos: boolean;
 }
 ```
 
@@ -200,7 +201,7 @@ interface CpDivisors {
 
 ### Rare Systems Cache (`data/rareSystemsCache.json`)
 
-Pre-generated cache file containing all rare origin system coordinates. Should be provided as a static file in the repository.
+Optional, read-only cache file containing rare origin system coordinates. `src/lib/rareSystemsCache.ts` never writes to this file - it only reads it if present. No script in the repo currently generates it in this shape (see Cache Management below); without it, rare origin lookups fall back to live EDSM calls.
 
 #### Structure
 
@@ -220,7 +221,7 @@ Pre-generated cache file containing all rare origin system coordinates. Should b
   },
   "_metadata": {
     "lastUpdated": "2025-12-08T12:00:00.000Z",
-    "totalSystems": 35
+    "totalSystems": 138
   }
 }
 ```
@@ -233,10 +234,10 @@ Pre-generated cache file containing all rare origin system coordinates. Should b
 
 #### Cache Behavior
 
-- **Loading**: Cache is loaded on application startup by `src/lib/rareSystemsCache.ts`
-- **Usage**: Rare origin systems use cache, user-entered systems use live API
-- **Generation**: Cache file should be provided pre-built (or can be generated manually using EDSM API)
-- **Persistence**: Committed to repository for faster deployments
+- **Loading**: Cache is loaded once, if present, by `src/lib/rareSystemsCache.ts`
+- **Usage**: Rare origin systems use the cache when available; user-entered systems always use the live API (via `src/lib/edsm.ts`)
+- **Generation**: No script currently produces this file in this exact shape - see Cache Management below
+- **Persistence**: Not written by the app; if you build one by hand, it's gitignored like the other `data/*.json` cache files
 
 #### Benefits
 
@@ -310,9 +311,8 @@ Generated at runtime, contains cached EDSM system data for user-entered systems.
 2. Add new entries following the `RareGood` interface
 3. Verify system/station names match EDSM data
 4. All system names must exist in EDSM database (no placeholders)
-5. **Update `data/rareSystemsCache.json`** with new system coordinates if needed
-   - This is required after adding new rares or correcting system names
-   - The application will work without updating the cache, but new systems will use slower API lookups
+5. Optionally run `npm run generate:rare-coords` to refresh `data/rare-system-coords.json` with coordinates for the new/corrected system - note this is a different file from `data/rareSystemsCache.json` (see Cache Management below)
+   - The application works fine without either cache file; new/uncached systems just use a live API lookup per scan instead of an in-memory hit
 
 ### Updating PowerPlay Powers
 
@@ -325,15 +325,10 @@ Generated at runtime, contains cached EDSM system data for user-entered systems.
 
 #### Rare Systems Cache
 
-- Pre-generated cache for rare origin systems
-- Cache file should be provided pre-built in the repository
-- **When to run**:
-  - **Before first deployment** (recommended for production)
-  - After adding new rare goods to the dataset
-  - After correcting system names in the rare goods data
-  - Periodically to refresh system data (optional)
-- **Important**: The application works without this cache (falls back to API), but performance will be slower
-- The cache file should be committed to the repository for deployments
+- `data/rareSystemsCache.json` is an optional, hand-built or future-tooling cache - the app never writes to it, and no script currently generates it in the shape `src/lib/rareSystemsCache.ts` expects (keyed by normalized system name, `EDSMSystem` values, plus `_metadata`)
+- `npm run generate:rare-coords` is the closest existing tool, but it writes a different file (`data/rare-system-coords.json`, flat `{name: {x,y,z}}`, un-normalized keys, no allegiance/government/`_metadata`) - not a drop-in
+- **Important**: The application works fine without `rareSystemsCache.json` - it just falls back to a live EDSM lookup per rare, per scan, instead of an in-memory hit
+- Like other generated `data/*.json` files, this one is gitignored - don't commit it
 
 #### System Cache (User Systems)
 

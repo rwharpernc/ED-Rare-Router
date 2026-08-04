@@ -59,7 +59,7 @@ Not a developer and don't want to install Node.js or use a terminal? There's a p
 
 1. Grab the Windows (`-win-x64.zip`) or Linux (`-linux-x64.tar.gz`) build from the **[Releases page](https://github.com/rwharpernc/ED-Rare-Router/releases/latest)** and unzip it anywhere you can write files (Desktop or Documents - avoid `Program Files`).
 2. Double-click `ED-Rare-Router.exe` (Windows) or run `./ED-Rare-Router` (Linux). A status window opens and your browser should launch automatically to the app.
-3. First run only: fill in the short setup form (just an EDSM "contact" string - your email or a URL). Everything else is optional.
+3. First run only: you'll see a short setup form. Everything is optional, but filling in an EDSM "contact" string (your email or a URL) is recommended.
 4. Close the status window to stop the app.
 
 This build bundles its own Node.js runtime, so nothing needs to be installed.

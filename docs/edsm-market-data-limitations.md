@@ -41,10 +41,10 @@ When running the bulk fetch script (`npm run fetch:market`), you'll likely see:
 ### Example Output
 
 ```
-[1/140-142] Fetching Lavian Brandy from Lave/Lave Station... (count still being verified)
+[1/142] Fetching Lavian Brandy from Lave/Lave Station...
   ✗ No market data available for Lave/Lave Station
     Note: EDSM API doesn't always return market commodity data - depends on recent player uploads
-[2/140-142] Fetching Altairian Skin from Altair/Solo Orbiter...
+[2/142] Fetching Altairian Skin from Altair/Solo Orbiter...
   ✗ No market data available for Altair/Solo Orbiter
 ```
 

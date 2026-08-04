@@ -27,6 +27,7 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - SystemInput                                        │  │
 │  │  - PowerInput                                         │  │
 │  │  - ResultsList                                        │  │
+│  │  - CacheStatus                                        │  │
 │  │  - LegalityCurator (dev only)                         │  │
 │  │  - CuratorApp (dev only)                              │  │
 │  │  - PriceCurator (dev only)                             │  │
@@ -39,6 +40,8 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │                    Astro Application                         │
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │  API Routes (src/pages/api/)                         │  │
+│  │  - POST /api/setup                                   │  │
+│  │  - GET  /api/setup-status                             │  │
 │  │  - GET  /api/systems                                 │  │
 │  │  - GET  /api/system-lookup                            │  │
 │  │  - POST /api/rares-scan                              │  │
@@ -58,7 +61,9 @@ This software is provided "AS IS" without warranty of any kind, express or impli
 │  │  - fuzzySearch.ts    (Fuzzy search utilities)         │  │
 │  │  - curatedLegality.ts (Curated legality management) │  │
 │  │  - curatedPrices.ts (Curated price management)      │  │
+│  │  - edsmMarket.ts (Live EDSM market API calls)        │  │
 │  │  - edsmMarketCache.ts (EDSM market data cache)       │  │
+│  │  - config.ts (.config.json loader)                   │  │
 │  └───────────────────────┬──────────────────────────────┘  │
 │                          │                                  │
 │  ┌───────────────────────▼──────────────────────────────┐  │
@@ -142,11 +147,15 @@ RaresPlannerIsland
                         │
                         ├─► getSystem(current) → EDSM API
                         │
+                        ├─► loadCuratedLegality() + loadCuratedPrices()
+                        │     → merge onto base rares dataset
+                        │
                         ├─► For each rare:
                         │     ├─► getRareOriginSystem(rare.system) → Cache/EDSM
                         │     ├─► lyDistance(current → origin)
                         │     ├─► evaluateLegality(current) → Check legality
-                        │     └─► ppEligibleForSystemType(current) → Check PP
+                        │     ├─► ppEligibleForSystemType(current) → Check PP
+                        │     └─► cpDivisors() → CP divisor (if PP-eligible)
                         │
                         ▼
                     ScanResult[]
@@ -194,13 +203,13 @@ RaresPlannerIsland
 
 ### Cache Layers
 
-1. **Rare Systems Cache** (Pre-generated)
+1. **Rare Systems Cache** (Optional, read-only)
    - File: `data/rareSystemsCache.json`
-   - Format: JSON object keyed by normalized system name
-   - TTL: None (manually updated via script)
+   - Format: JSON object keyed by normalized system name, plus `_metadata`
+   - TTL: None - the app never writes to this file, only reads it
    - Scope: All rare origin systems
-   - Usage: Loaded on startup, used for all rare origin lookups
-   - Provided as pre-built cache file
+   - Usage: Loaded once and used for rare origin lookups if the file exists
+   - No script currently generates this file in the shape it expects - `npm run generate:rare-coords` produces a different file (`data/rare-system-coords.json`, a flat `{name: {x,y,z}}` map with un-normalized keys). Without `rareSystemsCache.json` present, rare origin lookups fall back to live EDSM API calls every scan (logged as a warning on startup)
 
 2. **In-Memory Cache** (System Lookups - User Systems)
    - Type: `Map<string, EDSMSystem>`

@@ -59,12 +59,13 @@ npm run preview
 
 The application uses these data files in the data directory (default `data/`; override with `dataDir` in `.config.json`):
 
-- `rareSystemsCache.json` - Pre-fetched rare origin system coordinates
+- `rareSystemsCache.json` - Rare origin system coordinates (optional, hand-built - see [Data Appendix](./data-appendix.md))
 - `systemCache.json` - Cached EDSM system lookups
 - `edsmMarketData.json` - Bulk-fetched EDSM market data
 - `curatedLegality.json` - Manually curated legality overrides (dev only)
+- `curatedPrices.json` - Manually curated baseline prices (dev only)
 
-These files are generated automatically and can be committed to your repository.
+These files are generated automatically and gitignored - don't commit them.
 
 ## Configuration
 
@@ -80,7 +81,7 @@ See the [Setup Guide](./setup-guide.md#config-file-reference) for the full field
 
 ### Port Configuration
 
-Default port is 4321. To change it, modify `astro.config.mjs`:
+For `npm run dev` and `npm run preview`, the default port is 4321. To change it, modify `astro.config.mjs`:
 
 ```javascript
 export default defineConfig({
@@ -90,6 +91,8 @@ export default defineConfig({
   },
 });
 ```
+
+Running the built standalone server directly (`node dist/server/entry.mjs`, e.g. under PM2/systemd - see [Local Deployment Guide](./local-deployment.md)) ignores this setting and defaults to port 8080 instead; use the `PORT`/`HOST` environment variables there.
 
 ### Environment Variables
 

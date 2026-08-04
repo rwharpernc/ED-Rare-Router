@@ -116,14 +116,17 @@ Production build will be available at: `http://localhost:4321`
 
 ### Using PM2 (Recommended)
 
-PM2 manages processes and auto-restarts on crashes:
+PM2 manages processes and auto-restarts on crashes. Build first - running `npm run dev` under PM2 would leave the dev-only `/curate` and `/curate-prices` routes live and defeat production optimizations:
 
 ```bash
 # Install PM2 globally
 npm install -g pm2
 
-# Start web server
-pm2 start npm --name "edrr-web" -- run dev
+# Build the app
+npm run build
+
+# Start the built standalone server (defaults to port 8080 - set PORT to override)
+PORT=4321 pm2 start dist/server/entry.mjs --name "edrr-web"
 
 # Save configuration
 pm2 save
@@ -143,7 +146,7 @@ pm2 startup
 
 ### Using systemd (Linux)
 
-Create service files for systemd:
+Build the app first (`npm run build`), then create a service file that runs the built standalone server directly - not `npm run dev`, which would leave dev-only routes and verbose logging live:
 
 **`/etc/systemd/system/edrr-web.service`:**
 ```ini
@@ -155,10 +158,11 @@ After=network.target
 Type=simple
 User=your-username
 WorkingDirectory=/path/to/ED-Rare-Router
-ExecStart=/usr/bin/npm run dev
+ExecStart=/usr/bin/node dist/server/entry.mjs
 Restart=always
 RestartSec=10
 Environment=NODE_ENV=production
+Environment=PORT=4321
 
 [Install]
 WantedBy=multi-user.target
@@ -197,7 +201,7 @@ crontab -e
 
 ### Port Configuration
 
-Default port is 4321. To change it, modify `astro.config.mjs`:
+For `npm run dev` and `npm run preview`, the default port is 4321. To change it, modify `astro.config.mjs`:
 
 ```javascript
 export default defineConfig({
@@ -206,6 +210,8 @@ export default defineConfig({
   },
 });
 ```
+
+**Running the built server directly** (`node dist/server/entry.mjs` - the standalone Node adapter, used by PM2/systemd above) **ignores `astro.config.mjs`'s port setting entirely** and defaults to port 8080. Set the `PORT` (and optionally `HOST`) environment variable instead: `PORT=4321 node dist/server/entry.mjs`.
 
 ### Environment Variables
 
@@ -223,12 +229,13 @@ NODE_ENV=production
 
 The application uses these data files in the data directory (default `data/` in the project root, or the path set in `.config.json` as `dataDir`):
 
-- `rareSystemsCache.json` - Pre-fetched rare origin system coordinates
+- `rareSystemsCache.json` - Rare origin system coordinates (optional, hand-built - see [Data Appendix](./data-appendix.md))
 - `systemCache.json` - Cached EDSM system lookups (user-entered systems)
 - `edsmMarketData.json` - Bulk-fetched EDSM market data (optional)
 - `curatedLegality.json` - Manually curated legality overrides (dev only)
+- `curatedPrices.json` - Manually curated baseline prices (dev only)
 
-**Note**: These files are generated automatically. You can commit them to git or regenerate as needed.
+**Note**: These files are generated automatically and gitignored - don't commit them, they regenerate as needed.
 
 ## Accessing the Application
 
@@ -346,8 +353,8 @@ tar -czf edrr-backup-$(date +%Y%m%d).tar.gz data/
 
 Back up:
 - `data/` directory (all cache files)
-- `.env` file (if you have custom settings)
-- `data/curatedLegality.json` (if you've curated data)
+- `.config.json` and `.env` (if you have custom settings)
+- `data/curatedLegality.json` and `data/curatedPrices.json` (if you've curated data)
 
 ## Updates
 

@@ -41,7 +41,7 @@ This fetches Inara's rare commodities page and inserts or updates `inaraLink` fo
 
 ## Data structure (rares.ts)
 
-Each entry is a `RareGood`: required fields include `rare`, `system`, `station`, `pad`, `sellHintLy`, `illegalInSuperpowers`, `illegalInGovs`, `illegalInSuperpowerGovs`, and `pp`. Optional: `distanceToStarLs`, `inaraLink`, `cost`, `permitRequired`. See `src/types/rares.ts` for the full type.
+Each entry is a `RareGood`: required fields are `rare`, `system`, `station`, `pad`, `sellHintLy`, `illegalInSuperpowers`, `illegalInGovs`, and `pp`. Optional: `illegalInSuperpowerGovs`, `distanceToStarLs`, `inaraLink`, `cost`, `permitRequired`. See `src/types/rares.ts` for the full type.
 
 ---
 

@@ -50,7 +50,7 @@ All endpoints are relative to the application root:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `edsmUserAgent` | string | Yes (recommended) | User-Agent/contact for EDSM API (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`) |
+| `edsmUserAgent` | string | No (recommended) | User-Agent/contact for EDSM API (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`). Falls back to a generic default if omitted. |
 | `dataDir` | string \| null | No | Absolute path to data directory; `null` or empty = default `data/` |
 | `apiKeys` | object | No | Keys: `edsm`, etc. (lowercase). Values: API key strings. |
 | `overwrite` | boolean | No | If `true`, replace existing `.config.json`. Required when config already exists. |
@@ -72,7 +72,20 @@ All endpoints are relative to the application root:
 
 ---
 
-### 1. System Autocomplete
+### 1. Setup Status
+
+**Endpoint**: `GET /api/setup-status`
+
+**Description**: Returns whether `.config.json` exists yet. Used by the first-run setup flow.
+
+**Response** (200 OK):
+```json
+{ "hasConfig": true }
+```
+
+---
+
+### 2. System Autocomplete
 
 **Endpoint**: `GET /api/systems`
 
@@ -127,11 +140,11 @@ GET /api/systems?q=Lave
 **Notes**:
 - Results are cached for 15 minutes in memory
 - Returns empty array `[]` if query is less than 2 characters
-- Results are sorted by relevance (exact matches first)
+- The endpoint itself doesn't sort results (order comes straight from EDSM); relevance sorting happens client-side in the autocomplete component
 
 ---
 
-### 2. System Lookup
+### 3. System Lookup
 
 **Endpoint**: `GET /api/system-lookup`
 
@@ -217,7 +230,7 @@ GET /api/system-lookup?name=Sol
 
 ---
 
-### 3. Rare Goods Scan
+### 4. Rare Goods Scan
 
 **Endpoint**: `POST /api/rares-scan`
 
@@ -263,6 +276,13 @@ Content-Type: application/json
     "systemNotFound": false,
     "legal": true,
     "legalReason": "Legal",
+    "legalityDetails": {
+      "superpowerRestrictions": [],
+      "illegalGovernments": [],
+      "combinedRestrictions": [],
+      "legalGovernments": ["Anarchy", "Communism", "Confederacy", "Cooperative", "Corporate", "Democracy", "Dictatorship", "Feudal", "Patronage", "Prison", "Prison Colony", "Theocracy"],
+      "explanation": "Legal in all systems and government types"
+    },
     "ppEligible": false,
     "cpDivisors": null
   },
@@ -279,6 +299,13 @@ Content-Type: application/json
     "systemNotFound": false,
     "legal": true,
     "legalReason": "Legal",
+    "legalityDetails": {
+      "superpowerRestrictions": [],
+      "illegalGovernments": [],
+      "combinedRestrictions": [],
+      "legalGovernments": ["Anarchy", "Communism", "Confederacy", "Cooperative", "Corporate", "Democracy", "Dictatorship", "Feudal", "Patronage", "Prison", "Prison Colony", "Theocracy"],
+      "explanation": "Legal in all systems and government types"
+    },
     "ppEligible": false,
     "cpDivisors": null
   }
@@ -382,6 +409,7 @@ interface ScanResult {
   systemNotFound?: boolean;              // True if origin system not found in EDSM
   legal: boolean;
   legalReason: string;
+  legalityDetails?: LegalityDetails;     // Detailed legality breakdown, see below
   ppEligible: boolean;                   // Always false (PowerPlay disabled)
   cpDivisors: CpDivisors | null;         // Always null (PowerPlay disabled)
 }
@@ -424,7 +452,7 @@ All endpoints follow these error handling principles:
 - **System Autocomplete**: HTTP cache (5 minutes) + in-memory cache (15 minutes)
 - Cache-Control headers are set on the autocomplete endpoint
 
-### 4. Curated Legality Data (Development Only)
+### 5. Curated Legality Data (Development Only)
 
 **Endpoint**: `GET /api/curated-legality`  
 **Endpoint**: `POST /api/curated-legality`  
@@ -474,11 +502,11 @@ All endpoints follow these error handling principles:
 
 **Security Note**: These endpoints are restricted to development mode only. In production, all requests return 403 Forbidden.
 
-### 5. Market Data
+### 6. Market Data
 
 **Endpoint**: `GET /api/market-data`
 
-**Description**: Market data for rare goods stations - reads from the cached EDSM data, falling back to a live EDSM API call if the cache is stale.
+**Description**: Market data for rare goods stations - reads from the cached EDSM data (`data/edsmMarketData.json`, built by `npm run fetch:market`). If the requested system/station (or rare name) isn't found in the cache and the cache as a whole is stale (see `cacheFresh`), falls back to a live EDSM API call. A stale cache that still contains the requested entry is returned as-is, without a live lookup.
 
 **Query Parameters**:
 
@@ -526,11 +554,16 @@ GET /api/market-data
     "demand": 0,
     "demandBracket": 0
   },
+  "timestamp": "2026-01-12T11:45:00.000Z",
   "source": "cache",
   "cacheFresh": true,
   "metadata": {
     "fetchedAt": "2026-01-12T12:00:00.000Z",
-    "totalEntries": 10
+    "totalRares": 142,
+    "fetchedCount": 142,
+    "successCount": 10,
+    "errorCount": 130,
+    "skippedCount": 2
   }
 }
 ```
@@ -541,13 +574,14 @@ GET /api/market-data
 - `station`: Station name (if specified)
 - `rare`: Rare good name (if specified)
 - `data`: Market commodity data or full station market data
+- `timestamp`: When this specific cache entry was recorded (only present for a specific system+station+rare match)
 - `source`: Data source ("cache" or "live")
 - `cacheFresh`: Boolean indicating if cache is fresh (<12 hours old)
-- `metadata`: Cache metadata (last fetched time, entry count)
+- `metadata`: Cache metadata - `fetchedAt`, `totalRares`, `fetchedCount`, `successCount`, `errorCount`, `skippedCount` (see `EDSMCacheMetadata` in `src/lib/edsmMarketCache.ts`)
 
 **Note**: Market data depends on player contributions via EDMC. Data may not always be available or up-to-date for all stations.
 
-### 6. Price Curation (Development Only)
+### 7. Price Curation (Development Only)
 
 **Endpoints**: `GET /api/curated-prices`, `POST /api/curated-prices`, `DELETE /api/curated-prices`
 
@@ -626,6 +660,30 @@ Removes curated price data for a rare good.
 3. **"N/A"** if none of the above
 
 **Data Storage**: Curated prices are saved to `data/curatedPrices.json`.
+
+### 8. Cache Status
+
+**Endpoint**: `GET /api/cache-status`
+
+**Description**: Metadata about cache files - when each was last updated, for display in the UI's cache status indicator.
+
+**Response** (200 OK):
+```json
+{
+  "rareSystems": {
+    "lastUpdated": "2026-01-12T12:00:00.000Z",
+    "totalSystems": 138
+  },
+  "marketData": {
+    "fetchedAt": "2026-01-12T12:00:00.000Z",
+    "totalRares": 142,
+    "successCount": 10,
+    "cacheFresh": true
+  }
+}
+```
+
+Both `rareSystems` and `marketData` are omitted entirely if the corresponding cache file doesn't exist yet.
 
 ## External Dependencies
 

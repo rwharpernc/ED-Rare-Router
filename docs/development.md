@@ -42,7 +42,7 @@ See the [Technical Design Document](./technical-design.md) for architecture deta
    ```
 
 3. Create your local config (first run only). Pick one:
-   - **Web (recommended):** Run `npm run dev`, open http://localhost:4321 - you'll be redirected to **/setup**. Fill in at least **EDSM User-Agent** (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`), optionally a data directory and API keys, then click **Save config**.
+   - **Web (recommended):** Run `npm run dev`, open http://localhost:4321 - you'll be redirected to **/setup**. Everything is optional, but filling in **EDSM User-Agent** (e.g. `ED-Rare-Router/1.0 (contact: your@email.com)`) is recommended; add a data directory and API keys if you want them, then click **Save config**.
    - **CLI:** Run `npm run setup` and follow the prompts to create `.config.json`.
    - **Manual:** Copy `config.sample.json` to `.config.json` and edit it directly.
 

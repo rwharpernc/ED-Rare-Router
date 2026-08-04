@@ -1597,8 +1597,8 @@ export const rares: RareGood[] = [
     },
   },
   {
-    rare: 'Baltah\'sine Vacuum Krill',
-    system: 'Baltah\'Sine',
+    rare: "Baltah'sine Vacuum Krill",
+    system: "Baltah'Sine",
     station: 'Baltha\'Sine Station',
     pad: 'M',
     sellHintLy: 200,

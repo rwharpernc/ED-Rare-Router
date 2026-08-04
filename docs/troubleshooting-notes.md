@@ -1,7 +1,7 @@
 # Troubleshooting Notes & Explanations
 
 **ED Rare Router**  
-Last Updated: March 1, 2026
+Last Updated: August 3, 2026
 
 **Author:** R.W. Harper  
 **LinkedIn:** [https://linkedin.com/in/rwhwrites](https://linkedin.com/in/rwhwrites)  
@@ -64,11 +64,10 @@ The following items should be cross-referenced with authoritative sources to con
 
 ### Current Status
 
-- **Dataset count**: 142 items
-- **Reference count**: 140 items
-- **Discrepancy**: 2 items
-- **Status**: Still being verified
-- **Documentation**: Updated to reflect "140-142 rare commodities (still being verified)"
+- **Dataset count**: 142 items (this part is settled - confirmed, no duplicates)
+- **External reference count**: ~140 items (varies by source)
+- **Discrepancy**: 2 items, still unresolved
+- **Status**: The dataset's own count is no longer hedged in the docs (they now state "142" plainly) - what's still open is whether all 142 match external community references item-for-item, per the analysis above
 
 ### Next Steps
 
@@ -83,7 +82,7 @@ The following items should be cross-referenced with authoritative sources to con
 ### Related Files
 
 - `src/data/rares.ts` - Main dataset
-- `README.md` - Updated to show "140-142 (still being verified)"
+- `README.md` - States "142 rare commodities" plainly, with the external cross-check question noted separately in its Feedback & Known Limitations section
 - `docs/data-appendix.md` - Dataset statistics
 
 ---

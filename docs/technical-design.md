@@ -51,7 +51,7 @@ At a high level:
 - **`src/lib/`** - business logic: EDSM client and caches, distance/legality/PowerPlay calculations, curated legality/price management, config loading
 - **`src/data/`** - the static `rares.ts` and `powers.ts` datasets
 - **`src/types/`**, **`src/styles/`** - TypeScript definitions and global CSS
-- **`data/`** - runtime caches and `.config.json`, gitignored, generated locally
+- **`data/`** - runtime caches, gitignored, generated locally (`.config.json` itself lives in the project root, not under `data/`)
 - **`scripts/`** - maintainer tooling (setup, data curation helpers, the packaging build), not run by the app itself
 
 For the full, exact file listing (kept in sync in one place to avoid drift), see **[Project Structure in the Developer Guide](./development.md#project-structure)**.
@@ -93,6 +93,10 @@ For the full, exact file listing (kept in sync in one place to avoid drift), see
   - Visual indicators for "at origin" vs "system not found"
   - Displays scan results with distance, legality, and PowerPlay information
 
+- **`CacheStatus`**: Displays when each cache file was last updated
+  - Fetches `/api/cache-status` on mount
+  - Renders nothing if no cache metadata is available yet
+
 - **`LegalityCurator`**: Individual rare good legality editor (development only)
   - Edit superpower restrictions, government restrictions, and combined restrictions
   - Visual indicators for curated vs. base data
@@ -103,16 +107,28 @@ For the full, exact file listing (kept in sync in one place to avoid drift), see
   - Load and display curated data
   - Manage curated legality overrides
 
+- **`PriceCurator`**: Individual rare good price editor (development only)
+  - Edit the curated baseline purchase price
+  - Save/delete functionality for curated price data
+
+- **`PriceCuratorApp`**: Main price curation interface (development only)
+  - Search and filter rares
+  - Load and display curated price data
+  - Manage curated price overrides
+
 ### 2.3 API Architecture
 
-All API endpoints are Astro API routes (`src/pages/api/*.ts`):
+All API endpoints are Astro API routes (`src/pages/api/*.ts`, 9 files):
 
-1. **`GET /api/systems?q=<query>`**: System autocomplete
-2. **`GET /api/system-lookup?name=<name>`**: System validation
-3. **`POST /api/rares-scan`**: Scan mode analysis
-4. **`GET /api/curated-legality`**: Get curated legality data (development only)
-5. **`POST /api/curated-legality`**: Update curated legality data (development only)
-6. **`DELETE /api/curated-legality`**: Delete curated legality data (development only)
+1. **`POST /api/setup`**: Create/overwrite `.config.json` (first-run setup)
+2. **`GET /api/setup-status`**: Whether `.config.json` exists yet
+3. **`GET /api/systems?q=<query>`**: System autocomplete
+4. **`GET /api/system-lookup?name=<name>`**: System validation
+5. **`POST /api/rares-scan`**: Scan mode analysis
+6. **`GET/POST/DELETE /api/curated-legality`**: Curated legality data (development only)
+7. **`GET/POST/DELETE /api/curated-prices`**: Curated price data (development only)
+8. **`GET /api/market-data`**: Cached (with live fallback) EDSM market data
+9. **`GET /api/cache-status`**: Metadata about cache files
 
 See [API Documentation](./api-documentation.md) for detailed specifications.
 
@@ -134,28 +150,19 @@ User Input → React Component → API Endpoint → Business Logic
 **Purpose**: Load and provide cached rare origin system data.
 
 **Features**:
-- Pre-generated cache file (`data/rareSystemsCache.json`)
-- Loaded on application startup
-- Used for all rare origin system lookups
-- Falls back to API if cache miss (should be rare)
+- Optional, read-only cache file (`data/rareSystemsCache.json`) - this module never writes to it
+- Loaded once if the file exists
+- Used for rare origin system lookups when present
+- Falls back to live EDSM API calls per rare, every scan, if the file doesn't exist (logs a warning)
 
 **Functions**:
 - `getRareOriginSystem(name: string)`: Get rare origin system from cache
 - `getCacheMetadata()`: Get cache metadata (last updated, total systems)
 
 **Cache Generation**:
-- Cache file (`data/rareSystemsCache.json`) should be provided pre-built
-- Fetches all unique systems from `rares.ts`
-- Includes rate limiting (200ms between requests)
-- Stores coordinates, allegiance, and government data
-
-**When to run**:
-- Before first deployment (recommended for production)
-- After adding new rare goods to the dataset
-- After correcting system names in the rare goods data
-- Periodically to refresh system data (optional)
-
-**Important**: The application works without this cache (falls back to API), but performance will be slower. The cache file should be committed to the repository for deployments.
+- No script in the repo currently generates `data/rareSystemsCache.json` in the shape this module expects (an object keyed by normalized system name, each value an `EDSMSystem`, plus `_metadata`)
+- `npm run generate:rare-coords` produces a related but different file, `data/rare-system-coords.json` - a flat `{ "SystemName": {x, y, z} }` map with un-normalized keys and no allegiance/government/`_metadata` - it isn't a drop-in replacement
+- Without `rareSystemsCache.json`, the app still works correctly, just slower (a live EDSM lookup per rare on every scan instead of an in-memory hit)
 
 ### 3.2 EDSM Client (`src/lib/edsm.ts`)
 
@@ -318,6 +325,7 @@ interface LegalityDetails {
 interface PowerPlayPower {
   name: string;
   faction: "Federation" | "Alliance" | "Empire" | "Independent";
+  hasFinanceEthos: boolean;
 }
 ```
 
@@ -331,10 +339,10 @@ interface PowerPlayPower {
 
 ### 5.1 Caching Strategy
 
-- **Rare Origin Systems**: Pre-generated cache file loaded on startup
-  - Eliminates EDSM API calls for rare origins (35+ systems)
+- **Rare Origin Systems**: Optional cache file, loaded on startup if present
+  - When present, eliminates EDSM API calls for rare origins (142 rares across ~138 unique systems)
   - Faster response times for scan endpoint
-  - Provided as pre-built cache file (`data/rareSystemsCache.json`)
+  - See section 3.1 above - no script currently generates this file
 - **User-Entered Systems**: Permanent in-memory + disk cache
   - Current system cached after first lookup
   - Debounced disk writes (5 seconds) to reduce I/O
@@ -344,12 +352,12 @@ interface PowerPlayPower {
 
 ### 5.2 API Rate Limiting
 
-- **Rare origin systems**: No API calls (use pre-generated cache)
+- **Rare origin systems**: No API calls if `data/rareSystemsCache.json` is present; a live call per rare per scan otherwise
 - **User-entered systems**: Minimized through aggressive caching
 - User-Agent header identifies the application
 - Timeout handling prevents hanging requests (10 seconds)
 - Graceful degradation on API errors
-- Rate limiting in fetch script (200ms between requests)
+- Maintainer scripts self-throttle when calling EDSM: `scripts/generate-rare-coords.js` waits 500ms between requests, `scripts/fetch-edsm-market-data.js` waits 2000ms
 
 ### 5.3 Client-Side Optimizations
 
@@ -415,16 +423,15 @@ The application targets **local deployment**, using the `@astrojs/node` adapter 
 
 See [Deployment Guide](./deployment-guide.md) for detailed instructions.
 
-### 8.4 Environment Variables
+### 8.4 Configuration
 
-- `EDSM_USER_AGENT`: Optional custom User-Agent string for EDSM API requests
+Local settings (EDSM User-Agent, data directory, API keys) live in `.config.json` in the project root, created via the first-run `/setup` flow, `npm run setup`, or by hand from `config.sample.json` - see [Setup Guide](./setup-guide.md). Environment variables override individual fields without editing the file:
+- `EDSM_USER_AGENT`: Overrides `edsmUserAgent`
+- `EDSM_API_KEY`: Overrides `apiKeys.edsm`
 
 ### 8.5 API Endpoints
 
-All API endpoints are server-rendered and available as:
-- `/api/systems` - System autocomplete
-- `/api/rares-scan` - Scan mode analysis
-- `/api/system-lookup` - System verification
+All 9 API endpoints are server-rendered (see [section 2.3](#23-api-architecture) for the full list and [API Documentation](./api-documentation.md) for specifications).
 
 ## 9. Future Enhancements
 
